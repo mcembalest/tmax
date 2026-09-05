@@ -8,30 +8,73 @@ No character, personality, theme, or custom chat interface is defined here.
 
 ## Install
 
-Requires macOS or Linux, tmux, and **Pi 0.85.0** (the version tested here).
-Install Pi following [its instructions](https://pi.dev/), then run `pi` and use
-`/login` and `/model` to set it up. tmax uses those existing settings; it does
-not use the Codex CLI or select a model for you.
+Requires macOS or Linux, Go 1.22+ to install/build, tmux, and **Pi 0.85.0**
+(the version tested here). The npm installation of Pi requires Node 22.19+.
+Install dependencies once. On macOS with [Homebrew](https://brew.sh/) already
+installed, skip any packages you already have:
 
 ```sh
-go install github.com/mcembalest/tmax@latest
+brew install go node tmux
+npm install -g --ignore-scripts @earendil-works/pi-coding-agent@0.85.0
+```
+
+On Linux, install Go, Node/npm and tmux through your preferred package manager
+(check the versions above), then use the same npm command.
+
+Log in once through Pi:
+
+```sh
+pi
+```
+
+Inside Pi, run `/login` and select **OpenAI Codex** to use your ChatGPT Plus/Pro
+subscription. Then use `/model` to choose an available model; press Ctrl+S in
+the picker to save it as the startup default. Exit Pi when finished.
+This is Pi's login flow, not the `codex login` shell command. The Codex CLI is
+not required. Other Pi providers also work; see [Pi's instructions](https://pi.dev/).
+
+Install the current rewrite directly at the tested commit, without cloning:
+
+```sh
+go install github.com/mcembalest/tmax@6eb0424
+export PATH="$(go env GOPATH)/bin:$PATH"
 tmax
 ```
 
-For the current checkout:
+Go version queries cannot contain `/`, so `@codex/pi-runtime` is not a valid
+installation command. Use the commit above, or clone the branch as shown below.
+
+Add that PATH line to your shell startup file (usually `~/.zshrc` on macOS) to
+keep it in new terminals. If you configured a custom `GOBIN`, add that directory
+instead. Launch `tmax` from the project directory you want it to work in.
+
+Alternatively, clone the review branch and install from the checkout:
 
 ```sh
+git clone --branch codex/pi-runtime https://github.com/mcembalest/tmax.git
+cd tmax
 go install .
+export PATH="$(go env GOPATH)/bin:$PATH"
 tmax
 ```
 
-While this rewrite is under review, use the checkout instructions or install
-`github.com/mcembalest/tmax@codex/pi-runtime`; `@latest` still selects `main`.
+Or build and run directly from that checkout without installing onto PATH:
 
-Go's install directory must be on PATH. Go is needed to build, not to run the
-result. Pi and tmux are separate runtime dependencies; `go install` installs
-only tmax. The TypeScript extension is embedded in the Go executable and
-extracted to a versioned file in your user cache when launched.
+```sh
+go build -o bin/tmax .
+./bin/tmax
+```
+
+While PR #1 is under review, `go install github.com/mcembalest/tmax@latest`
+still selects the old implementation on `main`. After the rewrite is merged,
+that becomes the normal installation command. A commit install stays pinned;
+choose a newer commit to update. For a checkout, pull the desired changes and
+rerun `go install .`. Pi and tmux updates are separate.
+
+Go is needed to build, not to run the result. Pi and tmux are separate runtime
+dependencies; `go install` installs only tmax. tmax does not install dependencies
+or manage your login for you. The TypeScript extension is embedded in the Go
+executable and extracted to a versioned file in your user cache when launched.
 
 ## Use
 

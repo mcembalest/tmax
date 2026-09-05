@@ -150,7 +150,7 @@ test('slash commands run directly and reject malformed input',async()=>{
   await commands.get('layout').handler('even-vertical',ctx);
   await commands.get('focus').handler(id,ctx);
   await commands.get('focus').handler('',ctx);
-  for(const [name,args] of [['resize',`${id} nope 20`],['resize',id],['close-pane',''],['swap',id],['grid','2x3'],['layout','garbage']]){
+  for(const [name,args] of [['resize',`${id} nope 20`],['resize',id],['close-pane',''],['stop',''],['stop','nope'],['stop',`${id} extra`],['stop',anchor],['stop',id],['stop','%99999'],['swap',id],['grid','2x3'],['layout','garbage']]){
     await commands.get(name).handler(args,ctx);
     assert.equal(notices.at(-1).level,'error',`${name}: ${JSON.stringify(notices.at(-1))}`);
   }
@@ -208,13 +208,16 @@ for (const terminal of ['Apple_Terminal', 'ghostty']) {
     assert.equal(await geometry(),before);
     assert.equal(await tmux('display-message','-p','-t',anchor,'#{pane_active}'),'1');
     const pid=Number(await readFile(join(dir,'display-0.pid'),'utf8'));
-    await call('pane_stop',{pane:ids[0]});
+    await commands.get('stop').handler(ids[0],ctx);
+    assert.equal(notices.at(-1).level,'info');
+    assert.match(notices.at(-1).message,/Stopped/);
     for(let i=0;i<50;i++) {
       try { const ps=await exec('ps',['-o','stat=','-p',String(pid)]); if(/^Z|^$/.test(ps.stdout.trim()))break; if(i===49)assert.fail(`display descendant ${pid} survived stop`); }
       catch(e){if(e.code===1)break;throw e;}
       await new Promise(r=>setTimeout(r,20));
     }
-    await call('pane_stop',{pane:ids[0]}); // Idempotent.
+    await commands.get('stop').handler(ids[0],ctx); // Idempotent.
+    assert.equal(notices.at(-1).level,'info');
     const failed=await call('pane_start',{pane:ids[0],command:'printf START_FAILED; exit 7'});
     assert.match(failed.content[0].text,/dead=1 exit=7/);
     assert.match(failed.content[0].text,/START_FAILED/);

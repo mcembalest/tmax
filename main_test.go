@@ -89,3 +89,93 @@ func TestLauncherStartsPiWithMouseAndOriginalDirectory(t *testing.T) {
 		})
 	}
 }
+
+func TestFirstLaunchFromTerminal(t *testing.T) {
+	if _, err := exec.LookPath("tmux"); err != nil {
+		t.Skip("tmux missing")
+	}
+	root := t.TempDir()
+	binary := filepath.Join(root, "tmax with 'quotes'")
+	if out, err := exec.Command("go", "build", "-o", binary, ".").CombinedOutput(); err != nil {
+		t.Fatalf("%s %v", out, err)
+	}
+	for _, program := range []string{"Apple_Terminal", "ghostty"} {
+		t.Run(program, func(t *testing.T) {
+			dir := t.TempDir()
+			// A short, private socket directory isolates the real -L tmax server.
+			sockets, err := os.MkdirTemp("/tmp", "tmax-launch-")
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer os.RemoveAll(sockets)
+			tmux := func(socket string, args ...string) *exec.Cmd {
+				cmd := exec.Command("tmux", append([]string{"-L", socket}, args...)...)
+				cmd.Env = append(os.Environ(), "TMUX_TMPDIR="+sockets)
+				return cmd
+			}
+			defer tmux("terminal", "kill-server").Run()
+			defer tmux("tmax", "kill-server").Run()
+			fake := `#!/bin/sh
+pwd > "$TMAX_TEST_DIR/cwd"
+printf '%s\n' "$@" > "$TMAX_TEST_DIR/args"
+printf '%s\n' "$TMUX" "$TMUX_PANE" "$TERM_PROGRAM" > "$TMAX_TEST_DIR/context"
+touch "$TMAX_TEST_DIR/ready"
+sleep 60
+`
+			if err := os.WriteFile(filepath.Join(dir, "pi"), []byte(fake), 0700); err != nil {
+				t.Fatal(err)
+			}
+			model := "model with 'quotes' $(touch should-not-exist)"
+			// The outer server supplies a real PTY. Clearing TMUX makes tmax take
+			// its ordinary first-launch path, creating and attaching its own server.
+			command := "env -u TMUX -u TMUX_PANE PATH=" + quote(dir+":"+os.Getenv("PATH")) +
+				" TERM_PROGRAM=" + quote(program) + " TMAX_TEST_DIR=" + quote(dir) +
+				" " + quote(binary) + " --resume --model " + quote(model)
+			if out, err := tmux("terminal", "-f", "/dev/null", "new-session", "-d", "-s", "terminal", "-x", "120", "-y", "40", "-c", dir, command).CombinedOutput(); err != nil {
+				t.Fatalf("start terminal: %s %v", out, err)
+			}
+			for i := 0; ; i++ {
+				if _, err := os.Stat(filepath.Join(dir, "ready")); err == nil {
+					break
+				}
+				if i == 250 {
+					out, _ := tmux("terminal", "capture-pane", "-p", "-t", "terminal").CombinedOutput()
+					t.Fatalf("Pi did not start: %s", out)
+				}
+				time.Sleep(20 * time.Millisecond)
+			}
+			args, _ := os.ReadFile(filepath.Join(dir, "args"))
+			lines := strings.Split(strings.TrimSpace(string(args)), "\n")
+			if len(lines) != 5 || lines[0] != "-e" || lines[2] != "--resume" || lines[3] != "--model" || lines[4] != model {
+				t.Fatalf("Pi arguments changed: %s", args)
+			}
+			loaded, err := os.ReadFile(lines[1])
+			if err != nil || string(loaded) != string(extension) {
+				t.Fatalf("embedded extension was not installed correctly: %v", err)
+			}
+			cwd, _ := os.ReadFile(filepath.Join(dir, "cwd"))
+			actual, _ := filepath.EvalSymlinks(strings.TrimSpace(string(cwd)))
+			expected, _ := filepath.EvalSymlinks(dir)
+			if actual != expected {
+				t.Fatalf("project directory changed: %q", actual)
+			}
+			context, _ := os.ReadFile(filepath.Join(dir, "context"))
+			fields := strings.Split(strings.TrimSpace(string(context)), "\n")
+			// tmux identifies itself as TERM_PROGRAM inside the newly created pane.
+			if len(fields) != 3 || !strings.Contains(fields[0], "/tmax,") || fields[2] != "tmux" {
+				t.Fatalf("Pi did not inherit its new workspace: %s", context)
+			}
+			out, err := tmux("tmax", "show-options", "-v", "-t", fields[1], "mouse").CombinedOutput()
+			if err != nil || strings.TrimSpace(string(out)) != "on" {
+				t.Fatalf("mouse not enabled: %s %v", out, err)
+			}
+			out, err = tmux("tmax", "list-clients", "-F", "#{client_session}").CombinedOutput()
+			if err != nil || !strings.HasPrefix(strings.TrimSpace(string(out)), "tmax-") {
+				t.Fatalf("terminal did not attach to tmax: %s %v", out, err)
+			}
+			if _, err := os.Stat(filepath.Join(dir, "should-not-exist")); !os.IsNotExist(err) {
+				t.Fatal("model argument was interpreted by the shell")
+			}
+		})
+	}
+}

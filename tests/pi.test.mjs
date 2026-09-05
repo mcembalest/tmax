@@ -41,6 +41,7 @@ test('Pi loads extension and keeps one session across requests', {timeout:120000
     const commands=await request('get_commands');
     assert.ok(commands.commands.some(c=>c.name==='shell'));
     assert.ok(commands.commands.some(c=>c.name==='grid'));
+    assert.ok(commands.commands.some(c=>c.name==='stop'));
     if(process.env.TMAX_LIVE){
       if(process.env.TMAX_BENCH){
         const done=new Promise(r=>finished=r),start=performance.now();

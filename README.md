@@ -98,6 +98,7 @@ Instant commands (no model call):
 | `/swap %3 %4` | Swap two pane positions. |
 | `/zoom %3`, `/unzoom` | Expand a pane, or restore the window. |
 | `/close-pane %3` | Close that pane and its process; cannot close this agent. |
+| `/stop %3` | Stop a managed display immediately, keeping its pane and layout. No model call. |
 
 Grid creation preserves existing processes and focus, and refuses to remove
 extra panes. If the window is too small, it reports partial progress so the
@@ -171,6 +172,11 @@ go test -race ./...
 go vet ./...
 node --test tests/*.test.mjs
 ```
+
+Go launcher tests cover both an existing tmux pane and a first launch through
+a real PTY into a separate tmux server. They check attachment, project directory,
+argument quoting, mouse configuration and embedded extension loading with a
+stub Pi executable; the Node suite separately checks loading in real Pi.
 
 Extension tests require the npm installation of Pi (including its bundled jiti
 and typebox dependencies), Node, and tmux. They create disposable tmux servers

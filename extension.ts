@@ -290,6 +290,7 @@ export default function (pi: ExtensionAPI) {
     ["zoom", "pane_zoom", "Zoom a pane: /zoom %3 (empty zooms agent)", (a: string[]) => ({ pane: a[0], enabled: true })],
     ["unzoom", "pane_zoom", "Restore the full window", () => ({ enabled: false })],
     ["close-pane", "pane_close", "Close a pane and its process: /close-pane %3", (a: string[]) => ({ pane: a[0] })],
+    ["stop", "pane_stop", "Stop a display without closing its pane: /stop %3", (a: string[]) => ({ pane: a[0] })],
     ["title", "pane_title", "Title a pane: /title %3 test output", (a: string[]) => ({ pane: a[0], title: a.slice(1).join(" ") })],
     ["swap", "pane_swap", "Swap positions: /swap %3 %4", (a: string[]) => ({ first: a[0], second: a[1] })],
     ["resize", "pane_resize", "Set size in cells: /resize %3 80 24", (a: string[]) => ({ pane: a[0], width: Number(a[1]), height: Number(a[2]) })],
@@ -297,7 +298,8 @@ export default function (pi: ExtensionAPI) {
     pi.registerCommand(name, { description, handler: async (args, ctx) => {
       try {
         const words = args.trim() ? args.trim().split(/\s+/) : [];
-        if (["close-pane", "title", "swap", "resize"].includes(name) && !/^%\d+$/.test(words[0] ?? "")) throw new Error(description);
+        if (["close-pane", "stop", "title", "swap", "resize"].includes(name) && !/^%\d+$/.test(words[0] ?? "")) throw new Error(description);
+        if (name === "stop" && words.length !== 1) throw new Error(description);
         if (name === "swap" && !/^%\d+$/.test(words[1] ?? "")) throw new Error(description);
         if (name === "resize" && (words.length !== 3 || !words.slice(1).every(s => /^\d+$/.test(s) && Number(s) >= 2))) throw new Error(description);
         ctx.ui.notify(await controls.get(tool)!(parse(words), ctx), "info");

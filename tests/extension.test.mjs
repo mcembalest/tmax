@@ -239,3 +239,21 @@ for (const terminal of ['Apple_Terminal', 'ghostty']) {
     await resetPanes();
   });
 }
+
+test('login guidance uses Pi UI only for an unconfigured, empty interactive session', async () => {
+  for (const [mode, models, initial, expected] of [
+    ['tui', [], '', '/login'],
+    ['tui', [{}], '', ''],
+    ['tui', [], 'draft prompt', 'draft prompt'],
+    ['rpc', [], '', ''],
+  ]) {
+    let editor = initial;
+    const messages = [];
+    await events.get('session_start')({}, {
+      mode, modelRegistry: {getAvailable: () => models},
+      ui: {getEditorText: () => editor, setEditorText: value => editor = value, notify: message => messages.push(message)},
+    });
+    assert.equal(editor, expected);
+    assert.equal(messages.length, expected === '/login' ? 1 : 0);
+  }
+});

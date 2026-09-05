@@ -2,17 +2,25 @@
 
 ## Install
 
-macOS / Linux · Go 1.22+ · tmux · Pi 0.85.0 · Node 22.19+ for npm installation
-
-macOS dependencies ([Homebrew](https://brew.sh/)):
+macOS / Linux · Go 1.22+
 
 ```sh
-brew install go node tmux
-npm install -g --ignore-scripts @earendil-works/pi-coding-agent@0.85.0
-pi
+go install github.com/mcembalest/tmax@latest
+export PATH="$(go env GOPATH)/bin:$PATH"
+cd /path/to/project
+tmax
 ```
 
-Linux: Go, Node/npm, tmux from package manager; same Pi installation command.
+PATH: persist in shell startup file; custom `GOBIN` takes precedence over `GOPATH/bin`.
+
+| First launch | Action |
+| --- | --- |
+| Missing tmux / Node | Homebrew install; commands shown; confirmation required |
+| Missing Pi | npm install of Pi 0.85.0; confirmation required |
+| Dependencies present | Direct launch; existing installations preserved |
+| No configured provider | Pi editor prefilled with `/login`; Enter opens login |
+| No Homebrew | Manual setup instructions; [Homebrew](https://brew.sh/) or system package manager |
+| Non-interactive launch | Missing dependencies reported; no installation |
 
 Pi setup:
 
@@ -23,15 +31,15 @@ Pi setup:
 
 Authentication: Pi-managed · Codex CLI not required · [Other providers](https://pi.dev/)
 
+Manual dependencies: tmux · Node 22.19+/npm · Pi 0.85.0
+
 ```sh
-go install github.com/mcembalest/tmax@latest
-export PATH="$(go env GOPATH)/bin:$PATH"
-cd /path/to/project
-tmax
+brew install node tmux
+npm install -g --ignore-scripts @earendil-works/pi-coding-agent@0.85.0
 ```
 
-PATH: persist in shell startup file; custom `GOBIN` takes precedence over `GOPATH/bin`.
-Updates: rerun install command. Pi/tmux installed and updated separately.
+Linux without Homebrew: tmux and Node/npm from package manager; same Pi install command.
+Updates: rerun tmax install command; Pi/tmux updates remain separate.
 
 ## Reference
 
@@ -112,6 +120,7 @@ Checkout installation: `go install .`
 | Path | Contents |
 | --- | --- |
 | `main.go` | Go launcher; embedded extension; versioned user cache |
+| `setup.go` | Dependency checks, install confirmation, installer commands |
 | `extension.ts` | Pi tools and slash commands |
 | `main_test.go` | Launcher regression tests |
 | `tests/extension.test.mjs` | Real tmux tool tests; local benchmarks |
@@ -131,6 +140,7 @@ TMAX_BENCH=1 node --test tests/extension.test.mjs
 | Area | Checks |
 | --- | --- |
 | Launch | Existing tmux / first launch through real PTY; stub Pi; attachment, cwd, quoting, mouse, embedded extension |
+| Setup | Missing dependencies, consent, failures, Node version, repeat launch; stub installers; reused tmux PATH; Pi login guidance |
 | Workspace | Grids, geometry, focus, resize, swap, zoom, titles, closure, malformed commands |
 | Processes | Output, exit status, cancellation, descendants, read-only / interactive input |
 | Displays | Three updating displays in four existing panes; inspect, stop, replace, startup failure; layout preserved |

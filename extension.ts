@@ -20,10 +20,14 @@ export default function (pi: ExtensionAPI) {
     }
   }
   pi.on("session_shutdown", clearOutput);
-  pi.on("session_start", async () => {
+  pi.on("session_start", async (_event, ctx) => {
     await tmux("set-option", "-p", "-t", anchor, "@tmax_role", "agent");
     await tmux("set-option", "-w", "-t", anchor, "pane-border-status", "top");
     await tmux("set-option", "-w", "-t", anchor, "pane-border-format", " #{pane_id} #{pane_title} ");
+    if (ctx?.mode === "tui" && ctx.modelRegistry.getAvailable().length === 0 && !ctx.ui.getEditorText()) {
+      ctx.ui.setEditorText("/login");
+      ctx.ui.notify("Press Enter to sign in through Pi. Then /model to choose a model; Ctrl+S saves the default.", "info");
+    }
   });
 
   async function tmux(...args: string[]) {

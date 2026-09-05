@@ -34,10 +34,8 @@ func run(args []string) error {
 		fmt.Println("Usage: tmax [Pi options]\n\nLaunch Pi with multiplexing tools. Requires pi and tmux.\nPi options pass through, for example: tmax --resume or tmax --model ...\nClick panes to focus; Ctrl-B then D detaches; tmux -L tmax attach reconnects.")
 		return nil
 	}
-	for _, name := range []string{"pi", "tmux"} {
-		if _, err := exec.LookPath(name); err != nil {
-			return fmt.Errorf("%s is missing; install it first (see README)", name)
-		}
+	if err := ensureDependencies(); err != nil {
+		return err
 	}
 	binary, err := os.Executable()
 	if err != nil {
@@ -50,7 +48,8 @@ func run(args []string) error {
 		if err != nil {
 			return err
 		}
-		command := quote(binary) + " _pi"
+		// A reused tmux server may have an older PATH than this launch/setup.
+		command := "env PATH=" + quote(os.Getenv("PATH")) + " " + quote(binary) + " _pi"
 		for _, arg := range args {
 			command += " " + quote(arg)
 		}

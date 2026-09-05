@@ -20,7 +20,7 @@ const tmux = async (...args) => (await exec('tmux', ['-L', socket, ...args])).st
 const anchor = await tmux('-f', '/dev/null', 'new-session', '-d', '-P', '-F', '#{pane_id}', '-x', '240', '-y', '80', '-c', dir);
 process.env.TMUX_PANE = anchor;
 const tools = new Map(), commands = new Map(), events = new Map();
-extension({
+const pi = {
   on: (name, handler) => events.set(name, handler),
   registerTool: t => tools.set(t.name, t),
   registerCommand: (n, c) => commands.set(n, c),
@@ -29,7 +29,8 @@ extension({
     try { const r = await exec(cmd, ['-L', socket, ...args]); return { ...r, code: 0 }; }
     catch (e) { return { stdout: e.stdout, stderr: e.stderr, code: e.code }; }
   },
-});
+};
+extension(pi);
 const notices = [];
 const ctx = { cwd: dir, isIdle: () => true, ui: { notify: (message, level) => notices.push({message,level}) }, sessionManager: { getSessionFile: () => undefined } };
 const call = (name, args = {}, signal) => tools.get(name).execute('test', args, signal, undefined, ctx);
@@ -42,6 +43,8 @@ for (const terminal of ['Apple_Terminal', 'ghostty']) {
     assert.match(r.content[0].text, /hello from job/);
     assert.match(r.content[0].text, /exit 7/);
     const outputPane = r.content[0].text.match(/Pane (%\d+)/)[1];
+    assert.equal(await tmux('display-message','-p','-t',outputPane,'#{pane_dead} #{pane_dead_status}'), '1 7');
+    assert.match((await call('pane_read',{pane:outputPane})).content[0].text, /hello from job/);
     assert.equal(await tmux('display-message','-p','-t',outputPane,'#{pane_input_off}'), '1');
     assert.equal(await tmux('display-message','-p','-t',anchor,'#{pane_active}'), '1');
     const shell = (await call('pane_shell')).content[0].text.match(/(%\d+)/)[1];
@@ -218,6 +221,7 @@ for (const terminal of ['Apple_Terminal', 'ghostty']) {
     }
     await commands.get('stop').handler(ids[0],ctx); // Idempotent.
     assert.equal(notices.at(-1).level,'info');
+    assert.match((await call('pane_read',{pane:ids[0]})).content[0].text,/READY 0/,'stopping must preserve visible output');
     const failed=await call('pane_start',{pane:ids[0],command:'printf START_FAILED; exit 7'});
     assert.match(failed.content[0].text,/dead=1 exit=7/);
     assert.match(failed.content[0].text,/START_FAILED/);
@@ -256,4 +260,61 @@ test('login guidance uses Pi UI only for an unconfigured, empty interactive sess
     assert.equal(editor, expected);
     assert.equal(messages.length, expected === '/login' ? 1 : 0);
   }
+});
+
+for (const terminal of ['Apple_Terminal', 'ghostty']) {
+  test(`${terminal}: stop output work, preserve results across reload, and clear owned panes`, async () => {
+    process.env.TERM_PROGRAM = terminal;
+    await resetPanes();
+    let opened;
+    const ready = new Promise(resolve => { opened = resolve; });
+    const pending = tools.get('pane_run').execute('stop-test',
+      {command:'printf KEEP_THIS; sleep 60'}, undefined,
+      update => opened(update.content[0].text.match(/pane (%\d+)/)[1]), ctx);
+    const id = await ready;
+    await commands.get('stop').handler(id,ctx);
+    assert.equal(notices.at(-1).level,'info');
+    await pending;
+    await call('pane_stop',{pane:id});
+    assert.match((await call('pane_read',{pane:id})).content[0].text,/KEEP_THIS/);
+    assert.equal(await tmux('display-message','-p','-t',id,'#{pane_dead}'),'1');
+    // Reload must retain both kinds of output and rediscover ownership without JS state.
+    const display = (await call('pane_shell')).content[0].text.match(/(%\d+)/)[1];
+    await call('pane_start',{pane:display,command:'printf DISPLAY; sleep 60',replace:true});
+    await events.get('session_shutdown')?.({},ctx);
+    tools.clear(); commands.clear(); events.clear();
+    extension(pi);
+    await events.get('session_start')({},ctx);
+    assert.match((await call('pane_read',{pane:id})).content[0].text,/KEEP_THIS/);
+    assert.match((await call('pane_read',{pane:display})).content[0].text,/DISPLAY/);
+    await commands.get('clear-output').handler('',ctx);
+    await assert.rejects(call('pane_read',{pane:id}),/not in this window/);
+    await call('pane_stop',{pane:display});
+    await resetPanes();
+  });
+}
+
+test('finite job timeout retains output and a dead pane', async () => {
+  const result = await call('pane_run',{command:'printf BEFORE_TIMEOUT; sleep 60',timeoutSeconds:1});
+  assert.match(result.content[0].text,/timed out/);
+  assert.match(result.content[0].text,/BEFORE_TIMEOUT/);
+  const id = result.content[0].text.match(/Pane (%\d+)/)[1];
+  assert.equal(await tmux('display-message','-p','-t',id,'#{pane_dead}'),'1');
+  await commands.get('clear-output').handler('',ctx);
+});
+
+test('closing a running output pane stops its job and completes the tool', async () => {
+  let opened;
+  const ready = new Promise(resolve => { opened = resolve; });
+  const pending = tools.get('pane_run').execute('close-test',
+    {command:'sleep 60'}, undefined,
+    update => opened(update.content[0].text.match(/pane (%\d+)/)[1]), ctx);
+  const id = await ready;
+  const pid = await tmux('display-message','-p','-t',id,'#{pane_pid}');
+  await call('pane_close',{pane:id});
+  assert.match((await pending).content[0].text,/closed; job stopped/);
+  try {
+    const result = await exec('ps',['-o','stat=','-p',pid]);
+    assert.match(result.stdout.trim(),/^Z|^$/);
+  } catch (error) { if (error.code !== 1) throw error; }
 });

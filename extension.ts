@@ -1,25 +1,20 @@
 // Pi owns the agent. This extension only adds terminal workspace tools.
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { Type } from "typebox";
-import { spawn } from "node:child_process";
-import { mkdtemp, open, appendFile, rm } from "node:fs/promises";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
 
 export default function (pi: ExtensionAPI) {
   const anchor = process.env.TMUX_PANE!;
   const quote = (s: string) => "'" + s.replaceAll("'", "'\"'\"'") + "'";
   const text = (value: string) => ({ content: [{ type: "text" as const, text: value }], details: {} });
-  const outputPanes = new Map<string, string>();
-  const running = new Set<string>();
   async function clearOutput() {
-    for (const [id, dir] of outputPanes) {
-      await tmux("kill-pane", "-t", id).catch(() => {});
-      await rm(dir, { recursive: true, force: true });
-      outputPanes.delete(id);
+    for (const id of await peers()) {
+      const owner = await tmux("show-options", "-pv", "-t", id, "@tmax_output_owner").catch(() => "");
+      if (owner === anchor) {
+        await stop(id);
+        await tmux("kill-pane", "-t", id);
+      }
     }
   }
-  pi.on("session_shutdown", clearOutput);
   pi.on("session_start", async (_event, ctx) => {
     await tmux("set-option", "-p", "-t", anchor, "@tmax_role", "agent");
     await tmux("set-option", "-w", "-t", anchor, "pane-border-status", "top");
@@ -65,7 +60,7 @@ export default function (pi: ExtensionAPI) {
   }
   async function pane(cwd: string, title: string, command?: string, direction = "right", at = anchor) {
     await target(at);
-    const id = await tmux("split-window", "-d", "-P", "-F", "#{pane_id}", direction === "below" ? "-v" : "-h", "-t", at, "-c", cwd, ...(command ? [command] : []));
+    const id = await tmux("split-window", "-d", "-P", "-F", "#{pane_id}", direction === "below" ? "-v" : "-h", "-t", at, "-c", cwd, ...(command === undefined ? [] : [command]));
     await tmux("select-pane", "-t", id, "-T", title);
     await tmux("set-option", "-p", "-t", id, "@tmax_role", title);
     return id;
@@ -134,14 +129,13 @@ export default function (pi: ExtensionAPI) {
       if (a.enabled) await tmux("resize-pane", "-Z", "-t", id);
       return snapshot();
     });
-  control("pane_close", "Close an explicitly requested pane, terminating its process. Cannot close this agent or a running output job. Never use just to make room.",
+  control("pane_close", "Close an explicitly requested pane, terminating its process. Cannot close this agent. Never use just to make room.",
     { pane: paneId }, async a => {
       const id = await target(a.pane);
       if (id === anchor) throw new Error("Cannot close this agent pane");
-      if (running.has(id)) throw new Error("Cancel the running job before closing its pane");
+      const role = await tmux("show-options", "-pv", "-t", id, "@tmax_role").catch(() => "");
+      if (["display", "output", "stopped"].includes(role)) await stop(id);
       await tmux("kill-pane", "-t", id);
-      const dir = outputPanes.get(id);
-      if (dir) { await rm(dir, { recursive: true, force: true }); outputPanes.delete(id); }
       return snapshot();
     });
 
@@ -177,76 +171,70 @@ export default function (pi: ExtensionAPI) {
       return text(await inspect(id));
     },
   });
-  control("pane_stop", "Stop a managed display in place, preserving the pane and layout; returns the last output. Uses tmux process termination; deliberately detached daemons are outside pane ownership. Does not stop user shells or agents.",
-    { pane: paneId }, async a => {
-      const id = await target(a.pane);
-      const role = await tmux("show-options", "-pv", "-t", id, "@tmax_role").catch(() => "");
-      if (id === anchor || !["display", "stopped"].includes(role)) throw new Error("Can only stop a managed display");
-      const output = await tmux("capture-pane", "-p", "-t", id, "-S", "-100");
-      await tmux("respawn-pane", "-k", "-t", id, "/bin/sh", "-c", "exit 0");
-      await tmux("set-option", "-p", "-t", id, "@tmax_role", "stopped");
-      return `Stopped ${id}; pane retained. Last output:\n${output}`;
-    });
+  // Kill the pane's process group without respawning: tmux retains the screen.
+  function kill(pid: number) {
+    if (!Number.isSafeInteger(pid) || pid <= 1) throw new Error("Invalid pane process ID");
+    try { process.kill(-pid, "SIGKILL"); }
+    catch (error) { if ((error as NodeJS.ErrnoException).code !== "ESRCH") throw error; }
+  }
+  async function stop(id: string) {
+    const role = await tmux("show-options", "-pv", "-t", id, "@tmax_role").catch(() => "");
+    if (id === anchor || !["display", "output", "stopped"].includes(role)) throw new Error("Can only stop a managed display or output pane");
+    const state = await tmux("display-message", "-p", "-t", id, "#{pane_dead} #{pane_pid}");
+    if (state.startsWith("0 ")) kill(Number(state.split(" ")[1]));
+    if (role !== "output") await tmux("set-option", "-p", "-t", id, "@tmax_role", "stopped");
+    return "Stopped " + id + "; pane and output retained.\n" + await inspect(id);
+  }
+  control("pane_stop", "Stop a managed display or output job, preserving its visible output and layout. Repeating is safe. Deliberately detached daemons are outside pane ownership. Does not stop user shells or agents.",
+    { pane: paneId }, async a => stop(await target(a.pane)));
 
   async function inspect(id: string) {
-    return await tmux("display-message", "-p", "-t", id, "Pane #{pane_id}: dead=#{pane_dead} exit=#{pane_dead_status} input_off=#{pane_input_off}") +
+    return await tmux("display-message", "-p", "-t", id, "Pane #{pane_id}: dead=#{pane_dead} exit=#{pane_dead_status} signal=#{pane_dead_signal} input_off=#{pane_input_off}") +
       "\n" + await tmux("capture-pane", "-p", "-t", id, "-S", "-100");
   }
 
   pi.registerTool({
     name: "pane_run", label: "Run in output pane",
-    description: "Run a finite shell command and show live output in a new read-only pane. Returns output and exit status to this same agent turn. User can click, scroll and copy, but not type into the job. Uses local user permissions, not a sandbox. Use for work worth showing; use bash for ordinary short commands. Not for servers or interactive programs.",
+    description: "Run a finite shell command in a new read-only terminal pane. Returns the last 100 displayed lines and exit status to this same agent turn. User can click, scroll and copy, but not type into the job. Stop with pane_stop. Uses local user permissions, not a sandbox. Use for work worth showing; use bash for ordinary short commands or full raw output. Not for servers or interactive programs.",
     parameters: Type.Object({
       command: Type.String(),
       timeoutSeconds: Type.Optional(Type.Number({ minimum: 1, maximum: 600 })),
     }),
     async execute(_id, params, signal, onUpdate, ctx) {
       if (signal?.aborted) throw new Error("Canceled");
-      const dir = await mkdtemp(join(tmpdir(), "tmax-"));
-      const log = join(dir, "output");
-      let id: string | undefined;
-      let handle;
+      const id = await pane(ctx.cwd, "output", "");
+      let pid = 0;
+      let canceled = false;
+      let timedOut = false;
+      const abort = () => { canceled = true; if (pid) kill(pid); };
+      let timer: ReturnType<typeof setTimeout> | undefined;
       try {
-        handle = await open(log, "w+", 0o600);
-        await handle.write(`$ ${params.command}\n\n`);
-        id = await pane(ctx.cwd, "output", `exec tail -n +1 -f ${quote(log)}`);
-        await tmux("select-pane", "-t", id, "-d"); // Disable process input, not focus or copy mode.
-        outputPanes.set(id, dir);
-        onUpdate?.(text(`Running in pane ${id}.`));
-        const child = spawn("/bin/sh", ["-c", params.command], {
-          cwd: ctx.cwd, detached: true, stdio: ["ignore", handle.fd, handle.fd],
-        });
-        running.add(id);
-        let canceled = false;
-        let timedOut = false;
-        const kill = () => { if (child.pid) { try { process.kill(-child.pid, "SIGKILL"); } catch {} } };
-        const abort = () => { canceled = true; kill(); };
+        await tmux("set-option", "-p", "-t", id, "remain-on-exit", "on");
+        await tmux("set-option", "-p", "-t", id, "@tmax_output_owner", anchor);
+        await tmux("select-pane", "-t", id, "-d");
+        await tmux("respawn-pane", "-k", "-t", id, "-c", ctx.cwd, "/bin/sh", "-c", params.command);
+        pid = Number(await tmux("display-message", "-p", "-t", id, "#{pane_pid}"));
+        onUpdate?.(text("Running in pane " + id + "."));
         signal?.addEventListener("abort", abort, { once: true });
-        const timer = setTimeout(() => { timedOut = true; kill(); }, (params.timeoutSeconds ?? 120) * 1000);
-        let code: number | null;
-        try {
-          code = await new Promise<number | null>((resolve, reject) => {
-            child.once("error", reject);
-            child.once("close", resolve);
-            if (signal?.aborted) abort();
-          });
-        } finally {
-          running.delete(id);
-          clearTimeout(timer);
-          signal?.removeEventListener("abort", abort);
-          kill(); // Finite jobs must not leave background descendants running.
+        timer = setTimeout(() => { timedOut = true; kill(pid); }, (params.timeoutSeconds ?? 120) * 1000);
+        if (signal?.aborted) abort();
+        for (;;) {
+          const dead = await tmux("display-message", "-p", "-t", id, "#{pane_dead}");
+          if (dead === "1") break;
+          if (dead !== "0") throw new Error("Pane is no longer available");
+          await new Promise(resolve => setTimeout(resolve, 100));
         }
-        const status = canceled ? "canceled" : timedOut ? "timed out" : `exit ${code}`;
-        await appendFile(log, `\n[${status}]\n`);
-        const size = (await handle.stat()).size;
-        const buffer = Buffer.alloc(Math.min(size, 32000));
-        await handle.read(buffer, 0, buffer.length, Math.max(0, size - buffer.length));
-        return text(`Pane ${id}: ${status}\n${size > buffer.length ? "[earlier output omitted]\n" : ""}${buffer.toString()}`);
+        const status = canceled ? "canceled" : timedOut ? "timed out" :
+          await tmux("display-message", "-p", "-t", id, "exit #{pane_dead_status} signal #{pane_dead_signal}");
+        return text("Pane " + id + ": " + status + "\n" + await inspect(id));
       } catch (error) {
-        if (id) { await tmux("kill-pane", "-t", id).catch(() => {}); outputPanes.delete(id); }
-        await rm(dir, { recursive: true, force: true });
+        if (!(await peers()).includes(id)) return text(`Pane ${id} was closed; job stopped.`);
         throw error;
-      } finally { await handle?.close(); }
+      } finally {
+        clearTimeout(timer);
+        signal?.removeEventListener("abort", abort);
+        if (pid) kill(pid); // Finite jobs must not leave background descendants running.
+      }
     },
   });
 
@@ -294,7 +282,7 @@ export default function (pi: ExtensionAPI) {
     ["zoom", "pane_zoom", "Zoom a pane: /zoom %3 (empty zooms agent)", (a: string[]) => ({ pane: a[0], enabled: true })],
     ["unzoom", "pane_zoom", "Restore the full window", () => ({ enabled: false })],
     ["close-pane", "pane_close", "Close a pane and its process: /close-pane %3", (a: string[]) => ({ pane: a[0] })],
-    ["stop", "pane_stop", "Stop a display without closing its pane: /stop %3", (a: string[]) => ({ pane: a[0] })],
+    ["stop", "pane_stop", "Stop work and keep its output: /stop %3", (a: string[]) => ({ pane: a[0] })],
     ["title", "pane_title", "Title a pane: /title %3 test output", (a: string[]) => ({ pane: a[0], title: a.slice(1).join(" ") })],
     ["swap", "pane_swap", "Swap positions: /swap %3 %4", (a: string[]) => ({ first: a[0], second: a[1] })],
     ["resize", "pane_resize", "Set size in cells: /resize %3 80 24", (a: string[]) => ({ pane: a[0], width: Number(a[1]), height: Number(a[2]) })],
@@ -311,7 +299,7 @@ export default function (pi: ExtensionAPI) {
     } });
   }
   pi.registerCommand("clear-output", {
-    description: "Close this agent's output panes and remove their logs",
+    description: "Close this agent's output panes",
     handler: async (_args, ctx) => {
       if (!ctx.isIdle()) throw new Error("Wait for the current turn or cancel it first");
       await clearOutput();

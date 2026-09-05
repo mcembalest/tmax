@@ -1,0 +1,58 @@
+// Real Pi protocol check; optional live model check uses the same long-lived process.
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { spawn, execFile } from 'node:child_process';
+import { promisify } from 'node:util';
+import { resolve } from 'node:path';
+const exec = promisify(execFile);
+
+test('Pi loads extension and keeps one session across requests', {timeout:120000}, async () => {
+  const socket=`tmax-pi-test-${process.pid}`;
+  const tmux=async(...a)=>(await exec('tmux',['-L',socket,...a])).stdout.trim();
+  const pane=await tmux('-f','/dev/null','new-session','-d','-P','-F','#{pane_id}','-x','240','-y','80');
+  const connection=await tmux('display-message','-p','-t',pane,'#{socket_path},#{pid},0');
+  const args=['--mode','rpc','--no-session','--no-extensions','--no-context-files','--offline','-e',resolve('extension.ts')];
+  if(process.env.TMAX_LIVE)args.push('--provider','openai-codex','--model','gpt-5.4-mini');
+  const child=spawn('pi',args,{env:{...process.env,TMUX:connection,TMUX_PANE:pane},stdio:['pipe','pipe','pipe']});
+  let buffer='', errors='', next=0;
+  const pending=new Map();
+  let finished;
+  const messages=[];
+  child.stderr.on('data',d=>errors+=d);
+  child.stdout.on('data',d=>{
+    buffer+=d;
+    while(buffer.includes('\n')){
+      const at=buffer.indexOf('\n'), line=buffer.slice(0,at);buffer=buffer.slice(at+1);
+      let event;try{event=JSON.parse(line);}catch{continue;}
+      if(event.type==='response' && pending.has(event.id)){
+        const p=pending.get(event.id);pending.delete(event.id);
+        event.success?p.resolve(event.data):p.reject(new Error(JSON.stringify(event)));
+      }
+      if(event.type==='message_end')messages.push(event.message);
+      if(event.type==='agent_end')finished?.();
+    }
+  });
+  const request=(type,extra={})=>new Promise((resolve,reject)=>{
+    const id=String(++next);pending.set(id,{resolve,reject});child.stdin.write(JSON.stringify({id,type,...extra})+'\n');
+  });
+  child.on('exit',code=>{for(const p of pending.values())p.reject(new Error(`Pi exited ${code}: ${errors}`));});
+  try{
+    const before=await request('get_state');
+    const commands=await request('get_commands');
+    assert.ok(commands.commands.some(c=>c.name==='shell'));
+    if(process.env.TMAX_LIVE){
+      for(const message of ['Use pane_run to execute exactly printf TMAX_JOB_OK. Then report its output and exit code. Do not use bash or other tools.', 'What exact text did that previous command print? Do not run anything again.']){
+        const done=new Promise(r=>finished=r);
+        await request('prompt',{message});await done;
+      }
+      assert.ok(messages.some(m=>m.role==='toolResult' && m.toolName==='pane_run' && JSON.stringify(m).includes('TMAX_JOB_OK')));
+      assert.ok(JSON.stringify(messages.at(-1)).includes('TMAX_JOB_OK'));
+    }
+    const after=await request('get_state');
+    assert.equal(before.sessionId,after.sessionId);
+    assert.ok(!errors.includes('Failed to load extension'),errors);
+  }finally{
+    child.kill('SIGTERM');
+    await tmux('kill-server').catch(()=>{});
+  }
+});

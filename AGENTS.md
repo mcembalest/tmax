@@ -5,6 +5,10 @@
 - If Python tooling is ever needed, use uv for setup, dependencies, and execution.
   Do not use bare interpreter commands or pip workflows.
 - Keep the implementation extremely small and modular. Avoid speculative abstractions.
+- Reuse Pi's interactive UI, sessions, and agent runtime. Keep Go limited to the
+  launcher and TypeScript limited to the Pi extension. Do not rebuild an agent loop.
+- Test the extension with `node --test tests/*.test.mjs` using Pi's installed
+  dependencies. The optional live check is `TMAX_LIVE=1 node --test tests/pi.test.mjs`.
 - Character, personality, and visual design are the user's decisions.
 - Apple Terminal and Ghostty must have equivalent behavior. Preserve the active
   project directory on launch. Keep automated coverage for both

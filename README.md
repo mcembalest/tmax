@@ -4,15 +4,21 @@ A small Go terminal agent and tmux workspace. No character or visual style is
 specified yet. Runs inside Apple Terminal or Ghostty; JaDE can launch the same
 executable in either terminal, with the active project as its working directory.
 
-## Build and run
+## Install and run
 
 Requires Go 1.22+ to build, plus tmux and a signed-in Codex CLI on PATH.
 The executable itself does not require Go or Python to run.
 
 ```sh
-go build -o bin/tmax .
-./bin/tmax
+go install github.com/mcembalest/tmax@latest
+tmax
 ```
+
+Ensure your Go install directory (`go env GOBIN`, or `$(go env GOPATH)/bin`
+when GOBIN is empty) is on PATH.
+
+To install changes from this checkout, run `go install .`. To keep a build
+inside the repo instead, run `go build -o bin/tmax .` and `./bin/tmax`.
 
 Try `hello`, then `open a shell pane to the right`.
 Use `/split` or `/split below` to open a shell without a model call.
@@ -32,7 +38,7 @@ tmax runs chat in the current pane instead of nesting tmux.
 
 ## JaDE
 
-For this checkout, launch `/Users/maxcembalest/Desktop/repos/tmax/bin/tmax` inside
+On this machine, launch `/Users/maxcembalest/go/bin/tmax` inside
 Terminal or Ghostty, with the working directory set to the active project.
 Both `tmux` and `codex` must be on that terminal's PATH. No JaDE code is changed
 in this repo. Build to a stable path before using it as a launcher target.

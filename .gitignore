@@ -1,0 +1,7 @@
+/bin/
+.venv/
+__pycache__/
+*.egg-info/
+.env
+.env.*
+!.env.example

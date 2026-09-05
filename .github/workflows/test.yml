@@ -1,0 +1,17 @@
+name: Tests
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: false
+      - run: sudo apt-get update && sudo apt-get install -y tmux
+      - run: go test -race ./...
+      - run: go vet ./...
+      - run: go build -o bin/tmax .

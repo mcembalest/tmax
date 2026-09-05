@@ -42,9 +42,29 @@ Each Pi process retains its session across messages. Pi saves sessions for resum
 
 Try:
 
+- “Make a 2×2 grid.” One workspace tool call, without source-code investigation.
 - “Run this repo's tests in a visible output pane and explain the result.”
 - “Open a shell for me.” Or use `/shell` directly.
 - “Fork an agent into another pane to review the README.”
+
+Instant commands (no model call):
+
+| Command | Action |
+| --- | --- |
+| `/grid 2x2` | Fill to four total panes and tile them. `/grid 6` fills to six. |
+| `/panes` | Show pane IDs, positions, sizes, input state and focus. |
+| `/layout tiled` | Rearrange existing panes. Also: `even-horizontal`, `even-vertical`, `main-horizontal`, `main-vertical`. |
+| `/focus %3` | Focus a pane. `/focus` returns to the agent. |
+| `/resize %3 80 24` | Request width and height in terminal cells. |
+| `/title %3 logs` | Set a pane title. |
+| `/swap %3 %4` | Swap two pane positions. |
+| `/zoom %3`, `/unzoom` | Expand a pane, or restore the window. |
+| `/close-pane %3` | Close that pane and its process; cannot close this agent. |
+
+Grid creation preserves existing processes and focus, and refuses to remove
+extra panes. If the window is too small, it reports partial progress so the
+agent can inspect the actual state. Natural-language requests still need model
+inference; tmax does not change your selected model or thinking setting.
 
 Click panes to focus. Ctrl-B then an arrow also switches panes. Mouse wheel
 scrolling uses tmux copy mode; clipboard shortcuts depend on your terminal.
@@ -55,6 +75,10 @@ Tools added to Pi:
 
 | Tool | Behavior |
 | --- | --- |
+| `pane_grid`, `pane_layout` | Create a tiled grid in one call, or rearrange existing panes. |
+| `pane_list` | Inspect pane IDs and current geometry. |
+| `pane_focus`, `pane_resize`, `pane_title`, `pane_swap`, `pane_zoom` | Direct workspace controls. |
+| `pane_close` | Close a requested pane, with current-window and agent-pane checks. |
 | `pane_shell` | Open your interactive shell without taking focus. |
 | `pane_run` | Run a finite command, show live output, return output and exit status during the same agent turn. |
 | `pane_read` | Read recent visible text from a pane in the same window. |
@@ -104,6 +128,26 @@ Optional live check: `TMAX_LIVE=1 node --test tests/pi.test.mjs`. This uses Pi's
 OpenAI Codex provider with `gpt-5.4-mini` for two messages in one process, checking
 that a visible command's output reaches the agent and survives into the next turn.
 It requires that provider to be signed in and uses model quota.
+
+Benchmarks:
+
+```sh
+TMAX_BENCH=1 node --test tests/extension.test.mjs
+TMAX_LIVE=1 TMAX_BENCH=1 TMAX_TEST_MODEL=gpt-5.6-luna node --test tests/pi.test.mjs
+```
+
+The first measures ten fresh 2×2 grid creations and enforces a generous 2-second
+local-action regression budget. CI runs it on every push and PR and uploads the
+timing samples. Set `TMAX_BENCH_OUTPUT` to save the report to a JSON file.
+The second additionally times a natural-language grid request and asserts exactly
+one `pane_grid` call, with no source reads or shell investigation. It uses medium
+thinking. Live latency depends on provider conditions and is reported, not gated.
+
+On the development machine, ten local grid runs measured a 77 ms median and an
+81 ms maximum. One live gpt-5.6-luna/medium request measured 5.9 seconds and one
+tool call, compared with 36.5 seconds and ten calls in the earlier user transcript.
+This is an indicative comparison, not a controlled or statistically stable model
+benchmark; context and provider conditions can differ.
 
 References: [Pi extensions](https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/extensions.md),
 [Pi sessions](https://github.com/earendil-works/pi/blob/main/packages/coding-agent/README.md).

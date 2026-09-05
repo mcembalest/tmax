@@ -9,6 +9,11 @@
   launcher and TypeScript limited to the Pi extension. Do not rebuild an agent loop.
 - Test the extension with `node --test tests/*.test.mjs` using Pi's installed
   dependencies. The optional live check is `TMAX_LIVE=1 node --test tests/pi.test.mjs`.
+- During workspace development, run headless regression tests and
+  `TMAX_BENCH=1 node --test tests/extension.test.mjs` after changes. Track local
+  action time separately from full model-request latency. Use targeted live
+  benchmarks to verify tool selection; do not mistake synthetic terminal
+  environment checks for native rendering tests.
 - Character, personality, and visual design are the user's decisions.
 - Apple Terminal and Ghostty must have equivalent behavior. Preserve the active
   project directory on launch. Keep automated coverage for both

@@ -12,7 +12,7 @@ test('Pi loads extension and keeps one session across requests', {timeout:120000
   const pane=await tmux('-f','/dev/null','new-session','-d','-P','-F','#{pane_id}','-x','240','-y','80');
   const connection=await tmux('display-message','-p','-t',pane,'#{socket_path},#{pid},0');
   const args=['--mode','rpc','--no-session','--no-extensions','--no-context-files','--offline','-e',resolve('extension.ts')];
-  if(process.env.TMAX_LIVE)args.push('--provider','openai-codex','--model','gpt-5.4-mini');
+  if(process.env.TMAX_LIVE)args.push('--provider','openai-codex','--model',process.env.TMAX_TEST_MODEL || 'gpt-5.4-mini','--thinking','medium');
   const child=spawn('pi',args,{env:{...process.env,TMUX:connection,TMUX_PANE:pane},stdio:['pipe','pipe','pipe']});
   let buffer='', errors='', next=0;
   const pending=new Map();
@@ -40,7 +40,19 @@ test('Pi loads extension and keeps one session across requests', {timeout:120000
     const before=await request('get_state');
     const commands=await request('get_commands');
     assert.ok(commands.commands.some(c=>c.name==='shell'));
+    assert.ok(commands.commands.some(c=>c.name==='grid'));
     if(process.env.TMAX_LIVE){
+      if(process.env.TMAX_BENCH){
+        const done=new Promise(r=>finished=r),start=performance.now();
+        await request('prompt',{message:'make 3 new panels please so that i am looking at a 2x2 grid'});
+        await done;
+        const elapsed=performance.now()-start;
+        const calls=messages.flatMap(m=>Array.isArray(m.content)?m.content.filter(c=>c.type==='toolCall'):[]);
+        assert.deepEqual(calls.map(c=>c.name),['pane_grid'],'Grid must take one direct tool call, no source investigation');
+        assert.equal(calls[0].arguments.count,4);
+        assert.equal((await tmux('list-panes','-t',pane,'-F','#{pane_id}')).split('\n').length,4);
+        console.log('LIVE_BENCHMARK '+JSON.stringify({model:process.env.TMAX_TEST_MODEL || 'gpt-5.4-mini',thinking:'medium',request:'2x2 grid',toolCalls:calls.length,elapsedMs:elapsed}));
+      }
       for(const message of ['Use pane_run to execute exactly printf TMAX_JOB_OK. Then report its output and exit code. Do not use bash or other tools.', 'What exact text did that previous command print? Do not run anything again.']){
         const done=new Promise(r=>finished=r);
         await request('prompt',{message});await done;

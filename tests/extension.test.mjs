@@ -19,9 +19,9 @@ const dir = await mkdtemp(join(tmpdir(), 'tmax test '));
 const tmux = async (...args) => (await exec('tmux', ['-L', socket, ...args])).stdout.trim();
 const anchor = await tmux('-f', '/dev/null', 'new-session', '-d', '-P', '-F', '#{pane_id}', '-x', '240', '-y', '80', '-c', dir);
 process.env.TMUX_PANE = anchor;
-const tools = new Map(), commands = new Map();
+const tools = new Map(), commands = new Map(), events = new Map();
 extension({
-  on: () => {},
+  on: (name, handler) => events.set(name, handler),
   registerTool: t => tools.set(t.name, t),
   registerCommand: (n, c) => commands.set(n, c),
   exec: async (cmd, args) => {
@@ -30,7 +30,8 @@ extension({
     catch (e) { return { stdout: e.stdout, stderr: e.stderr, code: e.code }; }
   },
 });
-const ctx = { cwd: dir, isIdle: () => true, sessionManager: { getSessionFile: () => undefined } };
+const notices = [];
+const ctx = { cwd: dir, isIdle: () => true, ui: { notify: (message, level) => notices.push({message,level}) }, sessionManager: { getSessionFile: () => undefined } };
 const call = (name, args = {}, signal) => tools.get(name).execute('test', args, signal, undefined, ctx);
 after(async () => { await tmux('kill-server').catch(() => {}); await rm(dir, {recursive:true,force:true}); });
 
@@ -86,4 +87,88 @@ test('fork passes saved session, task and model without shell interpretation', a
   assert.equal(args,['_pi','--fork',join(dir,'saved session.jsonl'),'--provider','provider','--model','model','--',task,''].join('\n'));
   await assert.rejects(readFile(join(dir,'should-not-exist')));
   await tmux('kill-pane','-t',pane);
+});
+
+async function resetPanes() {
+  await tmux('resize-window','-t',anchor,'-x','240','-y','80');
+  for(const id of (await tmux('list-panes','-t',anchor,'-F','#{pane_id}')).split('\n')) {
+    if(id!==anchor)await tmux('kill-pane','-t',id);
+  }
+}
+
+for(const terminal of ['Apple_Terminal','ghostty']) {
+  test(`${terminal}: grid, layouts, resize, swap, title, focus, zoom and close`,async()=>{
+    process.env.TERM_PROGRAM=terminal;
+    await resetPanes();
+    const result=await call('pane_grid',{count:4});
+    const rows=(await tmux('list-panes','-t',anchor,'-F','#{pane_id} #{pane_left} #{pane_top} #{pane_width} #{pane_height}')).split('\n').map(s=>s.split(' '));
+    assert.equal(rows.length,4);
+    assert.equal(new Set(rows.map(r=>r[1])).size,2);
+    assert.equal(new Set(rows.map(r=>r[2])).size,2);
+    assert.ok(Math.max(...rows.map(r=>+r[3]))-Math.min(...rows.map(r=>+r[3]))<=1);
+    assert.equal(await tmux('display-message','-p','-t',anchor,'#{pane_active}'),'1');
+    const first=rows[1][0], second=rows[2][0];
+    const original=(await tmux('list-panes','-t',anchor,'-F','#{pane_id}')).split('\n').sort();
+    await call('pane_grid',{count:4}); // Repeating must not add panes.
+    assert.deepEqual((await tmux('list-panes','-t',anchor,'-F','#{pane_id}')).split('\n').sort(),original);
+    await assert.rejects(call('pane_grid',{count:3}),/Close unwanted panes/);
+    await assert.rejects(call('pane_grid',{count:NaN}),/1–12/);
+    await call('pane_title',{pane:first,title:'logs $(touch nope)'});
+    assert.equal(await tmux('display-message','-p','-t',first,'#{pane_title}'),'logs $(touch nope)');
+    await call('pane_swap',{first,second});
+    assert.equal(await tmux('display-message','-p','-t',first,'#{pane_left} #{pane_top}'),rows[2].slice(1,3).join(' '));
+    await call('pane_layout',{layout:'even-horizontal'});
+    await call('pane_resize',{pane:first,width:70});
+    assert.equal(await tmux('display-message','-p','-t',first,'#{pane_width}'),'70');
+    await call('pane_focus',{pane:first});
+    assert.equal(await tmux('display-message','-p','-t',first,'#{pane_active}'),'1');
+    await call('pane_zoom',{pane:first,enabled:true});
+    await call('pane_zoom',{pane:first,enabled:true});
+    assert.equal(await tmux('display-message','-p','-t',first,'#{window_zoomed_flag}'),'1');
+    await call('pane_zoom',{enabled:false});
+    assert.equal(await tmux('display-message','-p','-t',first,'#{window_zoomed_flag}'),'0');
+    await call('pane_focus');
+    const prompt=await events.get('before_agent_start')({systemPrompt:'BASE'});
+    assert.ok(prompt.systemPrompt.startsWith('BASE'));
+    assert.match(prompt.systemPrompt,/pane_grid once/);
+    assert.ok(prompt.systemPrompt.includes(first));
+    assert.ok(!prompt.systemPrompt.includes('touch nope')); // Titles never become system instructions.
+    await assert.rejects(call('pane_close',{pane:anchor}),/Cannot close this agent/);
+    await assert.rejects(call('pane_focus',{pane:'%99999'}),/not in this window/);
+    await call('pane_close',{pane:first});
+    assert.equal((await tmux('list-panes','-t',anchor,'-F','#{pane_id}')).split('\n').length,3);
+    assert.ok(result.content[0].text.includes('position='));
+    await resetPanes();
+  });
+}
+
+test('slash commands run directly and reject malformed input',async()=>{
+  await resetPanes();
+  await commands.get('grid').handler('2x2',ctx);
+  assert.equal((await tmux('list-panes','-t',anchor,'-F','#{pane_id}')).split('\n').length,4);
+  const id=(await tmux('list-panes','-t',anchor,'-F','#{pane_id}')).split('\n')[1];
+  await commands.get('layout').handler('even-vertical',ctx);
+  await commands.get('focus').handler(id,ctx);
+  await commands.get('focus').handler('',ctx);
+  for(const [name,args] of [['resize',`${id} nope 20`],['resize',id],['close-pane',''],['swap',id],['grid','2x3'],['layout','garbage']]){
+    await commands.get(name).handler(args,ctx);
+    assert.equal(notices.at(-1).level,'error',`${name}: ${JSON.stringify(notices.at(-1))}`);
+  }
+  await resetPanes();
+});
+
+test('headless grid benchmark', {skip:!process.env.TMAX_BENCH},async()=>{
+  const samples=[];
+  for(let i=0;i<10;i++){
+    await resetPanes();
+    const start=performance.now();
+    await call('pane_grid',{count:4});
+    samples.push(performance.now()-start);
+  }
+  const sorted=[...samples].sort((a,b)=>a-b);
+  const report={operation:'one pane to 2x2 grid',runs:samples.length,medianMs:(sorted[4]+sorted[5])/2,p90Ms:sorted[8],maxMs:sorted[9],samplesMs:samples};
+  console.log('BENCHMARK '+JSON.stringify(report));
+  if(process.env.TMAX_BENCH_OUTPUT)await writeFile(process.env.TMAX_BENCH_OUTPUT,JSON.stringify(report,null,2)+'\n');
+  assert.ok(report.maxMs<2000,'Local pane actions exceeded the 2-second regression budget');
+  await resetPanes();
 });

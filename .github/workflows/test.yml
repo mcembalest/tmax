@@ -14,7 +14,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-      - run: sudo apt-get update && sudo apt-get install -y tmux
+      - name: Install Herdr 0.8.2
+        run: |
+          curl -fL --retry 3 https://github.com/herdrdev/herdr/releases/download/v0.8.2/herdr-linux-x86_64 -o "$RUNNER_TEMP/herdr"
+          echo "976150a14d490c94b243ea2e1a7eb2dfb67f12e36b182db90936f6728e6aecf4  $RUNNER_TEMP/herdr" | sha256sum --check
+          chmod +x "$RUNNER_TEMP/herdr"
+          echo "$RUNNER_TEMP" >> "$GITHUB_PATH"
       - run: npm install -g --ignore-scripts @earendil-works/pi-coding-agent@0.85.0
       - run: go test -race ./...
       - run: go vet ./...
@@ -22,8 +27,3 @@ jobs:
       - run: node --test tests/*.test.mjs
         env:
           TMAX_BENCH: '1'
-          TMAX_BENCH_OUTPUT: grid-benchmark.json
-      - uses: actions/upload-artifact@v4
-        with:
-          name: grid-benchmark
-          path: grid-benchmark.json

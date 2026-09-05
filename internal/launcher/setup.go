@@ -2,19 +2,21 @@ package launcher
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
 const piPackage = "@earendil-works/pi-coding-agent@0.85.0"
 
 func missingDependencies() []string {
 	var missing []string
-	for _, name := range []string{"tmux", "pi"} {
+	for _, name := range []string{"herdr", "pi"} {
 		if _, err := exec.LookPath(name); err != nil {
 			missing = append(missing, name)
 		}
@@ -24,12 +26,37 @@ func missingDependencies() []string {
 
 func ensureDependencies() error {
 	if len(missingDependencies()) == 0 {
-		return nil
+		return checkVersions()
 	}
 	// Check the actual terminal, not just character-device status (/dev/null).
 	tty := exec.Command("stty", "-g")
 	tty.Stdin = os.Stdin
-	return installDependencies(os.Stdin, os.Stdout, tty.Run() == nil)
+	if err := installDependencies(os.Stdin, os.Stdout, tty.Run() == nil); err != nil {
+		return err
+	}
+	return checkVersions()
+}
+
+func checkVersions() error {
+	for _, dep := range []struct {
+		name, minimum       string
+		major, minor, patch int
+	}{
+		{"herdr", "0.8.2", 0, 8, 2}, {"pi", "0.85.0", 0, 85, 0},
+	} {
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		cmd := exec.CommandContext(ctx, dep.name, "--version")
+		cmd.WaitDelay = time.Second
+		out, err := cmd.Output()
+		cancel()
+		version := strings.TrimSpace(strings.TrimPrefix(string(out), dep.name+" "))
+		var major, minor, patch int
+		n, _ := fmt.Sscanf(version, "%d.%d.%d", &major, &minor, &patch)
+		if err != nil || n != 3 || major < dep.major || major == dep.major && (minor < dep.minor || minor == dep.minor && patch < dep.patch) {
+			return fmt.Errorf("%s %s or newer is required; update %s and retry tmax", dep.name, dep.minimum, dep.name)
+		}
+	}
+	return nil
 }
 
 func installDependencies(input io.Reader, output io.Writer, interactive bool) error {
@@ -40,8 +67,8 @@ func installDependencies(input io.Reader, output io.Writer, interactive bool) er
 	var packages []string
 	needsPi := false
 	for _, name := range missing {
-		if name == "tmux" {
-			packages = append(packages, "tmux")
+		if name == "herdr" {
+			packages = append(packages, "herdr")
 		} else {
 			needsPi = true
 		}
@@ -58,7 +85,7 @@ func installDependencies(input io.Reader, output io.Writer, interactive bool) er
 	var commands [][]string
 	if len(packages) > 0 {
 		if _, err := exec.LookPath("brew"); err != nil {
-			return fmt.Errorf("missing %s; automatic system dependency setup requires Homebrew (https://brew.sh). Install tmux and Node 22.19+/npm with your package manager, then run npm install -g --ignore-scripts %s and retry tmax", strings.Join(missing, ", "), piPackage)
+			return fmt.Errorf("missing %s; automatic system dependency setup requires Homebrew (https://brew.sh). Install herdr and Node 22.19+/npm with your package manager, then run npm install -g --ignore-scripts %s and retry tmax", strings.Join(missing, ", "), piPackage)
 		}
 		commands = append(commands, append([]string{"brew", "install"}, packages...))
 	}

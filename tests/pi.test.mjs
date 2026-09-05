@@ -11,7 +11,7 @@ test('Pi loads extension and keeps one session across requests', {timeout:120000
   const tmux=async(...a)=>(await exec('tmux',['-L',socket,...a])).stdout.trim();
   const pane=await tmux('-f','/dev/null','new-session','-d','-P','-F','#{pane_id}','-x','240','-y','80');
   const connection=await tmux('display-message','-p','-t',pane,'#{socket_path},#{pid},0');
-  const args=['--mode','rpc','--no-session','--no-extensions','--no-context-files','--offline','-e',resolve('extension.ts')];
+  const args=['--mode','rpc','--no-session','--no-extensions','--no-context-files','--offline','-e',resolve('internal/launcher/extension.ts')];
   if(process.env.TMAX_LIVE)args.push('--provider','openai-codex','--model',process.env.TMAX_TEST_MODEL || 'gpt-5.4-mini','--thinking','medium');
   const child=spawn('pi',args,{env:{...process.env,TMUX:connection,TMUX_PANE:pane},stdio:['pipe','pipe','pipe']});
   let buffer='', errors='', next=0;

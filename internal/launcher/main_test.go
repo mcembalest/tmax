@@ -1,4 +1,4 @@
-package main
+package launcher
 
 import (
 	"fmt"
@@ -22,7 +22,7 @@ func TestQuote(t *testing.T) {
 
 func TestMissingPi(t *testing.T) {
 	t.Setenv("PATH", t.TempDir())
-	if err := run(nil); err == nil {
+	if err := Run(nil); err == nil {
 		t.Fatal("expected missing dependency")
 	}
 }
@@ -30,7 +30,7 @@ func TestMissingPi(t *testing.T) {
 func TestHelpAndVersionNeedNoRuntime(t *testing.T) {
 	t.Setenv("PATH", t.TempDir())
 	for _, arg := range []string{"--help", "--version"} {
-		if err := run([]string{arg}); err != nil {
+		if err := Run([]string{arg}); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -42,7 +42,7 @@ func TestLauncherStartsPiWithMouseAndOriginalDirectory(t *testing.T) {
 	}
 	dir := t.TempDir()
 	binary := filepath.Join(dir, "tmax with spaces")
-	if out, err := exec.Command("go", "build", "-o", binary, ".").CombinedOutput(); err != nil {
+	if out, err := exec.Command("go", "build", "-o", binary, "../..").CombinedOutput(); err != nil {
 		t.Fatalf("%s %v", out, err)
 	}
 	fakeDir := filepath.Join(dir, "tools")
@@ -96,7 +96,7 @@ func TestFirstLaunchFromTerminal(t *testing.T) {
 	}
 	root := t.TempDir()
 	binary := filepath.Join(root, "tmax with 'quotes'")
-	if out, err := exec.Command("go", "build", "-o", binary, ".").CombinedOutput(); err != nil {
+	if out, err := exec.Command("go", "build", "-o", binary, "../..").CombinedOutput(); err != nil {
 		t.Fatalf("%s %v", out, err)
 	}
 	for _, program := range []string{"Apple_Terminal", "ghostty"} {

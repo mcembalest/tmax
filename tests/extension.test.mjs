@@ -13,7 +13,7 @@ const piPath = (await exec('which', ['pi'])).stdout.trim();
 const require = createRequire(realpathSync(piPath));
 const { createJiti } = require('jiti');
 const jiti = createJiti(import.meta.url, { alias: { typebox: require.resolve('typebox') } });
-const { default: extension } = await jiti.import(resolve('extension.ts'));
+const { default: extension } = await jiti.import(resolve('internal/launcher/extension.ts'));
 const socket = `tmax-test-${process.pid}`;
 const dir = await mkdtemp(join(tmpdir(), 'tmax test '));
 const tmux = async (...args) => (await exec('tmux', ['-L', socket, ...args])).stdout.trim();

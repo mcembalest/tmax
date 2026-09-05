@@ -172,3 +172,67 @@ test('headless grid benchmark', {skip:!process.env.TMAX_BENCH},async()=>{
   assert.ok(report.maxMs<2000,'Local pane actions exceeded the 2-second regression budget');
   await resetPanes();
 });
+
+for (const terminal of ['Apple_Terminal', 'ghostty']) {
+  test(`${terminal}: populate, inspect, stop and replace a four-pane workspace`, async () => {
+    process.env.TERM_PROGRAM = terminal;
+    await resetPanes();
+    await events.get('session_start')();
+    assert.equal(await tmux('show-options','-wv','-t',anchor,'pane-border-status'),'top');
+    assert.match(await tmux('show-options','-wv','-t',anchor,'pane-border-format'), /pane_title/);
+    await call('pane_grid',{count:4});
+    const geometry = () => tmux('list-panes','-t',anchor,'-F','#{pane_id} #{pane_left} #{pane_top} #{pane_width} #{pane_height}');
+    const before = await geometry();
+    const ids = before.split('\n').map(row=>row.split(' ')[0]).filter(id=>id!==anchor);
+    await assert.rejects(call('pane_start',{pane:ids[0],command:'exit 0'}),/replace=true/);
+    await assert.rejects(call('pane_start',{pane:anchor,command:'exit 0',replace:true}),/agent/);
+    await assert.rejects(call('pane_start',{pane:'%99999',command:'exit 0'}),/not in this window/);
+    await assert.rejects(call('pane_stop',{pane:ids[0]}),/managed display/);
+    const samples=[];
+    for (const [index,id] of ids.entries()) {
+      const start=performance.now();
+      const result=await call('pane_start',{pane:id,title:`display ${index}`,replace:true,command:`printf 'READY ${index} '; stty size; sleep 60 & echo $! > display-${index}.pid; n=0; while :; do n=$((n+1)); printf '\\nTICK %s' "$n"; sleep 0.05; done`});
+      samples.push(performance.now()-start);
+      assert.match(result.content[0].text,new RegExp(`READY ${index}`));
+      assert.match(result.content[0].text,/dead=0/);
+      const dimensions=await tmux('display-message','-p','-t',id,'#{pane_height} #{pane_width}');
+      assert.ok(result.content[0].text.includes(`READY ${index} ${dimensions}`),'display should see its actual terminal dimensions');
+      assert.equal(await tmux('display-message','-p','-t',id,'#{pane_input_off}'),'1');
+      assert.equal(await tmux('display-message','-p','-t',id,'#{pane_title}'),`display ${index}`);
+      assert.match((await call('pane_read',{pane:id})).content[0].text,/READY/);
+    }
+    const ticks = output => [...output.matchAll(/TICK (\d+)/g)].map(m=>Number(m[1])).at(-1);
+    const initial=ticks((await call('pane_read',{pane:ids[0]})).content[0].text);
+    await new Promise(r=>setTimeout(r,120));
+    assert.ok(ticks((await call('pane_read',{pane:ids[0]})).content[0].text)>initial,'display must keep updating after tool returns');
+    assert.equal(await geometry(),before);
+    assert.equal(await tmux('display-message','-p','-t',anchor,'#{pane_active}'),'1');
+    const pid=Number(await readFile(join(dir,'display-0.pid'),'utf8'));
+    await call('pane_stop',{pane:ids[0]});
+    for(let i=0;i<50;i++) {
+      try { const ps=await exec('ps',['-o','stat=','-p',String(pid)]); if(/^Z|^$/.test(ps.stdout.trim()))break; if(i===49)assert.fail(`display descendant ${pid} survived stop`); }
+      catch(e){if(e.code===1)break;throw e;}
+      await new Promise(r=>setTimeout(r,20));
+    }
+    await call('pane_stop',{pane:ids[0]}); // Idempotent.
+    const failed=await call('pane_start',{pane:ids[0],command:'printf START_FAILED; exit 7'});
+    assert.match(failed.content[0].text,/dead=1 exit=7/);
+    assert.match(failed.content[0].text,/START_FAILED/);
+    const replacement=await call('pane_start',{pane:ids[0],interactive:true,command:'printf REPLACED; read value; printf "INPUT:%s" "$value"'});
+    assert.match(replacement.content[0].text,/REPLACED/);
+    await tmux('select-pane','-t',ids[0]);
+    await tmux('send-keys','-t',ids[0],'hello','Enter');
+    for(let i=0;i<50;i++) {
+      const output=(await call('pane_read',{pane:ids[0]})).content[0].text;
+      if(output.includes('INPUT:hello'))break;
+      if(i===49)assert.fail(output);
+      await new Promise(r=>setTimeout(r,20));
+    }
+    assert.equal(await geometry(),before);
+    assert.match((await call('pane_list')).content[0].text,/role=display/);
+    if(process.env.TMAX_BENCH)console.log('BENCHMARK '+JSON.stringify({operation:'start display in existing pane',terminal,samplesMs:samples,maxMs:Math.max(...samples)}));
+    assert.ok(Math.max(...samples)<2000,'display startup should not wait for process completion');
+    for(const id of ids)await call('pane_stop',{pane:id});
+    await resetPanes();
+  });
+}

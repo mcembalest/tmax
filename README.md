@@ -43,6 +43,7 @@ Each Pi process retains its session across messages. Pi saves sessions for resum
 Try:
 
 - “Make a 2×2 grid.” One workspace tool call, without source-code investigation.
+- “Replace the three shells with updating displays, keeping these four panes.”
 - “Run this repo's tests in a visible output pane and explain the result.”
 - “Open a shell for me.” Or use `/shell` directly.
 - “Fork an agent into another pane to review the README.”
@@ -52,7 +53,7 @@ Instant commands (no model call):
 | Command | Action |
 | --- | --- |
 | `/grid 2x2` | Fill to four total panes and tile them. `/grid 6` fills to six. |
-| `/panes` | Show pane IDs, positions, sizes, input state and focus. |
+| `/panes` | Show pane IDs, positions, sizes, roles, exit state and focus. |
 | `/layout tiled` | Rearrange existing panes. Also: `even-horizontal`, `even-vertical`, `main-horizontal`, `main-vertical`. |
 | `/focus %3` | Focus a pane. `/focus` returns to the agent. |
 | `/resize %3 80 24` | Request width and height in terminal cells. |
@@ -76,18 +77,35 @@ Tools added to Pi:
 | Tool | Behavior |
 | --- | --- |
 | `pane_grid`, `pane_layout` | Create a tiled grid in one call, or rearrange existing panes. |
-| `pane_list` | Inspect pane IDs and current geometry. |
+| `pane_list` | Inspect pane IDs, geometry, roles, titles, current process and exit state. |
 | `pane_focus`, `pane_resize`, `pane_title`, `pane_swap`, `pane_zoom` | Direct workspace controls. |
 | `pane_close` | Close a requested pane, with current-window and agent-pane checks. |
 | `pane_shell` | Open your interactive shell without taking focus. |
 | `pane_run` | Run a finite command, show live output, return output and exit status during the same agent turn. |
+| `pane_start` | Start a display or server in a specified existing tmax shell/display pane. Returns initial output promptly; preserves layout and focus. |
+| `pane_stop` | Stop a managed display without removing its pane; return its last output. |
 | `pane_read` | Read recent visible text from a pane in the same window. |
 | `pane_fork` | Start an independent interactive Pi session from the saved parent history, with a specific task. |
 
 Output panes accept focus, scrolling and selection, but no process input.
 Commands run with local user permissions, **not in a sandbox**. Read-only refers
-only to terminal input. Your shell panes never receive commands from these tools.
+only to terminal input. Shells are replaced only by an explicit `pane_start`
+takeover, with `replace=true` when a process is still alive.
 Pi still has its normal built-in tools, including bash.
+
+Pane headers show the pane ID and title. `pane_start` runs a POSIX `/bin/sh`
+command in the pane's real terminal, so terminal dimensions and redraws work.
+For complex displays, have the agent write a small script and start it instead
+of nesting shell quoting. Startup includes a 100 ms observation window; later
+failures appear through `pane_read`, which includes exit status for retained
+dead panes. There is no automatic background monitoring or model call.
+Use `interactive=true` for a process you want to click into and type in.
+
+Display completion and `pane_stop` retain the pane, so the layout stays intact.
+Displays belong to the tmux workspace and survive Pi reloads; stop or close them
+explicitly. Stopping uses tmux's process termination and is covered for ordinary
+shell children; programs that deliberately detach into daemons must manage their
+own shutdown. Taking over a shell does not preserve its previous process for undo.
 
 Visible commands default to a 120-second timeout (up to 600). Canceling the Pi
 tool kills the command's process group. Output returned to the agent is capped
@@ -98,7 +116,7 @@ shutdown does the same. Abrupt process termination may leave temporary logs.
 Forks are explicit and share the project files. They copy saved history, not a
 live shared conversation. The child stays interactive; no automatic result
 aggregation or file isolation is implemented. Finite commands belong in
-`pane_run`; long-running servers and interactive programs belong in your shell.
+`pane_run`; long-running displays/servers use `pane_start` or your own shell.
 
 ## Development
 
@@ -120,7 +138,9 @@ node --test tests/*.test.mjs
 Extension tests require the npm installation of Pi (including its bundled jiti
 and typebox dependencies), Node, and tmux. They create disposable tmux servers
 and exercise actual commands, output, cancellation, user input, focus, and
-read-only behavior under both terminal environment values. Native Terminal and
+read-only behavior under both terminal environment values. They also populate
+three existing panes, inspect startup and failures, stop descendants and replace
+a display without changing the four-pane layout. Native Terminal and
 Ghostty rendering/mouse interaction still need manual checks. No model calls
 are made by default.
 
@@ -136,15 +156,17 @@ TMAX_BENCH=1 node --test tests/extension.test.mjs
 TMAX_LIVE=1 TMAX_BENCH=1 TMAX_TEST_MODEL=gpt-5.6-luna node --test tests/pi.test.mjs
 ```
 
-The first measures ten fresh 2×2 grid creations and enforces a generous 2-second
+The first measures ten fresh 2×2 grid creations and display startup, enforcing a generous 2-second
 local-action regression budget. CI runs it on every push and PR and uploads the
 timing samples. Set `TMAX_BENCH_OUTPUT` to save the report to a JSON file.
 The second additionally times a natural-language grid request and asserts exactly
-one `pane_grid` call, with no source reads or shell investigation. It uses medium
+one `pane_grid` call, then requests three displays in the existing panes and
+checks tool selection, output and pane count. It uses medium
 thinking. Live latency depends on provider conditions and is reported, not gated.
 
-On the development machine, ten local grid runs measured a 77 ms median and an
-81 ms maximum. One live gpt-5.6-luna/medium request measured 5.9 seconds and one
+On the development machine, the current local grid runs measured a 97 ms median;
+display startup measured 144–150 ms including the 100 ms initial observation.
+An earlier live gpt-5.6-luna/medium request measured 5.9 seconds and one
 tool call, compared with 36.5 seconds and ten calls in the earlier user transcript.
 This is an indicative comparison, not a controlled or statistically stable model
 benchmark; context and provider conditions can differ.

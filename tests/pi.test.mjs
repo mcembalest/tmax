@@ -52,6 +52,16 @@ test('Pi loads extension and keeps one session across requests', {timeout:120000
         assert.equal(calls[0].arguments.count,4);
         assert.equal((await tmux('list-panes','-t',pane,'-F','#{pane_id}')).split('\n').length,4);
         console.log('LIVE_BENCHMARK '+JSON.stringify({model:process.env.TMAX_TEST_MODEL || 'gpt-5.4-mini',thinking:'medium',request:'2x2 grid',toolCalls:calls.length,elapsedMs:elapsed}));
+        const offset=messages.length, displayDone=new Promise(r=>finished=r), displayStart=performance.now();
+        await request('prompt',{message:'In each of the three existing non-agent panes, replace the shell with a read-only live display running exactly: printf TMAX_DISPLAY_OK; sleep 60. Keep the current four-pane layout. Start them and verify their initial output, without waiting for them to finish.'});
+        await displayDone;
+        const displayCalls=messages.slice(offset).flatMap(m=>Array.isArray(m.content)?m.content.filter(c=>c.type==='toolCall'):[]);
+        assert.equal(displayCalls.filter(c=>c.name==='pane_start').length,3);
+        assert.ok(displayCalls.every(c=>['pane_start','pane_read','pane_list'].includes(c.name)),JSON.stringify(displayCalls));
+        const ids=(await tmux('list-panes','-t',pane,'-F','#{pane_id}')).split('\n');
+        assert.equal(ids.length,4);
+        for(const id of ids.filter(id=>id!==pane))assert.match(await tmux('capture-pane','-p','-t',id),/TMAX_DISPLAY_OK/);
+        console.log('LIVE_BENCHMARK '+JSON.stringify({request:'three existing-pane displays',toolCalls:displayCalls.length,elapsedMs:performance.now()-displayStart}));
       }
       for(const message of ['Use pane_run to execute exactly printf TMAX_JOB_OK. Then report its output and exit code. Do not use bash or other tools.', 'What exact text did that previous command print? Do not run anything again.']){
         const done=new Promise(r=>finished=r);

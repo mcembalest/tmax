@@ -1,8 +1,8 @@
 # tmax
 
 A small Go terminal agent and tmux workspace. No character or visual style is
-specified yet. Runs inside Apple Terminal or Ghostty; JaDE can launch the same
-executable in either terminal, with the active project as its working directory.
+specified yet. Runs inside Apple Terminal or Ghostty, using the current directory
+as its workspace.
 
 ## Install and run
 
@@ -35,13 +35,6 @@ Use `/split` or `/split below` to open a shell without a model call.
 Each standalone launch creates a fresh workspace on the `tmax` tmux socket,
 without loading personal tmux configuration. Inside an existing tmux session,
 tmax runs chat in the current pane instead of nesting tmux.
-
-## JaDE
-
-On this machine, launch `/Users/maxcembalest/go/bin/tmax` inside
-Terminal or Ghostty, with the working directory set to the active project.
-Both `tmux` and `codex` must be on that terminal's PATH. No JaDE code is changed
-in this repo. Build to a stable path before using it as a launcher target.
 
 ## Backend
 

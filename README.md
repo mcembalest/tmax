@@ -33,25 +33,22 @@ the picker to save it as the startup default. Exit Pi when finished.
 This is Pi's login flow, not the `codex login` shell command. The Codex CLI is
 not required. Other Pi providers also work; see [Pi's instructions](https://pi.dev/).
 
-Install the current rewrite directly at the tested commit, without cloning:
+Install tmax directly, without cloning:
 
 ```sh
-go install github.com/mcembalest/tmax@6eb0424
+go install github.com/mcembalest/tmax@latest
 export PATH="$(go env GOPATH)/bin:$PATH"
 tmax
 ```
-
-Go version queries cannot contain `/`, so `@codex/pi-runtime` is not a valid
-installation command. Use the commit above, or clone the branch as shown below.
 
 Add that PATH line to your shell startup file (usually `~/.zshrc` on macOS) to
 keep it in new terminals. If you configured a custom `GOBIN`, add that directory
 instead. Launch `tmax` from the project directory you want it to work in.
 
-Alternatively, clone the review branch and install from the checkout:
+Alternatively, clone the repository and install from the checkout:
 
 ```sh
-git clone --branch codex/pi-runtime https://github.com/mcembalest/tmax.git
+git clone https://github.com/mcembalest/tmax.git
 cd tmax
 go install .
 export PATH="$(go env GOPATH)/bin:$PATH"
@@ -65,11 +62,8 @@ go build -o bin/tmax .
 ./bin/tmax
 ```
 
-While PR #1 is under review, `go install github.com/mcembalest/tmax@latest`
-still selects the old implementation on `main`. After the rewrite is merged,
-that becomes the normal installation command. A commit install stays pinned;
-choose a newer commit to update. For a checkout, pull the desired changes and
-rerun `go install .`. Pi and tmux updates are separate.
+To update, rerun `go install github.com/mcembalest/tmax@latest`. For a checkout,
+pull the desired changes and rerun `go install .`. Pi and tmux updates are separate.
 
 Go is needed to build, not to run the result. Pi and tmux are separate runtime
 dependencies; `go install` installs only tmax. tmax does not install dependencies

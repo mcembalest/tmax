@@ -12,7 +12,7 @@ for(const terminal of ['Apple_Terminal','ghostty'])test(`${terminal}: real Herdr
  const f=await fixture(terminal);
  const prior={...process.env};Object.assign(process.env,f.paneEnv);
  const tools=new Map(),events=new Map(),commands=new Map();
- const pi={on:(n,h)=>events.set(n,h),registerTool:t=>tools.set(t.name,t),registerCommand:(n,c)=>commands.set(n,c),
+ const pi={registerFlag:()=>{},getFlag:()=>undefined,on:(n,h)=>events.set(n,h),registerTool:t=>tools.set(t.name,t),registerCommand:(n,c)=>commands.set(n,c),
  exec:async(bin,args,options)=>{try{return {...await exec(bin,args,{env:f.paneEnv,signal:options?.signal}),code:0};}catch(e){return {stdout:e.stdout,stderr:e.stderr,code:e.code};}}};
  const call=(args,signal)=>tools.get('workspace').execute('test',{args},signal);
  try{
@@ -47,7 +47,7 @@ for(const terminal of ['Apple_Terminal','ghostty'])test(`${terminal}: real Herdr
 });
 
 test('login guidance never rewrites the editor after reload or resume',async()=>{
- const events=new Map();extension({on:(n,h)=>events.set(n,h),registerTool:()=>{},registerCommand:()=>{}});
+ const events=new Map();extension({registerFlag:()=>{},getFlag:()=>undefined,on:(n,h)=>events.set(n,h),registerTool:()=>{},registerCommand:()=>{}});
  for(const reason of ['startup','reload','resume']){
   let editor='';
   await events.get('session_start')({reason},{mode:'tui',modelRegistry:{getAvailable:()=>[]},ui:{getEditorText:()=>editor,setEditorText:value=>editor=value,notify:()=>{}}});

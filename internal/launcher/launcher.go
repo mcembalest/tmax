@@ -2,6 +2,7 @@
 package launcher
 
 import (
+	"bytes"
 	"context"
 	"crypto/sha256"
 	_ "embed"
@@ -15,6 +16,11 @@ import (
 
 //go:embed extension.ts
 var extension []byte
+
+//go:embed handoff.ts
+var handoff []byte
+
+const workspaceConfig = "[session]\nresume_agents_on_restore = false\n[update]\nversion_check = false\nmanifest_check = false\n"
 
 func Run(args []string) error {
 	if len(args) > 0 {
@@ -46,7 +52,11 @@ func Run(args []string) error {
 	if err := os.MkdirAll(dir, 0700); err != nil {
 		return err
 	}
-	ext, err := cachedFile(dir, "extension", ".ts", extension)
+	helper, err := cachedFile(dir, "handoff", ".ts", handoff)
+	if err != nil {
+		return err
+	}
+	ext, err := cachedFile(dir, "extension", ".ts", bytes.ReplaceAll(extension, []byte("./handoff.ts"), []byte("./"+filepath.Base(helper))))
 	if err != nil {
 		return err
 	}
@@ -79,7 +89,7 @@ func Run(args []string) error {
 	os.RemoveAll(integrationDir)
 	// Cold restore of Pi currently drops explicit -e arguments. Keep conversation
 	// selection in Pi until Herdr can restore this launch with both extensions.
-	config, err := cachedFile(dir, "herdr", ".toml", []byte("[session]\nresume_agents_on_restore = false\n"))
+	config, err := cachedFile(dir, "herdr", ".toml", []byte(workspaceConfig))
 	if err != nil {
 		return err
 	}

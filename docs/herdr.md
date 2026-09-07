@@ -2,8 +2,9 @@
 
 The product direction is one character that can split across panels and reunite.
 The user should not need to coordinate agent instances or move their context and
-results manually. This change supplies a workspace foundation for that direction;
-it does not yet implement automatic result delivery or context merging.
+results manually. This experiment supplies persistent workspaces and one assigned-turn handoff: a
+helper works in another panel and its findings return to the original conversation.
+It does not merge full transcripts or support nested splitting yet.
 
 ## Ownership
 
@@ -12,8 +13,8 @@ it does not yet implement automatic result delivery or context merging.
 - Pi owns the interface inside its panel, conversations, model calls, and finite
   command execution with cancellation and timeout.
 - Herdr owns terminal processes, layout, agent presence, prompting, and waiting.
-- The tmax extension supplies one direct `workspace` tool with literal CLI arguments
-  and short guidance. It does not recreate Herdr's command catalog in TypeScript.
+- The tmax extension supplies a direct `workspace` tool and a small `split_work`
+  handoff module. It does not recreate Herdr's command catalog or Pi's agent loop.
 
 The installed Herdr binary supplies its official Pi integration. tmax installs it
 into a temporary directory and atomically caches the resulting extension, loading
@@ -49,13 +50,41 @@ They are interactive terminals, not the previous read-only output panes.
 
 Herdr can start additional Pi agents, prompt them, inspect them, and wait for
 state changes. Its waits observe lifecycle state, not individual task completion.
-The main agent still needs to verify and collect results. Canceling a workspace
+The main agent still needs to verify findings. Canceling a workspace
 wait cancels observation, not already submitted work. Extension reload leaves
 Herdr's terminals and processes intact. No in-memory job registry needs recovery.
 
-No pi-herdr-subagents package is installed in this experiment. Its automatic
-result return is relevant follow-up work; its bundled roles, workflows, and UI
-should not be adopted incidentally with the workspace backend.
+No pi-herdr-subagents package is installed. The handoff uses native Pi fresh or
+forked sessions, sharing the project files. A private assignment record beside the
+parent session tracks the helper; Pi's settled-turn event writes its result. The
+parent checks once per second while idle and records delivered IDs in its own
+conversation. Reload can recover pending results without relying on pane text.
+The helper panel stays open. Interactive takeover or switching its conversation
+stops automatic assignment reporting; cancellation and disappearance are reported
+as incomplete work. A failed launch is uncertain because canceling a CLI request
+does not undo a submitted remote action.
+
+This is a bounded first version: one assigned turn per helper, no automatic panel
+cleanup, no nested splitting, and no transactional merge of concurrent file edits.
+Switching away from the parent conversation defers its results until resumed.
+It does not promise recovery of unfinished model calls after process death.
+
+## Cost and network behavior
+
+Herdr 0.8.2 is [Apache 2.0 licensed](https://github.com/herdrdev/herdr/blob/v0.8.2/LICENSE).
+Its local runtime requires no Herdr account or subscription; model-provider costs
+remain separate. Inspection of the released source found no built-in analytics
+collector or analytics SDK. Herdr does make automatic version and detection-catalog
+requests by default. tmax disables both in its private server configuration,
+and starts Pi with `--offline` to disable Pi's startup network operations.
+Herdr's official Pi hook communicates over the local Unix socket.
+
+This is a source audit of 0.8.2, not a packet-level guarantee for every dependency,
+newer release, or user-installed extension. Installation and explicit updates
+still download software; model requests still contact the chosen provider.
+Existing servers keep their loaded configuration until stopped and restarted;
+tmax does not kill active work to apply these settings. See Herdr's
+[configuration reference](https://herdr.dev/docs/config-reference/).
 
 ## Evidence and remaining questions
 
@@ -78,8 +107,15 @@ integration preparation now have bounded deadlines, but the original stall was
 not reproduced or conclusively explained. Keep this as a draft until startup has
 been exercised further on real terminals.
 
-Remaining concerns: native rendering and mouse behavior, robust automatic result
-return, cold conversation recovery with extensions, and refreshing environment
+A deterministic test provider now exercises the real Pi loop and Herdr helper
+process: split, keep chatting, and deliver findings once. Separate lifecycle tests
+cover busy parents, reload recovery, canceled turns, user takeover, and missing
+agents versus transport failures. This provider is test-only; it does not verify
+model judgment or tool selection. The new natural split-and-return benchmark is
+blocked by expired Pi authentication and has not passed.
+
+Remaining concerns: native rendering and mouse behavior, natural task evaluation
+of handoffs, cold conversation recovery with extensions, and refreshing environment
 variables in a reused server. New terminals receive current launcher variables,
 but existing processes retain their environment, and variables absent from a
 later launch can still be inherited from the old server. This change does not

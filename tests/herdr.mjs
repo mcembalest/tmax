@@ -13,7 +13,7 @@ export async function until(action) {
 export async function fixture(terminal='Apple_Terminal') {
   const dir=await mkdtemp(join(tmpdir(),'tmax-herdr-'));
   const config=join(dir,'config.toml');
-  await writeFile(config,'[terminal]\ndefault_shell = "/bin/sh"\nshell_mode = "non_login"\n[session]\nresume_agents_on_restore = false\n[update]\nmanifest_check = false\n');
+  await writeFile(config,'[terminal]\ndefault_shell = "/bin/sh"\nshell_mode = "non_login"\n[session]\nresume_agents_on_restore = false\n[update]\nversion_check = false\nmanifest_check = false\n');
   const env={...process.env,XDG_CONFIG_HOME:dir,HERDR_SESSION:'test',HERDR_CONFIG_PATH:config,TERM_PROGRAM:terminal};
   delete env.HERDR_SOCKET_PATH;delete env.HERDR_PANE_ID;delete env.HERDR_ENV;
   const raw=async(...args)=>(await exec('herdr',args,{env,timeout:40000})).stdout.trim();

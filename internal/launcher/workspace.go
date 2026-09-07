@@ -131,7 +131,7 @@ func (h herdr) prepare(cwd, dir, ext, integration string, args []string) error {
 	if root.ID == "" {
 		return fmt.Errorf("Herdr returned no workspace pane")
 	}
-	launch := append([]string{"agent", "start", "tmax", "--kind", "pi", "--pane", root.ID, "--", "-e", ext, "-e", integration}, args...)
+	launch := append([]string{"agent", "start", "tmax", "--kind", "pi", "--pane", root.ID, "--", "--offline", "-e", ext, "-e", integration}, args...)
 	// Shell startup can still be in progress. Only retry the explicit not-ready
 	// response; never re-submit a launch after an ambiguous timeout.
 	deadline := time.Now().Add(5 * time.Second)

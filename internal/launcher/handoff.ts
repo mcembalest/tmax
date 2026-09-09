@@ -5,7 +5,7 @@ import { randomUUID } from "node:crypto";
 import { mkdir, readFile, writeFile, rename } from "node:fs/promises";
 import { join } from "node:path";
 
-type Task = { id: string; task: string; pane?: string };
+type Task = { id: string; task: string; pane?: string; root?: string };
 type Result = { status: string; text: string; session?: string };
 const read = async <T>(path: string): Promise<T> => JSON.parse(await readFile(path, "utf8"));
 async function save(path: string, value: unknown) {
@@ -16,7 +16,7 @@ async function save(path: string, value: unknown) {
 
 export default function handoffs(pi: ExtensionAPI, run: (args: string[], signal?: AbortSignal) => Promise<string>, extensions: string[]) {
   pi.registerFlag("tmax-task", { type: "string", description: "Internal handoff record" });
-  let childPath: string | undefined;
+  let childPath: string | undefined, launchPath: string | undefined;
   let ctx: ExtensionContext | undefined;
   let timer: ReturnType<typeof setInterval> | undefined;
   let checking = false, assigned = false, returned = false, closed = false;
@@ -73,7 +73,8 @@ export default function handoffs(pi: ExtensionAPI, run: (args: string[], signal?
   }
 
   pi.on("session_start", async (_event, context) => {
-    childPath = pi.getFlag("tmax-task") as string | undefined;
+    launchPath = pi.getFlag("tmax-task") as string | undefined;
+    childPath = launchPath ? await read<string>(launchPath + ".active").catch(() => launchPath) : undefined;
     ctx = context; closed = false; queued.clear();
     if (timer) clearInterval(timer);
     if (childPath) {
@@ -87,8 +88,17 @@ export default function handoffs(pi: ExtensionAPI, run: (args: string[], signal?
   });
   pi.on("session_shutdown", () => { closed = true; if (timer) clearInterval(timer); });
   pi.on("input", async event => {
-    if (!child || returned) return;
-    if (!assigned && event.text === child.task) { assigned = true; await save(childPath! + ".accepted", true); }
+    if (!child) return;
+    const next = await read<string>(launchPath! + ".next").catch(() => undefined);
+    if (next && next !== childPath && returned) {
+      const task = await read<Task>(next);
+      if (event.text.trim() === task.task.trim()) {
+        await save(launchPath! + ".active", next);
+        childPath = next; child = task; assigned = false; returned = false; candidate = undefined;
+      }
+    }
+    if (returned) return;
+    if (!assigned && event.text.trim() === child.task.trim()) { assigned = true; await save(childPath! + ".accepted", true); }
     else if (event.source === "interactive") await finish({ status: "handed_over", text: "The user is working in the helper panel. Automatic result return has stopped for this assignment; keep the panel open." });
   });
   pi.on("agent_end", async (event, context) => {
@@ -102,28 +112,47 @@ export default function handoffs(pi: ExtensionAPI, run: (args: string[], signal?
   });
   pi.on("agent_settled", async () => { if (candidate) await finish(candidate); });
   pi.registerTool({
-    name: "split_work", label: "Split work",
-    description: "Give a focused task to another Pi in a new panel and keep talking here. Findings return automatically to this conversation when it is idle. Choose fresh context (default) for a self-contained task, or fork when this conversation is needed. Both share files; coordinate edits. The panel stays available. Use only when the user's task calls for delegation.",
-    parameters: Type.Object({ task: Type.String({ minLength: 1 }), context: Type.Optional(Type.Union([Type.Literal("fresh"), Type.Literal("fork")])) }),
+    name: "split_work", label: "Delegate",
+    description: "Give a focused task to another Pi and keep talking here. Omit pane to open a new panel; pass the existing helper pane for an explicit follow-up. Follow-ups require that helper to have returned and be idle in the same conversation. Findings return automatically to this conversation when it is idle. For a new helper, choose fresh context (default) for a self-contained task, or fork when this conversation is needed. context is ignored when pane is supplied; an existing helper keeps its conversation. Both share files; coordinate edits. The panel stays available. Use only when the user's task calls for delegation.",
+    parameters: Type.Object({ task: Type.String({ minLength: 1 }), pane: Type.Optional(Type.String()), context: Type.Optional(Type.Union([Type.Literal("fresh"), Type.Literal("fork")])) }),
     async execute(_id, args, signal, _update, context) {
       if (childPath) throw new Error("Return findings here; nested splitting is not supported yet");
       if (signal?.aborted) throw new Error("Canceled before splitting");
       const session = context.sessionManager.getSessionFile();
       if (!session) throw new Error("Save this Pi conversation before splitting work");
+      let previous: {task: Task; path: string} | undefined;
+      if (args.pane) {
+        const entries = context.sessionManager.getBranch().filter((entry: any) => entry.type === "custom" && entry.customType === "tmax_task") as any[];
+        for (const entry of entries.reverse()) {
+          const task = await read<Task>(entry.data.path);
+          if (task.pane === args.pane) { previous = {task, path: entry.data.path}; break; }
+        }
+        if (!previous) throw new Error("This conversation has no assignment for that helper");
+        if (!previous.task.root) throw new Error("This helper was started by an older tmax and cannot return follow-ups automatically; start a new helper");
+        const result = await read<Result>(previous.path + ".result").catch(() => undefined);
+        const state = JSON.parse(await run(["agent", "get", args.pane], signal)).result.agent;
+        if (result?.status !== "returned" || state.agent_status !== "idle" || state.agent_session?.value !== result.session)
+          throw new Error("The helper must finish its assignment and remain idle in the same conversation before a follow-up");
+      }
       const id = randomUUID(), dir = session + ".tmax", path = join(dir, id + ".json");
       await mkdir(dir, { recursive: true, mode: 0o700 });
-      const task: Task = { id, task: args.task };
+      const task: Task = { id, task: args.task, pane: args.pane, root: previous ? previous.task.root : path };
       await save(path, task);
       pi.appendEntry("tmax_task", { id, path });
       try {
-        const split = JSON.parse(await run(["pane", "split", "--current", "--direction", "right", "--cwd", context.cwd, "--no-focus"], signal));
-        task.pane = split.result.pane.pane_id;
-        await save(path, task);
-        const options = ["--offline", ...extensions, "--tmax-task", path];
-        if (args.context === "fork") options.push("--fork", session);
-        else options.push("--session", join(dir, id + ".jsonl"));
-        if (context.model) options.push("--provider", context.model.provider, "--model", context.model.id);
-        await run(["agent", "start", "helper-" + id.slice(0, 8), "--kind", "pi", "--pane", task.pane!, "--", ...options], signal);
+        if (previous) {
+          await save(task.root! + ".next", path);
+        } else {
+          const split = JSON.parse(await run(["pane", "split", "--current", "--direction", "right", "--cwd", context.cwd, "--no-focus"], signal));
+          task.pane = split.result.pane.pane_id;
+          await save(path, task);
+          const options = ["--offline", ...extensions, "--tmax-task", path];
+          if (args.context === "fork") options.push("--fork", session, "--session-dir", dir);
+          else options.push("--session", join(dir, id + ".jsonl"));
+          if (pi.getThinkingLevel?.()) options.push("--thinking", pi.getThinkingLevel());
+          if (context.model) options.push("--provider", context.model.provider, "--model", context.model.id);
+          await run(["agent", "start", "helper-" + id.slice(0, 8), "--kind", "pi", "--pane", task.pane!, "--", ...options], signal);
+        }
         await run(["agent", "prompt", task.pane!, task.task], signal);
         return { content: [{ type: "text", text: `Work started in ${task.pane}. Continue with the user; the result will return automatically. Do not poll or wait on it.` }], details: { id, pane: task.pane } };
       } catch (error) {

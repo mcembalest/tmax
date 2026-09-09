@@ -79,8 +79,11 @@ an ordinary interactive input into the helper; this is not a native clicking tes
 
 The automated oracle checks concrete outcomes, not prose quality. S10 requires
 both distinct findings; a human still reviews whether the integrated explanation
-actually describes the disagreement well. Retain transcripts for that review.
-The A05 “already done” state may be correct at time zero: response latency and
+actually describes the disagreement well. Retain visible transcripts for that review; opaque provider reasoning payloads
+are omitted from new reports. A separate rename clarification probe preserves the
+original S09 failures while checking explicit quoted labels.
+S10 no longer requires incidental fixture labels in the final prose; its two
+returned results and integrated explanation are reviewed together. The A05 “already done” state may be correct at time zero: response latency and
 absence of mutation are the meaningful measurements there. S07 already has a
 helper, so it deliberately omits a misleading helper-creation timestamp.
 
@@ -97,8 +100,9 @@ TMAX_BENCH=1 node --test tests/pi.test.mjs tests/return.test.mjs tests/handoff.t
 
 Use `TMAX_REPEATS` for direct-operation repetition count; `TMAX_TERMINAL` for the
 live environment; `TMAX_TEST_PROVIDER`, `TMAX_TEST_MODEL`, and
-`TMAX_TEST_THINKING` for the live provider configuration. Natural runs require
-working Pi authentication and consume model quota. One authentication failure
+`TMAX_TEST_THINKING` for the live provider configuration. Natural runs default to GPT-5.6 Luna / medium, require working Pi authentication,
+and consume model quota. Each run freezes a copy of the extension source so edits
+during a run cannot mix runtime versions. One authentication or unsupported-model failure
 blocks the rest of that run instead of repeatedly submitting doomed requests.
 Do not replace real-model results with scripted-provider results.
 
@@ -128,6 +132,6 @@ environment variables does not verify either app's rendering or mouse behavior.
 - Fix lost work and incorrect outcomes before optimizing speed. Prefer removing
   needless round trips to adding a catalog of special-purpose tools.
 
-The initial three rounds and remaining gaps are recorded in
+The initial local rounds, later real-model rounds, and remaining gaps are recorded in
 [benchmark-results.md](benchmark-results.md). This is a benchmark specification
 and implementation, not approval to change the leave-and-return product behavior.

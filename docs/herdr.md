@@ -2,7 +2,7 @@
 
 The product direction is one character that can split across panels and reunite.
 The user should not need to coordinate agent instances or move their context and
-results manually. This experiment supplies persistent workspaces and one assigned-turn handoff: a
+results manually. This experiment supplies persistent workspaces and assigned-task handoffs: a
 helper works in another panel and its findings return to the original conversation.
 It does not merge full transcripts or support nested splitting yet.
 
@@ -13,8 +13,8 @@ It does not merge full transcripts or support nested splitting yet.
 - Pi owns the interface inside its panel, conversations, model calls, and finite
   command execution with cancellation and timeout.
 - Herdr owns terminal processes, layout, agent presence, prompting, and waiting.
-- The tmax extension supplies a direct `workspace` tool and a small `split_work`
-  handoff module. It does not recreate Herdr's command catalog or Pi's agent loop.
+- The tmax extension supplies direct workspace controls, a grid operation, and a
+  small delegation module with explicit follow-ups. It does not recreate Herdr's command catalog or Pi's agent loop.
 
 The installed Herdr binary supplies its official Pi integration. tmax installs it
 into a temporary directory and atomically caches the resulting extension, loading
@@ -60,13 +60,17 @@ parent session tracks the helper; Pi's settled-turn event writes its result. The
 parent checks local results every 250 ms while idle, checks agent status at most
 once per second, and records delivered IDs in its own
 conversation. Reload can recover pending results without relying on pane text.
-The helper panel stays open. Interactive takeover or switching its conversation
+An explicit follow-up can reuse an idle helper in the same conversation and return
+another result. Helpers started by the older extension need a new helper for
+automatic follow-ups; they are not silently treated as compatible. Each assignment has its own result; a small active-record pointer
+lets helper reload recover the current assignment. The helper panel stays open. Interactive takeover or switching its conversation
 stops automatic assignment reporting; cancellation and disappearance are reported
 as incomplete work. A failed launch is uncertain because canceling a CLI request
 does not undo a submitted remote action.
 
-This is a bounded first version: one assigned turn per helper, no automatic panel
-cleanup, no nested splitting, and no transactional merge of concurrent file edits.
+This remains bounded: assignments return one settled turn at a time, with no
+automatic panel cleanup, nested splitting, or transactional merge of concurrent
+file edits. A follow-up cannot reset the existing helper's conversation.
 Switching away from the parent conversation defers its results until resumed.
 It does not promise recovery of unfinished model calls after process death.
 
@@ -112,11 +116,12 @@ A deterministic test provider now exercises the real Pi loop and Herdr helper
 process: split, keep chatting, and deliver findings once. Separate lifecycle tests
 cover busy parents, reload recovery, canceled turns, user takeover, and missing
 agents versus transport failures. This provider is test-only; it does not verify
-model judgment or tool selection. The new natural split-and-return benchmark is
-blocked by expired Pi authentication and has not passed.
+model judgment or tool selection. Authentication was subsequently refreshed; natural requests now run with
+GPT-5.6 Luna at medium reasoning. The earlier GPT-5.4 Mini model was rejected for
+this account. See the later live rounds in benchmark-results.md.
 
-Remaining concerns: native rendering and mouse behavior, natural task evaluation
-of handoffs, cold conversation recovery with extensions, and refreshing environment
+Remaining concerns: native rendering and mouse behavior, broader repeated live
+evaluation of handoffs, cold conversation recovery with extensions, and refreshing environment
 variables in a reused server. New terminals receive current launcher variables,
 but existing processes retain their environment, and variables absent from a
 later launch can still be inherited from the old server. This change does not
@@ -126,3 +131,10 @@ Sources: [Herdr](https://github.com/herdrdev/herdr),
 [agent automation](https://herdr.dev/docs/agent-automation/),
 [session restore](https://herdr.dev/docs/session-state/), and
 [pi-herdr-subagents](https://github.com/0xRichardH/pi-herdr-subagents).
+
+The live benchmark exposed excess model round trips for ordinary controls. The
+agent now receives a current workspace snapshot as turn context, outside the
+system prompt, and can fill an aligned grid in one tool call. Grid creation does
+not close existing terminals or repair incompatible split geometry. Prompt-cache
+effects remain unmeasured. Herdr 0.8.2 also has a fixed three-second startup settle
+delay; tmax does not bypass that readiness path.

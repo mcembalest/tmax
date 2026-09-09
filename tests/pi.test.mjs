@@ -9,7 +9,7 @@ for(const context of process.env.TMAX_LIVE?['live']:['fresh','fork'])test(`Pi ${
  const f=await fixture();
  const args=['--mode','rpc','--session',resolve(f.dir,'parent.jsonl'),'--no-extensions','--no-context-files','--offline','-e',resolve('internal/launcher/extension.ts'),'-e',f.integration];
  if(!process.env.TMAX_LIVE)args.push('-e',resolve('tests/fixtures/provider.ts'),'--provider','tmax-test','--model','fixture');
- if(process.env.TMAX_LIVE)args.push('--provider','openai-codex','--model',process.env.TMAX_TEST_MODEL||'gpt-5.4-mini');
+ if(process.env.TMAX_LIVE)args.push('--provider','openai-codex','--model',process.env.TMAX_TEST_MODEL||'gpt-5.6-luna');
  const child=spawn('pi',args,{cwd:f.dir,env:f.paneEnv,stdio:['pipe','pipe','pipe']});
  let buffer='',errors='',next=0,finished;
  const pending=new Map(),messages=[],received=new Map();

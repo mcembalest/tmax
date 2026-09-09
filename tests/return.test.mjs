@@ -33,3 +33,17 @@ test('closing a real helper mid-turn returns incomplete work and preserves the p
   assert.equal((await f.api('pane','list')).panes.length,1);
  }finally{await parent.close();await f.close();}
 });
+test('a real helper returns a follow-up without creating another pane',{timeout:35000},async()=>{
+ const f=await fixture(),parent=rpc(f);
+ try{
+  await parent.prompt('Please split this fixture check.');
+  const returns=()=>parent.messages.filter(m=>m.role==='custom'&&m.customType==='tmax_results');
+  await parent.waitFor(()=>returns().length===1);
+  await parent.waitFor(async()=>!(await parent.request('get_state')).isStreaming);
+  const before=(await f.api('pane','list')).panes.map(p=>p.terminal_id);
+  await parent.prompt('Fixture followup');
+  await parent.waitFor(()=>returns().length===2);
+  assert.match(returns()[1].content,/SECOND_RESULT confirmed/);
+  assert.deepEqual((await f.api('pane','list')).panes.map(p=>p.terminal_id),before);
+ }finally{await parent.close();await f.close();}
+});

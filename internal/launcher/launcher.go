@@ -20,6 +20,9 @@ var extension []byte
 //go:embed handoff.ts
 var handoff []byte
 
+//go:embed grid.ts
+var grid []byte
+
 const workspaceConfig = "[session]\nresume_agents_on_restore = false\n[update]\nversion_check = false\nmanifest_check = false\n"
 
 func Run(args []string) error {
@@ -52,11 +55,15 @@ func Run(args []string) error {
 	if err := os.MkdirAll(dir, 0700); err != nil {
 		return err
 	}
-	helper, err := cachedFile(dir, "handoff", ".ts", handoff)
-	if err != nil {
-		return err
+	source := extension
+	for name, content := range map[string][]byte{"handoff": handoff, "grid": grid} {
+		module, err := cachedFile(dir, name, ".ts", content)
+		if err != nil {
+			return err
+		}
+		source = bytes.ReplaceAll(source, []byte("./"+name+".ts"), []byte("./"+filepath.Base(module)))
 	}
-	ext, err := cachedFile(dir, "extension", ".ts", bytes.ReplaceAll(extension, []byte("./handoff.ts"), []byte("./"+filepath.Base(helper))))
+	ext, err := cachedFile(dir, "extension", ".ts", source)
 	if err != nil {
 		return err
 	}

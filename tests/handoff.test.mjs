@@ -8,7 +8,7 @@ import {tmpdir} from 'node:os';
 import {exec,until,delay} from './herdr.mjs';
 const require=createRequire(realpathSync((await exec('which',['pi'])).stdout.trim()));
 const {createJiti}=require('jiti');
-const {default:handoffs}=await createJiti(import.meta.url,{alias:{typebox:require.resolve('typebox')}}).import(resolve('internal/launcher/handoff.ts'));
+const {default:handoffs}=await createJiti(import.meta.url,{alias:{typebox:require.resolve('typebox')}}).import(process.env.TMAX_HANDOFF_SOURCE||resolve('internal/launcher/handoff.ts'));
 function instance(session,branch=[],childPath,run=async args=>args[1]==='split'?JSON.stringify({result:{pane:{pane_id:'w1:p2'}}}):'{}'){
  const events=new Map(),tools=new Map(),messages=[],calls=[];
  let idle=true;
@@ -78,4 +78,30 @@ test('disappeared agent reports interrupted; transport failure does not fabricat
    assert.ok(parent.calls.filter(args=>args[1]==='get').length<=2,'Faster local result checks must not multiply status CLI requests');
   }finally{parent.stop();}
  }
+}));
+
+
+test('explicit follow-up reuses an idle helper and survives helper reload',()=>temporary(async dir=>{
+ const childSession=join(dir,'child.jsonl');
+ const parent=instance(join(dir,'parent.jsonl'),[],undefined,async args=>args[1]==='split'?JSON.stringify({result:{pane:{pane_id:'w1:p2'}}}):JSON.stringify({result:{agent:{agent_status:'idle',agent_session:{value:childSession}}}}));
+ await parent.split('First assignment');const first=parent.branch[0].data.path;
+ const child=instance(childSession,[],first);await child.start();
+ await child.events.get('input')({text:'First assignment',source:'interactive'});
+ const finish=async(agent,text)=>{await agent.events.get('agent_end')({messages:[{role:'assistant',stopReason:'stop',content:[{type:'text',text}]}]},agent.context);await agent.events.get('agent_settled')();};
+ await finish(child,'First result');
+ await parent.tools.get('split_work').execute('followup',{task:'Second assignment',pane:'w1:p2',context:'fresh'},undefined,undefined,parent.context);
+ assert.equal(parent.calls.filter(args=>args[1]==='split').length,1);
+ await child.events.get('input')({text:'Second assignment',source:'interactive'});child.stop();
+ const reloaded=instance(childSession,[],first);await reloaded.start();await finish(reloaded,'Second result');reloaded.stop();
+ const second=parent.branch[1].data.path;
+ assert.equal(JSON.parse(await readFile(second+'.result','utf8')).text,'Second result');
+ assert.equal(JSON.parse(await readFile(first+'.result','utf8')).text,'First result');
+}));
+
+test('legacy helper assignments are rejected before submitting a follow-up',()=>temporary(async dir=>{
+ const parent=instance(join(dir,'parent.jsonl'));await parent.split('Original task');
+ const path=parent.branch[0].data.path,task=JSON.parse(await readFile(path,'utf8'));delete task.root;await writeFile(path,JSON.stringify(task));
+ const before=parent.calls.length;
+ await assert.rejects(parent.tools.get('split_work').execute('follow',{task:'Next task',pane:'w1:p2'},undefined,undefined,parent.context),/older tmax/);
+ assert.equal(parent.calls.length,before);assert.equal(parent.branch.length,1);
 }));

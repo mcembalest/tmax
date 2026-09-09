@@ -20,6 +20,12 @@ for(const terminal of ['Apple_Terminal','ghostty'])test(`${terminal}: real Herdr
   const start=performance.now();
   const split=JSON.parse((await call(['pane','split','--current','--direction','right','--cwd',f.dir,'--no-focus'])).content[0].text).result.pane;
   assert.equal((await f.api('api','snapshot')).snapshot.focused_pane_id,f.pane);
+  await f.api('pane','rename',split.pane_id,'fixture display');
+  const context=await events.get('before_agent_start')({systemPrompt:'Base'});
+  assert.match(context.message.content,/fixture display/);
+  assert.doesNotMatch(context.systemPrompt,/fixture display/);
+  await assert.rejects(call(['agent','prompt',f.pane,'repeat this']),/own panel/);
+  await assert.rejects(call(['agent','wait',f.pane]),/own panel/);
   await call(['pane','run',split.pane_id,'printf TMAX_VISIBLE; sleep 60']);
   await until(async()=>assert.match(await f.raw('pane','read',split.pane_id),/TMAX_VISIBLE/));
   tools.clear();events.clear();commands.clear();extension(pi);

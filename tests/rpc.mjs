@@ -4,7 +4,7 @@ import {resolve} from 'node:path';
 import {delay} from './herdr.mjs';
 export function rpc(f,{session=resolve(f.dir,'parent.jsonl'),live=false,extension=resolve('internal/launcher/extension.ts')}={}){
  const args=['--mode','rpc','--session',session,'--no-extensions','--no-context-files','--offline','-e',extension,'-e',f.integration];
- if(live)args.push('--provider',process.env.TMAX_TEST_PROVIDER||'openai-codex','--model',process.env.TMAX_TEST_MODEL||'gpt-5.4-mini','--thinking',process.env.TMAX_TEST_THINKING||'medium');
+ if(live)args.push('--provider',process.env.TMAX_TEST_PROVIDER||'openai-codex','--model',process.env.TMAX_TEST_MODEL||'gpt-5.6-luna','--thinking',process.env.TMAX_TEST_THINKING||'medium');
  else args.push('-e',resolve('tests/fixtures/provider.ts'),'--provider','tmax-test','--model','fixture');
  const child=spawn('pi',args,{cwd:f.dir,env:f.paneEnv,stdio:['pipe','pipe','pipe']});
  const events=[],messages=[],pending=new Map();let buffer='',errors='',next=0;

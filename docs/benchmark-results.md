@@ -48,16 +48,17 @@ The follow-up probe starts a reviewer, receives its initial answer, sends a
 second task to that same reviewer, observes the second answer in its panel, and
 waits another 1.5 seconds. Automatic result count stays at one. This is a product
 gap, not a model failure: the current module tracks one assigned turn per helper.
-The probe deliberately exits nonzero until the behavior improves. It is separate
+At that revision the probe deliberately exited nonzero. The later live work below
+adds follow-up support and the probe now passes. It is separate
 from the passing regression suite so the missing capability stays visible.
 
-The next priorities are making follow-up assignments return naturally and
+At the end of the initial local rounds, the next priorities were making follow-up assignments return naturally and
 understanding the roughly three-second helper startup path. The previously
 recorded 5–8 model calls for a grid also remain a concern; fast local splits do
 not erase that user-facing delay. No new high-level grid API was introduced
 without testing its agent behavior.
 
-## Real-model evaluation is blocked
+## Initial real-model block (subsequently resolved)
 
 All 20 natural-request cases have runnable setup, prompts and outcome checks.
 The first request failed with “Provided authentication token is expired.” The
@@ -87,3 +88,99 @@ Real-process handoff runs:
 The existing CI now runs direct workspace benchmarks as well as lifecycle tests.
 It prints case outcomes and medians; it does not run paid model calls or assert
 that synthetic terminal environments prove native app behavior.
+
+## After authentication: real-model rounds
+
+Authentication was refreshed. The account rejected GPT-5.4 Mini, so the new
+baseline uses [GPT-5.6 Luna](https://developers.openai.com/api/docs/models/gpt-5.6-luna)
+with medium reasoning throughout. These results are not comparable to the older
+Mini timings as a controlled model comparison. The first compatibility probe
+succeeded; the benchmark now stops on an unsupported model instead of repeatedly
+submitting cases.
+
+| Round | Scope | Outcome |
+| --- | --- | --- |
+| Live 1 | All 20 original phrasings, Terminal environment | 15 automated passes; 4 behavioral failures and 1 overstrict checker |
+| Checker correction | Disagreement case, unchanged runtime | Passed; both opinions were returned and accurately contrasted |
+| Live 2 | Six cases targeted by fixes, original phrasings | 5/6 passed; the unquoted multiword rename still failed |
+| Live 3 | All 20 held-out phrasings, Ghostty environment | 19/20 passed; the rename case still failed |
+| Live 4 | Follow-up, another phrasing | Passed without the context-argument retry |
+| Rename clarification | Three explicit quoted labels, no runtime change | 3/3 passed without delegation |
+
+The disagreement checker had wrongly required random fixture identifiers in the
+final answer. Those identifiers were incidental to the requested disagreement.
+Both returned findings and the original final answer correctly distinguished
+release from hold. The raw failed run is retained with a review note, and a
+separate corrected run passed. It is not presented as a product fix.
+
+Changes driven by these runs:
+
+- A small grid module fills rows/columns while preserving terminals and focus.
+  It handles complete and aligned partial grids, and rejects incompatible
+  existing geometry before mutating it. It does not silently close extra panels.
+- Current pane identities, labels, state and geometry arrive as turn context.
+  This helps distinguish workspace requests from application-code requests.
+  Common native command syntax is provided; no benchmark labels or phrasing
+  triggers are added to production code. Cache effects remain unmeasured.
+- Explicit follow-ups can reuse a returned, idle helper in the same conversation
+  and automatically deliver a new result. Assignment pointers survive helper
+  reload. Context selection applies only to new helpers, avoiding an unnecessary
+  retry when a follow-up includes a context argument.
+- Helpers inherit the parent's reasoning setting. Fresh and forked helper
+  sessions live with their assignment records. Prompting or waiting on one's
+  own agent panel is rejected.
+
+| Task | Original live sample | After changes, original wording | Held-out wording |
+| --- | --- | --- | --- |
+| Fresh 2×2 grid | 15.0 s / 5 calls | 8.0 s / 1 call | 4.9 s / 1 call |
+| Complete partial grid | 13.5 s / 4 calls | 5.7 s / 1 call | 4.8 s / 1 call |
+| Rename a panel | 11.4 s / 4 calls | — | 5.5 s / 1 call |
+| Enlarge named panel | Unrequested reviewer, then correction | 7.5 s / 1 call | 7.2 s / 1 call |
+| Stop a display | 20.1 s / 7 calls | — | 4.8 s / 1 call |
+| Close display | 10.0 s / 2 calls | — | 6.8 s / 1 call |
+| Receive findings after parent restart | Failed | 26.4 s | 15.7 s |
+| Same-reviewer follow-up | No automatic second result | 17.1 s | 18.9 s |
+
+These are individual end-to-end task samples, not medians or latency guarantees.
+Some diagnostic runs overlapped, and provider conditions, cache state, wording,
+and terminal environment differed. The grid tool itself took 39 ms in live round
+2; almost all of its task time was outside that local operation. A final follow-up
+run took 15.5 seconds overall with a 19 ms assignment tool call, no new panel, and
+no validation retry; additional parent file inspection remained.
+
+The original restart failure returned an unexpected takeover status and led the
+parent into inspection/waiting. It did not recur in the later two live runs, and
+mechanical restart regressions pass, but its original cause was not conclusively
+isolated. Keep this as evidence to investigate if it recurs, not a proven fix for
+every recovery path.
+
+Remaining visible friction:
+
+- Unquoted phrases such as “Name the scratch panel copy work” were misread; the
+  held-out equivalent targeted the wrong panel. Quoted label requests succeeded
+  without changing production code. The original failures remain in the score.
+- A vague request for a bottom terminal still caused unnecessary source listing
+  and took 18.8 seconds. The agent sometimes repeats the reviewer's file reads.
+- Fresh helper startup still takes about three seconds. Herdr 0.8.2 defines
+  AGENT_START_SETTLE_DELAY as three seconds in src/app/agents.rs; bypassing its
+  readiness path was not part of this change.
+- More repetitions and native rendering checks are still needed. No claim is
+  made that every phrasing, lifecycle edge, or newer dependency is reliable.
+
+Final validation: 20 headless regressions, Go build/tests/vet, and the direct local
+benchmark passed. The new grid regression covers multiple shapes under both
+terminal environments, repeated requests, preservation and incompatible geometry.
+Real-process follow-up, helper-reload, and legacy-helper compatibility regressions
+were added. Existing helpers from the older extension are rejected for automatic
+follow-ups instead of silently promising delivery they cannot perform.
+
+Live evidence: [baseline](../benchmarks/results/live-round1.json),
+[corrected checker](../benchmarks/results/live-round1-oracle-check.json),
+[targeted fixes](../benchmarks/results/live-round2.json),
+[held-out round](../benchmarks/results/live-round3-heldout.json),
+[final follow-up](../benchmarks/results/live-round4-followup.json), and
+[rename clarification](../benchmarks/results/rename-clarification.json).
+
+Mechanical evidence: [follow-up probe](../benchmarks/results/followup-round2.json),
+[local samples](../benchmarks/results/local-after-live-fixes.json), and
+[final regressions](../benchmarks/results/live-final-regressions.txt).

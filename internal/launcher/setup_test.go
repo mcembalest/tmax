@@ -160,8 +160,8 @@ func TestVersionCompatibility(t *testing.T) {
 		herdr, pi string
 		ok        bool
 	}{
-		{"herdr 0.8.2", "0.85.0", true}, {"herdr 0.8.1", "0.85.0", false},
-		{"herdr 0.8.2", "0.84.0", false}, {"unknown", "0.85.0", false},
+		{"herdr 0.9.0", "0.85.0", true}, {"herdr 0.8.2", "0.85.0", false},
+		{"herdr 0.9.0", "0.84.0", false}, {"unknown", "0.85.0", false},
 	} {
 		t.Run(tc.herdr+tc.pi, func(t *testing.T) {
 			dir := setupFixture(t)

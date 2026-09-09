@@ -12,6 +12,7 @@ if(process.env.TMAX_LIVE!=='1')throw new Error('Set TMAX_LIVE=1 to use the confi
 const variant=Number(process.env.TMAX_VARIANT||0),terminal=process.env.TMAX_TERMINAL||'Apple_Terminal';
 assert.ok([0,1,2].includes(variant));
 const selected=requests.filter(c=>!process.env.TMAX_CASES||process.env.TMAX_CASES.split(',').includes(c.id));
+const versions={herdr:(await exec('herdr',['--version'])).stdout.trim(),pi:(await exec('pi',['--version'])).stdout.trim()};
 const sourceDir=await mkdtemp(join(tmpdir(),'tmax-bench-source-')),sourceHashes={};
 for(const name of (await readdir('internal/launcher')).filter(n=>n.endsWith('.ts'))){const bytes=await readFile(join('internal/launcher',name));sourceHashes[name]=createHash('sha256').update(bytes).digest('hex');await writeFile(join(sourceDir,name),bytes);}
 const extension=join(sourceDir,'extension.ts');
@@ -112,7 +113,7 @@ for(const c of selected){
  await writeFile(process.argv[2]||'benchmarks/results/live.json',encode({sourceHashes,model:process.env.TMAX_TEST_MODEL||'gpt-5.6-luna',variant,terminal,inProgress:true,results})+'\n');
  console.log(JSON.stringify({id:c.id,...Object.fromEntries(Object.entries(results.at(-1)).filter(([k])=>!['conversation','prompt','toolDurations','helpers'].includes(k)))}));
 }
-const report={sourceHashes,node:process.version,platform:process.platform,arch:process.arch,date:new Date().toISOString(),revision:(await exec('git',['rev-parse','HEAD'])).stdout.trim(),provider:process.env.TMAX_TEST_PROVIDER||'openai-codex',model:process.env.TMAX_TEST_MODEL||'gpt-5.6-luna',thinking:process.env.TMAX_TEST_THINKING||'medium',terminal,variant,kind:'real-model',results};
+const report={...versions,sourceHashes,node:process.version,platform:process.platform,arch:process.arch,date:new Date().toISOString(),revision:(await exec('git',['rev-parse','HEAD'])).stdout.trim(),provider:process.env.TMAX_TEST_PROVIDER||'openai-codex',model:process.env.TMAX_TEST_MODEL||'gpt-5.6-luna',thinking:process.env.TMAX_TEST_THINKING||'medium',terminal,variant,kind:'real-model',results};
 await writeFile(process.argv[2]||'benchmarks/results/live.json',encode(report)+'\n');
 await rm(sourceDir,{recursive:true,force:true});
 if(results.some(r=>r.status!=='pass'))process.exitCode=1;

@@ -36,8 +36,8 @@ to disposable fixtures.
 Timing ends after an independent observer verifies the effect. `elapsedMs`
 includes those verification calls; `cliMs` records extension CLI time separately.
 These are headless functional observations, not pixel presentation timestamps.
-The grid case measures local mechanics; it does not imply a single model tool
-call or an available high-level grid tool. W16 deliberately includes a 50 ms
+The grid case measures the original three-split mechanics, separately from the
+current `workspace_grid` tool and `/grid` command. W16 deliberately includes a 50 ms
 requested wait; its latency is not comparable to an instantaneous rename.
 
 ## Real conversations
@@ -93,6 +93,7 @@ With the repository's tested Pi and Herdr on PATH:
 
 ```sh
 node benchmarks/local.mjs benchmarks/results/local.json
+TMAX_BENCH=1 node --test tests/grid.test.mjs
 TMAX_LIVE=1 node benchmarks/live.mjs benchmarks/results/live.json
 TMAX_LIVE=1 TMAX_VARIANT=2 TMAX_CASES=A03,A04,A05,S01,S07,S09 node benchmarks/live.mjs benchmarks/results/held-out.json
 TMAX_BENCH=1 node --test tests/pi.test.mjs tests/return.test.mjs tests/handoff.test.mjs
@@ -105,6 +106,13 @@ and consume model quota. Each run freezes a copy of the extension source so edit
 during a run cannot mix runtime versions. One authentication or unsupported-model failure
 blocks the rest of that run instead of repeatedly submitting doomed requests.
 Do not replace real-model results with scripted-provider results.
+
+The grid test submits `/grid` through real Pi five times per terminal environment,
+checks geometry and preserved terminals/focus, and enforces a two-second functional
+deadline. It also verifies that neither model turns nor tool turns start. Its
+`GRID_COMMAND_BENCHMARK` samples include Pi command dispatch and independent layout
+verification, but exclude Pi startup. They are direct-command latency, not an
+improvement to natural-language request latency or native rendering measurements.
 
 Keep the existing launcher regression suite too: launch, simultaneous return,
 project cwd, reload, quit, crash recovery, and close-workspace. Client detach and

@@ -42,7 +42,7 @@ func checkVersions() error {
 		name, minimum       string
 		major, minor, patch int
 	}{
-		{"herdr", "0.8.2", 0, 8, 2}, {"pi", "0.85.0", 0, 85, 0},
+		{"herdr", "0.9.0", 0, 9, 0}, {"pi", "0.85.0", 0, 85, 0},
 	} {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		cmd := exec.CommandContext(ctx, dep.name, "--version")

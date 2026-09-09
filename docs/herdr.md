@@ -19,8 +19,19 @@ It does not merge full transcripts or support nested splitting yet.
 The installed Herdr binary supplies its official Pi integration. tmax installs it
 into a temporary directory and atomically caches the resulting extension, loading
 it only for tmax launches. Ordinary Pi settings and extensions are not changed.
-Minimum versions are Herdr 0.8.2 and Pi 0.85.0; these are the tested versions.
+Minimum versions are Herdr 0.9.0 and Pi 0.85.0; these are the tested versions.
 Newer versions satisfy the minimum check but are not thereby proven compatible.
+
+Herdr 0.9.0 adds a combined client for local and saved SSH machines, independent
+client views, and more reliable prompt submission. tmax uses the released binary
+and its bundled Pi integration; CI verifies the pinned download checksum. Machine
+connections remain Herdr's responsibility. tmax's assigned-task records and results
+remain local: this update does not add cross-machine split-and-return.
+
+Upgrading a running 0.8.2 server requires a one-time restart, which stops its pane
+processes. The 0.9 client reports this protocol mismatch; tmax leaves active work
+intact instead of restarting automatically. Finish that work before following the
+reported restart instructions. See the [0.9.0 release notes](https://github.com/herdrdev/herdr/releases/tag/v0.9.0).
 
 ## Leave and return
 
@@ -35,7 +46,7 @@ This avoids reusing a shell whose terminal input modes were damaged by a killed
 TUI. It also avoids replacing work that the user started in the old shell.
 
 Herdr restores layout after server restart, but those are new processes.
-Automatic native conversation restore is disabled for tmax's server: Herdr 0.8.2
+Automatic native conversation restore is disabled for tmax's server: Herdr 0.9.0
 restarts Pi with a session reference but drops the explicit extension arguments.
 Use Pi's conversation picker to resume saved history. Live reconnect requires no
 conversation selection because the original Pi process never stopped.
@@ -76,7 +87,7 @@ It does not promise recovery of unfinished model calls after process death.
 
 ## Cost and network behavior
 
-Herdr 0.8.2 is [Apache 2.0 licensed](https://github.com/herdrdev/herdr/blob/v0.8.2/LICENSE).
+Herdr 0.9.0 is [Apache 2.0 licensed](https://github.com/herdrdev/herdr/blob/v0.9.0/LICENSE).
 Its local runtime requires no Herdr account or subscription; model-provider costs
 remain separate. Inspection of the released source found no built-in analytics
 collector or analytics SDK. Herdr does make automatic version and detection-catalog
@@ -84,7 +95,7 @@ requests by default. tmax disables both in its private server configuration,
 and starts Pi with `--offline` to disable Pi's startup network operations.
 Herdr's official Pi hook communicates over the local Unix socket.
 
-This is a source audit of 0.8.2, not a packet-level guarantee for every dependency,
+This is a source audit of 0.9.0, not a packet-level guarantee for every dependency,
 newer release, or user-installed extension. Installation and explicit updates
 still download software; model requests still contact the chosen provider.
 Existing servers keep their loaded configuration until stopped and restarted;
@@ -136,5 +147,12 @@ The live benchmark exposed excess model round trips for ordinary controls. The
 agent now receives a current workspace snapshot as turn context, outside the
 system prompt, and can fill an aligned grid in one tool call. Grid creation does
 not close existing terminals or repair incompatible split geometry. Prompt-cache
-effects remain unmeasured. Herdr 0.8.2 also has a fixed three-second startup settle
+effects remain unmeasured. Herdr 0.9.0 also has a fixed three-second startup settle
 delay; tmax does not bypass that readiness path.
+
+For immediate layout changes, Pi's `/grid` command fills a 2×2 grid directly,
+without a model call. `/grid 2 3` requests two rows and three columns. It shares
+the same operation as the agent tool, preserves terminals and focus, and rejects
+incompatible layouts and overlapping grid operations. Ordinary language still
+goes to Pi, with the user's chosen model and reasoning setting; there is no
+keyword router or automatic model switch.

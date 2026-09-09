@@ -184,3 +184,43 @@ Live evidence: [baseline](../benchmarks/results/live-round1.json),
 Mechanical evidence: [follow-up probe](../benchmarks/results/followup-round2.json),
 [local samples](../benchmarks/results/local-after-live-fixes.json), and
 [final regressions](../benchmarks/results/live-final-regressions.txt).
+
+## Immediate grid command and Herdr 0.9.0
+
+The earlier eight-second grid task spent only 39 ms in the layout tool. Pi's
+`/grid` command now calls that same operation directly, defaulting to 2×2;
+`/grid 2 3` requests two rows and three columns. There is no model request or
+natural-language keyword matching. The regression enforces a two-second deadline,
+checks actual geometry, retained terminals/focus, repeated requests, invalid sizes,
+and zero model turns.
+
+Twenty command samples across two runs and both terminal environments measured
+**37–48 ms, median 43 ms**. These include Pi RPC command dispatch and independent
+Herdr layout verification, exclude startup, and are not native rendering timings.
+Natural-language grid requests still use Pi normally. With Luna / low, three
+phrasings produced the layout in **1.94, 1.88, and 2.66 seconds**; final responses
+took **3.03, 3.11, and 5.21 seconds**. A partial-grid request took 2.53 seconds to
+the layout. These are individual diagnostics, not a two-second model guarantee.
+The user's model and reasoning defaults are unchanged. A medium-reasoning sample
+on 0.9.0 still took 6.06 seconds to the layout and 10.36 seconds to finish.
+
+The dependency minimum and checksum-pinned CI binary are now Herdr 0.9.0. All
+22 headless regressions and 160 direct workspace observations passed, as did
+Go build/tests/vet. Natural grid, delegate-and-return, and same-reviewer follow-up
+checks passed on 0.9.0. The latter two took 26.6 and 19.5 seconds overall; extra
+parent file reads remain visible in their traces. Runtime versions are now
+recorded by both benchmark runners.
+
+Additional manual checks used actual PTY client attach/detach/reattach under both
+terminal environments and verified the display process survived. An initial
+attempt to run the PTY wrapper through pipes was unsupported; the successful check
+used a real PTY. Native Terminal/Ghostty rendering and remote SSH operation remain
+unverified. A 0.9 client correctly rejected a running 0.8.2 server with a protocol
+mismatch and left its terminal intact. Restarting that old server stops processes;
+tmax does not perform that restart automatically.
+
+Evidence: [command samples](../benchmarks/results/herdr09-grid.json),
+[natural requests at low reasoning](../benchmarks/results/herdr09-natural-low.json),
+[live upgrade checks](../benchmarks/results/herdr09-live.json),
+[local observations](../benchmarks/results/herdr09-local.json), and
+[regressions](../benchmarks/results/herdr09-regressions.txt).

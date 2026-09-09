@@ -73,6 +73,9 @@ test('disappeared agent reports interrupted; transport failure does not fabricat
    if(args[1]==='get')throw new Error(error);return '{}';
   });
   await parent.split('Inspect this');await parent.start();
-  try{await delay(1300);assert.equal(parent.messages.length,error==='agent_not_found'?1:0);}finally{parent.stop();}
+  try{
+   await delay(1300);assert.equal(parent.messages.length,error==='agent_not_found'?1:0);
+   assert.ok(parent.calls.filter(args=>args[1]==='get').length<=2,'Faster local result checks must not multiply status CLI requests');
+  }finally{parent.stop();}
  }
 }));

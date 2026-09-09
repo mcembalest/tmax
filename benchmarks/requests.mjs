@@ -1,0 +1,23 @@
+// Outcome-based cases. Variant 2 is held out from tuning. Prompts never name tools.
+export const requests = [
+ ['A01','beside',['Open a terminal beside this conversation.','I need a shell on the right, keeping me here.','Give me somewhere next to this chat to type commands.']],
+ ['A02','below',['Open a terminal below this conversation.','Give me a shell underneath this chat.','Add a place to type commands along the bottom.']],
+ ['A03','grid',['Make a 2 by 2 grid.','Arrange four panels in two rows and two columns.','I want four equal sections, like the quarters of a window.']],
+ ['A04','partial grid',['Make this a 2 by 2 grid without restarting anything.','Complete a four-panel square and keep the running display alive.','Add the missing section so there are two rows of two; preserve what is here.']],
+ ['A05','existing grid',['Make this a 2 by 2 grid.','I want four panels, two across and two down.','Could you give me four equally sized quarters?']],
+ ['A06','rename',['Call the scratch panel notes.','Rename scratch to notes.','Change the label on scratch so it says notes.']],
+ ['A07','enlarge',['Make the notes panel fill the screen for now.','Temporarily expand notes so I can see it clearly.','Show notes on its own, keeping the others available.']],
+ ['A08','restore',['Bring back the other panels.','Restore the layout from before I enlarged notes.','Show all the sections again.']],
+ ['A09','stop display',['Stop the clock but leave its panel open.','Freeze the ticking display and keep its last output visible.','End the clock process without removing its section.']],
+ ['A10','close display',['Close the clock panel.','Remove the ticking display and stop its process.','I am finished with the clock; shut that section down.']],
+ ['S01','delegate and return',['Have someone separately compare plan.md with checklist.md and bring the mismatch back here.','Check plan.md against checklist.md in another conversation and return the findings here.','Get a second pair of eyes on plan.md and checklist.md in another panel, then tell me what they found.']],
+ ['S02','carry context',['Have another reviewer return our agreed label, using the context from this conversation.','In another panel, ask for a reminder of the label we settled on and bring it back here.','Let a separate conversation explain our label without me repeating it.']],
+ ['S03','two perspectives',['Use two separate conversations: one checks plan.md against checklist.md, the other checks plan2.md against checklist2.md. Bring both findings here.','Put the two plan/checklist pairs in different hands at the same time and combine their findings here.','Have a reviewer in each of two panels examine a different plan/checklist pair, then tell me both results.']],
+ ['S04','stay available',['Start a separate review that runs ./gated-check and returns its output here. Keep this conversation available.','Let another conversation handle ./gated-check while you stay here with me, then bring its output back.','Send ./gated-check to a reviewer in another panel and keep talking here; return the result when ready.']],
+ ['S05','parent restart',['Run ./gated-check in another conversation and bring the answer back here.','Have a separate reviewer run ./gated-check and report back.','Ask someone in another panel to run ./gated-check and return the output.']],
+ ['S06','helper disappears',['Have a separate reviewer run ./gated-check and return the result.','Start ./gated-check in another conversation and bring its findings here.','Get someone in a new panel to run ./gated-check and report back here.']],
+ ['S07','follow up',['Ask that same reviewer to compare plan2.md with checklist2.md and bring the new findings here too.','Give the reviewer we just used the second plan/checklist pair; return its findings to this conversation.','Have that reviewer take one more look, this time at plan2.md and checklist2.md, and report back here.']],
+ ['S08','user takeover',['Have a separate reviewer run ./gated-check and report back here.','Start ./gated-check in another conversation and return the result.','Ask someone in another panel to run ./gated-check and bring its findings here.']],
+ ['S09','no keyword-triggered splitting',['Name the scratch panel copy work.','Change scratch\'s title to team swarm.','Label scratch roles and workers.']],
+ ['S10','conflicting findings',['Have two independent reviewers read opinion-a.md and opinion-b.md respectively, and explain their disagreement here.','Put opinion-a.md and opinion-b.md in separate conversations and bring back where they differ.','Get a separate reading of each opinion file in its own panel; tell me about the conflict.']],
+].map(([id,intent,prompts])=>({id,intent,prompts}));

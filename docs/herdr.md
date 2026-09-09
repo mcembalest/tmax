@@ -57,7 +57,8 @@ Herdr's terminals and processes intact. No in-memory job registry needs recovery
 No pi-herdr-subagents package is installed. The handoff uses native Pi fresh or
 forked sessions, sharing the project files. A private assignment record beside the
 parent session tracks the helper; Pi's settled-turn event writes its result. The
-parent checks once per second while idle and records delivered IDs in its own
+parent checks local results every 250 ms while idle, checks agent status at most
+once per second, and records delivered IDs in its own
 conversation. Reload can recover pending results without relying on pane text.
 The helper panel stays open. Interactive takeover or switching its conversation
 stops automatic assignment reporting; cancellation and disappearance are reported

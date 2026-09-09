@@ -20,6 +20,7 @@ export default function handoffs(pi: ExtensionAPI, run: (args: string[], signal?
   let ctx: ExtensionContext | undefined;
   let timer: ReturnType<typeof setInterval> | undefined;
   let checking = false, assigned = false, returned = false, closed = false;
+  let nextStatusCheck = 0;
   const queued = new Set<string>();
   let child: Task | undefined;
   let candidate: Result | undefined;
@@ -33,6 +34,8 @@ export default function handoffs(pi: ExtensionAPI, run: (args: string[], signal?
   async function collect() {
     if (checking || closed || !ctx?.isIdle() || childPath) return;
     const current = ctx, session = ctx.sessionManager.getSessionFile();
+    const checkStatus = Date.now() >= nextStatusCheck;
+    if (checkStatus) nextStatusCheck = Date.now() + 1000;
     checking = true;
     try {
       const branch = ctx.sessionManager.getBranch();
@@ -45,7 +48,7 @@ export default function handoffs(pi: ExtensionAPI, run: (args: string[], signal?
         const task = await read<Task>(path);
         let result = await read<Result>(path + ".result").catch(() => undefined);
         if (!result && !task.pane) result = { status: "launch_uncertain", text: "Startup was interrupted before the helper panel was recorded. Inspect the workspace before retrying." };
-        if (!result && task.pane) {
+        if (!result && task.pane && checkStatus) {
           try { await run(["agent", "get", task.pane]); }
           catch (error) {
             // A transport failure is uncertainty, not evidence the helper died.
@@ -79,7 +82,8 @@ export default function handoffs(pi: ExtensionAPI, run: (args: string[], signal?
       assigned = !!await read(childPath + ".accepted").catch(() => undefined);
       if (!["startup", "reload"].includes(_event.reason)) await finish({ status: "handed_over", text: "The helper switched conversations. Automatic return for this assignment has stopped; keep the panel open." });
     }
-    else if (ctx.sessionManager?.getSessionFile()) { timer = setInterval(collect, 1000); timer.unref(); }
+    // Read local results promptly without increasing agent-status CLI traffic.
+    else if (ctx.sessionManager?.getSessionFile()) { timer = setInterval(collect, 250); timer.unref(); }
   });
   pi.on("session_shutdown", () => { closed = true; if (timer) clearInterval(timer); });
   pi.on("input", async event => {

@@ -1,0 +1,11 @@
+{
+  "date": "2026-09-09T02:11:57.147Z",
+  "id": "S07 mechanics",
+  "provider": "deterministic fixture",
+  "status": "fail",
+  "elapsedMs": 4839,
+  "helperFinished": true,
+  "automaticResultsBefore": 1,
+  "automaticResultsAfter": 1,
+  "reason": "The same helper answers a follow-up, but its second result does not automatically return."
+}

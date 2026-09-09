@@ -1,0 +1,12 @@
+HANDOFF_BENCHMARK {"context":"fresh","splitMs":3083,"deliveryMs":569.289306640625,"provider":"deterministic fixture; not model latency"}
+✔ Pi fresh: real helper returns findings to a responsive parent (7881.971042ms)
+HANDOFF_BENCHMARK {"context":"fork","splitMs":3078,"deliveryMs":580.06103515625,"provider":"deterministic fixture; not model latency"}
+✔ Pi fork: real helper returns findings to a responsive parent (7882.667416ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 15812.591916

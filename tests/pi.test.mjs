@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { resolve } from 'node:path';
-import { writeFile } from 'node:fs/promises';
+import { writeFile, stat } from 'node:fs/promises';
 import { fixture,until,delay } from './herdr.mjs';
 
 for(const context of process.env.TMAX_LIVE?['live']:['fresh','fork'])test(`Pi ${context}: real helper returns findings to a responsive parent`,{timeout:180000},async()=>{
@@ -12,13 +12,13 @@ for(const context of process.env.TMAX_LIVE?['live']:['fresh','fork'])test(`Pi ${
  if(process.env.TMAX_LIVE)args.push('--provider','openai-codex','--model',process.env.TMAX_TEST_MODEL||'gpt-5.4-mini');
  const child=spawn('pi',args,{cwd:f.dir,env:f.paneEnv,stdio:['pipe','pipe','pipe']});
  let buffer='',errors='',next=0,finished;
- const pending=new Map(),messages=[];
+ const pending=new Map(),messages=[],received=new Map();
  child.stderr.on('data',d=>errors+=d);
  child.stdout.on('data',d=>{buffer+=d;while(buffer.includes('\n')){
   const i=buffer.indexOf('\n'),line=buffer.slice(0,i);buffer=buffer.slice(i+1);
   let e;try{e=JSON.parse(line);}catch{continue;}
   if(e.type==='response'&&pending.has(e.id)){const p=pending.get(e.id);pending.delete(e.id);e.success?p.resolve(e.data):p.reject(new Error(JSON.stringify(e)));}
-  if(e.type==='message_end')messages.push(e.message);
+  if(e.type==='message_end'){messages.push(e.message);received.set(e.message,Date.now());}
   if(e.type==='agent_end')finished?.();
  }});
  child.on('exit',code=>{for(const p of pending.values())p.reject(new Error(`Pi exited ${code}: ${errors}`));});
@@ -66,6 +66,13 @@ for(const context of process.env.TMAX_LIVE?['live']:['fresh','fork'])test(`Pi ${
    await until(async()=>assert.ok(messages.some(m=>m.role==='assistant'&&JSON.stringify(m.content).includes('Received RIVERSTONE')),JSON.stringify(messages)+errors));
    assert.equal(messages.filter(m=>m.role==='custom'&&m.customType==='tmax_results').length,1);
    assert.equal((await f.api('pane','list')).panes.length,2);
+   if(process.env.TMAX_BENCH){
+    const returned=messages.find(m=>m.role==='custom'&&m.customType==='tmax_results');
+    const id=returned.details.ids[0];
+    const result=await stat(resolve(f.dir,'parent.jsonl.tmax',id+'.json.result'));
+    const tool=messages.find(m=>m.role==='toolResult'&&m.toolName==='split_work');
+    console.log('HANDOFF_BENCHMARK '+JSON.stringify({context,splitMs:received.get(tool)-received.get(messages[0]),deliveryMs:received.get(returned)-result.mtimeMs,provider:'deterministic fixture; not model latency'}));
+   }
   }
   const after=await request('get_state');assert.equal(before.sessionId,after.sessionId);
   assert.ok(!errors.includes('Failed to load extension'),errors);

@@ -27,3 +27,6 @@ jobs:
       - run: node --test tests/*.test.mjs
         env:
           TMAX_BENCH: '1'
+      - run: node benchmarks/local.mjs
+        env:
+          TMAX_REPEATS: '2'

@@ -1,0 +1,188 @@
+{
+  "date": "2026-09-09T02:07:45.976Z",
+  "revision": "a33eff00472472ddd2f8219bbe7a36c9eebda348",
+  "provider": "openai-codex",
+  "model": "gpt-5.4-mini",
+  "thinking": "medium",
+  "terminal": "Apple_Terminal",
+  "variant": 0,
+  "kind": "real-model",
+  "results": [
+    {
+      "id": "A01",
+      "intent": "beside",
+      "status": "blocked",
+      "reason": "Provided authentication token is expired.",
+      "prompt": "Open a terminal beside this conversation.",
+      "elapsedMs": 1415,
+      "conversation": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "Open a terminal beside this conversation."
+            }
+          ],
+          "timestamp": 1788919664236
+        },
+        {
+          "role": "assistant",
+          "content": [],
+          "api": "openai-codex-responses",
+          "provider": "openai-codex",
+          "model": "gpt-5.4-mini",
+          "usage": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "totalTokens": 0,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "total": 0
+            }
+          },
+          "stopReason": "error",
+          "timestamp": 1788919664241,
+          "diagnostics": [
+            {
+              "type": "provider_transport_failure",
+              "timestamp": 1788919665398,
+              "error": {
+                "name": "Error",
+                "message": "WebSocket error",
+                "stack": "Error: WebSocket error\n    at extractWebSocketError (file:///opt/homebrew/lib/node_modules/@earendil-works/pi-coding-agent/dist/bundle/chunks/openai-codex-responses-YJOO52RW.js:10:8322)\n    at WebSocket.onError (file:///opt/homebrew/lib/node_modules/@earendil-works/pi-coding-agent/dist/bundle/chunks/openai-codex-responses-YJOO52RW.js:10:5016)\n    at [nodejs.internal.kHybridDispatch] (node:internal/event_target:845:20)\n    at WebSocket.dispatchEvent (node:internal/event_target:778:26)\n    at fireEvent (file:///opt/homebrew/lib/node_modules/@earendil-works/pi-coding-agent/dist/bundle/chunks/chunk-WZB2R5YO.js:268:104655)\n    at #onSocketClose (file:///opt/homebrew/lib/node_modules/@earendil-works/pi-coding-agent/dist/bundle/chunks/chunk-WZB2R5YO.js:268:135054)\n    at Object.onSocketClose (file:///opt/homebrew/lib/node_modules/@earendil-works/pi-coding-agent/dist/bundle/chunks/chunk-WZB2R5YO.js:268:128343)\n    at failWebsocketConnection (file:///opt/homebrew/lib/node_modules/@earendil-works/pi-coding-agent/dist/bundle/chunks/chunk-WZB2R5YO.js:268:114832)\n    at Object.processResponse (file:///opt/homebrew/lib/node_modules/@earendil-works/pi-coding-agent/dist/bundle/chunks/chunk-WZB2R5YO.js:268:111517)\n    at file:///opt/homebrew/lib/node_modules/@earendil-works/pi-coding-agent/dist/bundle/chunks/chunk-WZB2R5YO.js:268:56005\n    at node:internal/process/task_queues:149:7\n    at AsyncResource.runInAsyncScope (node:async_hooks:213:14)\n    at AsyncResource.runMicrotask (node:internal/process/task_queues:146:8)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)"
+              },
+              "details": {
+                "configuredTransport": "auto",
+                "fallbackTransport": "sse",
+                "eventsEmitted": false,
+                "phase": "before_message_stream_start",
+                "requestBytes": 9087
+              }
+            }
+          ],
+          "errorMessage": "Provided authentication token is expired."
+        }
+      ]
+    },
+    {
+      "id": "A02",
+      "intent": "below",
+      "status": "blocked",
+      "reason": "Provided authentication token is expired."
+    },
+    {
+      "id": "A03",
+      "intent": "grid",
+      "status": "blocked",
+      "reason": "Provided authentication token is expired."
+    },
+    {
+      "id": "A04",
+      "intent": "partial grid",
+      "status": "blocked",
+      "reason": "Provided authentication token is expired."
+    },
+    {
+      "id": "A05",
+      "intent": "existing grid",
+      "status": "blocked",
+      "reason": "Provided authentication token is expired."
+    },
+    {
+      "id": "A06",
+      "intent": "rename",
+      "status": "blocked",
+      "reason": "Provided authentication token is expired."
+    },
+    {
+      "id": "A07",
+      "intent": "enlarge",
+      "status": "blocked",
+      "reason": "Provided authentication token is expired."
+    },
+    {
+      "id": "A08",
+      "intent": "restore",
+      "status": "blocked",
+      "reason": "Provided authentication token is expired."
+    },
+    {
+      "id": "A09",
+      "intent": "stop display",
+      "status": "blocked",
+      "reason": "Provided authentication token is expired."
+    },
+    {
+      "id": "A10",
+      "intent": "close display",
+      "status": "blocked",
+      "reason": "Provided authentication token is expired."
+    },
+    {
+      "id": "S01",
+      "intent": "delegate and return",
+      "status": "blocked",
+      "reason": "Provided authentication token is expired."
+    },
+    {
+      "id": "S02",
+      "intent": "carry context",
+      "status": "blocked",
+      "reason": "Provided authentication token is expired."
+    },
+    {
+      "id": "S03",
+      "intent": "two perspectives",
+      "status": "blocked",
+      "reason": "Provided authentication token is expired."
+    },
+    {
+      "id": "S04",
+      "intent": "stay available",
+      "status": "blocked",
+      "reason": "Provided authentication token is expired."
+    },
+    {
+      "id": "S05",
+      "intent": "parent restart",
+      "status": "blocked",
+      "reason": "Provided authentication token is expired."
+    },
+    {
+      "id": "S06",
+      "intent": "helper disappears",
+      "status": "blocked",
+      "reason": "Provided authentication token is expired."
+    },
+    {
+      "id": "S07",
+      "intent": "follow up",
+      "status": "blocked",
+      "reason": "Provided authentication token is expired."
+    },
+    {
+      "id": "S08",
+      "intent": "user takeover",
+      "status": "blocked",
+      "reason": "Provided authentication token is expired."
+    },
+    {
+      "id": "S09",
+      "intent": "no keyword-triggered splitting",
+      "status": "blocked",
+      "reason": "Provided authentication token is expired."
+    },
+    {
+      "id": "S10",
+      "intent": "conflicting findings",
+      "status": "blocked",
+      "reason": "Provided authentication token is expired."
+    }
+  ]
+}

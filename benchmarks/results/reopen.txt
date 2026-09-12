@@ -1,0 +1,130 @@
+Reopen correction: Herdr 0.9.0, Pi 0.85.1; deterministic Pi provider, no model service.
+The old d208bcb launcher failed when only the helper remained. The final targeted
+check also adds adoption of older live sessions. Both terminal labels are
+environment coverage, not native app rendering verification.
+
+Old launcher, new surviving-helper regression
+✖ Apple_Terminal: launch, return, reload and recovery with surviving helpers (19457.360958ms)
+✖ ghostty: launch, return, reload and recovery with surviving helpers (19435.8395ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 39145.161958
+
+✖ failing tests:
+
+test at tests/launcher.test.mjs:13:52
+✖ Apple_Terminal: launch, return, reload and recovery with surviving helpers (19457.360958ms)
+  AssertionError [ERR_ASSERTION]: A surviving helper must not prevent starting the main conversation
+  
+  1 !== 2
+  
+      at TestContext.<anonymous> (file:///Users/maxcembalest/Desktop/repos/tmax/tests/launcher.test.mjs:82:38)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 2,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/launcher.test.mjs:13:52
+✖ ghostty: launch, return, reload and recovery with surviving helpers (19435.8395ms)
+  AssertionError [ERR_ASSERTION]: A surviving helper must not prevent starting the main conversation
+  
+  1 !== 2
+  
+      at TestContext.<anonymous> (file:///Users/maxcembalest/Desktop/repos/tmax/tests/launcher.test.mjs:82:38)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 2,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+Corrected launcher, all 22 tests
+LOCAL_BENCHMARK {"terminal":"Apple_Terminal","scenario":"split, run, read, reload, interrupt, close","elapsedMs":323.2908329999999}
+✔ Apple_Terminal: real Herdr workspace controls survive extension reload (835.025708ms)
+LOCAL_BENCHMARK {"terminal":"ghostty","scenario":"split, run, read, reload, interrupt, close","elapsedMs":308.85362499999997}
+✔ ghostty: real Herdr workspace controls survive extension reload (804.274833ms)
+✔ login guidance never rewrites the editor after reload or resume (0.850792ms)
+✔ Apple_Terminal: grid shapes preserve terminals, focus and idempotence (4977.486959ms)
+✔ ghostty: grid shapes preserve terminals, focus and idempotence (4957.601ms)
+GRID_COMMAND_BENCHMARK {"terminal":"Apple_Terminal","samplesMs":[32.5625,35.52154100000007,31.22754200000054,30.959334000001036,35.45400000000154],"modelTurns":0}
+✔ Apple_Terminal: /grid completes through Pi without a model turn (1697.034375ms)
+GRID_COMMAND_BENCHMARK {"terminal":"ghostty","samplesMs":[31.20575000000099,41.44225000000006,41.4263749999991,42.23945899999853,40.32041600000048],"modelTurns":0}
+✔ ghostty: /grid completes through Pi without a model turn (1759.689084ms)
+✔ partial grid retains a running display; incompatible layout is rejected without mutations (642.519042ms)
+✔ assigned result waits for settled turn, returns after parent reload, and is not delivered twice (1515.511291ms)
+✔ busy parent is not interrupted and canceled child is not labeled complete (1309.662333ms)
+✔ user takeover keeps helper panel and stops automatic assignment reporting (2.797417ms)
+✔ disappeared agent reports interrupted; transport failure does not fabricate completion (2606.59225ms)
+✔ explicit follow-up reuses an idle helper and survives helper reload (8.480208ms)
+✔ legacy helper assignments are rejected before submitting a follow-up (2.582084ms)
+REOPEN_BENCHMARK {"terminal":"Apple_Terminal","exit":"quit","elapsedMs":3326.602665999999,"modelCalls":0,"concurrent":2}
+REOPEN_BENCHMARK {"terminal":"Apple_Terminal","exit":"crash","elapsedMs":3286.004915999998,"modelCalls":0,"concurrent":1}
+✔ Apple_Terminal: launch, return, reload and recovery with surviving helpers (26909.37825ms)
+REOPEN_BENCHMARK {"terminal":"ghostty","exit":"quit","elapsedMs":3312.8132079999996,"modelCalls":0,"concurrent":2}
+REOPEN_BENCHMARK {"terminal":"ghostty","exit":"crash","elapsedMs":3263.394042,"modelCalls":0,"concurrent":1}
+✔ ghostty: launch, return, reload and recovery with surviving helpers (27008.302625ms)
+HANDOFF_BENCHMARK {"context":"fresh","splitMs":3421,"deliveryMs":79.8671875,"provider":"deterministic fixture; not model latency"}
+✔ Pi fresh: real helper returns findings to a responsive parent (7422.854792ms)
+HANDOFF_BENCHMARK {"context":"fork","splitMs":3325,"deliveryMs":182.271728515625,"provider":"deterministic fixture; not model latency"}
+✔ Pi fork: real helper returns findings to a responsive parent (7393.913708ms)
+✔ Apple_Terminal: pending helper returns after parent process restart without duplicate delivery (11162.97525ms)
+✔ ghostty: pending helper returns after parent process restart without duplicate delivery (11203.950792ms)
+✔ closing a real helper mid-turn returns incomplete work and preserves the parent (4301.175208ms)
+✔ a real helper returns a follow-up without creating another pane (10906.608ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 54187.347375
+
+Final launcher regression, including older-session adoption
+REOPEN_BENCHMARK {"terminal":"Apple_Terminal","exit":"quit","elapsedMs":3346.8619160000017,"modelCalls":0,"concurrent":2}
+REOPEN_BENCHMARK {"terminal":"Apple_Terminal","exit":"crash","elapsedMs":3300.775458,"modelCalls":0,"concurrent":1}
+✔ Apple_Terminal: launch, return, reload and recovery with surviving helpers (27716.979917ms)
+REOPEN_BENCHMARK {"terminal":"ghostty","exit":"quit","elapsedMs":3307.8832500000062,"modelCalls":0,"concurrent":2}
+REOPEN_BENCHMARK {"terminal":"ghostty","exit":"crash","elapsedMs":3299.5024170000033,"modelCalls":0,"concurrent":1}
+✔ ghostty: launch, return, reload and recovery with surviving helpers (27538.714167ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 55538.553708
+
+64 direct workspace observations
+{"id":"W01 inspect","pass":4,"total":4,"medianMs":9.816437499999893,"errors":[]}
+{"id":"W02 open beside","pass":4,"total":4,"medianMs":16.662895999999876,"errors":[]}
+{"id":"W03 open below","pass":4,"total":4,"medianMs":10.918958000000075,"errors":[]}
+{"id":"W04 grid","pass":4,"total":4,"medianMs":27.604229000000146,"errors":[]}
+{"id":"W05 inspect existing grid","pass":4,"total":4,"medianMs":8.74510399999997,"errors":[]}
+{"id":"W06 rename","pass":4,"total":4,"medianMs":7.70952049999994,"errors":[]}
+{"id":"W07 focus","pass":4,"total":4,"medianMs":7.437583500000073,"errors":[]}
+{"id":"W08 enlarge","pass":4,"total":4,"medianMs":7.428083500000042,"errors":[]}
+{"id":"W09 restore","pass":4,"total":4,"medianMs":6.9037289999999985,"errors":[]}
+{"id":"W10 resize","pass":4,"total":4,"medianMs":7.101895999999982,"errors":[]}
+{"id":"W11 swap","pass":4,"total":4,"medianMs":7.3055834999998694,"errors":[]}
+{"id":"W12 start display","pass":4,"total":4,"medianMs":7.1058540000000505,"errors":[]}
+{"id":"W13 read display","pass":4,"total":4,"medianMs":6.731313000000114,"errors":[]}
+{"id":"W14 interrupt display","pass":4,"total":4,"medianMs":9.609478999999965,"errors":[]}
+{"id":"W15 close","pass":4,"total":4,"medianMs":37.48270849999997,"errors":[]}
+{"id":"W16 bounded wait","pass":4,"total":4,"medianMs":121.89727100000005,"errors":[]}

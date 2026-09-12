@@ -102,7 +102,7 @@ func Run(args []string) error {
 	}
 	session := fmt.Sprintf("tmax-%x", sha256.Sum256([]byte(cwd)))[:29]
 	env := workspaceEnv(os.Environ(), session, config)
-	h := herdr{env: env}
+	h := herdr{env: env, mainFile: filepath.Join(dir, session+".main")}
 	lock, err := os.OpenFile(filepath.Join(dir, session+".lock"), os.O_CREATE|os.O_RDWR, 0600)
 	if err != nil {
 		return err
@@ -129,17 +129,21 @@ func cachedFile(dir, name, suffix string, content []byte) (string, error) {
 	if _, err := os.Stat(path); err == nil {
 		return path, nil
 	}
-	f, err := os.CreateTemp(dir, name+"-*")
+	return path, publish(path, content)
+}
+
+func publish(path string, content []byte) error {
+	f, err := os.CreateTemp(filepath.Dir(path), filepath.Base(path)+"-*")
 	if err != nil {
-		return "", err
+		return err
 	}
 	defer os.Remove(f.Name())
 	if _, err = f.Write(content); err != nil {
 		f.Close()
-		return "", err
+		return err
 	}
 	if err = f.Close(); err != nil {
-		return "", err
+		return err
 	}
-	return path, os.Rename(f.Name(), path)
+	return os.Rename(f.Name(), path)
 }

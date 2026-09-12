@@ -1,0 +1,10 @@
+✔ Apple_Terminal: launch, concurrent return, quit, reload, crash and relaunch (16065.665667ms)
+✔ ghostty: launch, concurrent return, quit, reload, crash and relaunch (15777.3355ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 32098.043791

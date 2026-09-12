@@ -12,16 +12,22 @@ import (
 	"time"
 )
 
-type herdr struct{ env []string }
+type herdr struct {
+	env      []string
+	mainFile string
+}
 type pane struct {
 	ID        string `json:"pane_id"`
 	Workspace string `json:"workspace_id"`
+	Terminal  string `json:"terminal_id"`
 }
 type snapshot struct {
 	Panes  []pane `json:"panes"`
 	Agents []struct {
-		Pane string `json:"pane_id"`
-		Kind string `json:"agent"`
+		Pane     string `json:"pane_id"`
+		Kind     string `json:"agent"`
+		Name     string `json:"name"`
+		Terminal string `json:"terminal_id"`
 	} `json:"agents"`
 }
 
@@ -94,8 +100,25 @@ func (h herdr) prepare(cwd, dir, ext, integration string, args []string) error {
 			time.Sleep(50 * time.Millisecond)
 		}
 	}
-	// Reconnect to an existing agent, never silently discard new launch options.
-	if len(state.Agents) > 0 {
+	// Helpers can outlive the main Pi. Match its terminal, not editable names.
+	terminal, err := os.ReadFile(h.mainFile)
+	legacy := os.IsNotExist(err)
+	if err != nil && !legacy {
+		return err
+	}
+	for _, agent := range state.Agents {
+		if agent.Kind != "pi" || agent.Terminal == "" {
+			continue
+		}
+		// Adopt an older launch once, before it has a saved terminal identity.
+		if agent.Terminal != string(terminal) && !(legacy && agent.Name == "tmax") {
+			continue
+		}
+		if legacy {
+			if err := publish(h.mainFile, []byte(agent.Terminal)); err != nil {
+				return err
+			}
+		}
 		if len(args) > 0 {
 			return fmt.Errorf("this folder already has a running agent; run tmax without options to return, then use Pi's /resume or /model")
 		}
@@ -128,10 +151,21 @@ func (h herdr) prepare(cwd, dir, ext, integration string, args []string) error {
 		}
 		root = response.Result.Root
 	}
-	if root.ID == "" {
+	if root.ID == "" || root.Terminal == "" {
 		return fmt.Errorf("Herdr returned no workspace pane")
 	}
-	launch := append([]string{"agent", "start", "tmax", "--kind", "pi", "--pane", root.ID, "--", "--offline", "-e", ext, "-e", integration}, args...)
+	// Record before submitting the launch, whose result can be ambiguous.
+	if err := publish(h.mainFile, []byte(root.Terminal)); err != nil {
+		return err
+	}
+	name := "tmax"
+	for _, agent := range state.Agents {
+		if agent.Name == name {
+			name = "tmax-" + strings.ReplaceAll(root.ID, ":", "-")
+			break
+		}
+	}
+	launch := append([]string{"agent", "start", name, "--kind", "pi", "--pane", root.ID, "--", "--offline", "-e", ext, "-e", integration}, args...)
 	// Shell startup can still be in progress. Only retry the explicit not-ready
 	// response; never re-submit a launch after an ambiguous timeout.
 	deadline := time.Now().Add(5 * time.Second)

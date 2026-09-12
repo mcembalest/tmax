@@ -41,7 +41,11 @@ Explicit Pi options are rejected on reconnect instead of silently ignored.
 
 Herdr's Ctrl-B, Q detaches the client while work continues. `/quit` exits Pi;
 other panels remain. `/close-workspace` closes that workspace and its processes.
-After Pi quits or crashes, tmax opens Pi in a fresh tab and preserves old panels.
+After the main Pi quits or crashes, tmax opens Pi in a fresh tab and preserves old
+panels, even when assigned instances are still running. The launcher remembers
+the main terminal's ID; changing agent or pane names does not change its identity.
+Concurrent returns start one replacement. Explicit Pi options apply to that new
+conversation, while returning to a live main conversation preserves focus.
 This avoids reusing a shell whose terminal input modes were damaged by a killed
 TUI. It also avoids replacing work that the user started in the old shell.
 
@@ -120,8 +124,18 @@ These are single-run observations, not a controlled comparison against tmux.
 One earlier combined-suite launch exceeded the test's 45-second deadline without
 a diagnostic; subsequent isolated and full-suite runs passed. Version checks and
 integration preparation now have bounded deadlines, but the original stall was
-not reproduced or conclusively explained. Keep this as a draft until startup has
-been exercised further on real terminals.
+not reproduced or conclusively explained. Native terminal startup checks remain
+outstanding.
+
+The later reopen regression found a separate, reproducible launcher error: a
+surviving helper prevented replacement of a main Pi that had exited. Terminal
+identity now distinguishes them. Both environment variants cover quit/crash,
+concurrent reopen, retained process and terminal IDs, renamed instances, explicit
+Pi options, and adoption of older live sessions. All 22 headless tests pass;
+the expanded launcher check also passes separately. Four reopen samples took
+3.30–3.35 seconds, including Herdr's startup delay and no model call. See the
+[before/after evidence](../benchmarks/results/reopen.txt). These are local
+observations, not native rendering checks or latency guarantees.
 
 A deterministic test provider now exercises the real Pi loop and Herdr helper
 process: split, keep chatting, and deliver findings once. Separate lifecycle tests

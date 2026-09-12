@@ -1,0 +1,26 @@
+LOCAL_BENCHMARK {"terminal":"Apple_Terminal","scenario":"split, run, read, reload, interrupt, close","elapsedMs":302.5915}
+✔ Apple_Terminal: real Herdr workspace controls survive extension reload (793.495917ms)
+LOCAL_BENCHMARK {"terminal":"ghostty","scenario":"split, run, read, reload, interrupt, close","elapsedMs":301.5480000000001}
+✔ ghostty: real Herdr workspace controls survive extension reload (797.9385ms)
+✔ login guidance never rewrites the editor after reload or resume (0.493375ms)
+✔ assigned result waits for settled turn, returns after parent reload, and is not delivered twice (1514.109833ms)
+✔ busy parent is not interrupted and canceled child is not labeled complete (1307.774209ms)
+✔ user takeover keeps helper panel and stops automatic assignment reporting (5.082709ms)
+✔ disappeared agent reports interrupted; transport failure does not fabricate completion (2608.958584ms)
+✔ Apple_Terminal: launch, concurrent return, quit, reload, crash and relaunch (15394.649333ms)
+✔ ghostty: launch, concurrent return, quit, reload, crash and relaunch (15027.835125ms)
+HANDOFF_BENCHMARK {"context":"fresh","splitMs":3061,"deliveryMs":124.493896484375,"provider":"deterministic fixture; not model latency"}
+✔ Pi fresh: real helper returns findings to a responsive parent (7435.535ms)
+HANDOFF_BENCHMARK {"context":"fork","splitMs":3051,"deliveryMs":140.01806640625,"provider":"deterministic fixture; not model latency"}
+✔ Pi fork: real helper returns findings to a responsive parent (7425.813917ms)
+✔ Apple_Terminal: pending helper returns after parent process restart without duplicate delivery (11250.889667ms)
+✔ ghostty: pending helper returns after parent process restart without duplicate delivery (11203.232417ms)
+✔ closing a real helper mid-turn returns incomplete work and preserves the parent (4083.95475ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 30785.380166

@@ -17,7 +17,7 @@
 - Character, personality, and visual design are the user's decisions.
 - Design for people unfamiliar with terminals, multiplexers, and terminal agents.
   Keep setup guided and let the agent handle workspace controls; do not require
-  users to learn tmux or agent terminology for ordinary use.
+  users to learn Herdr or agent terminology for ordinary use.
 - Keep the README limited to essential installation and getting started.
   Omit agent tool catalogs, tmux control references, and implementation/benchmark detail.
 - Apple Terminal and Ghostty must have equivalent behavior. Preserve the active

@@ -1,0 +1,16 @@
+✔ assigned result waits for settled turn, returns after parent reload, and is not delivered twice (1513.975167ms)
+✔ busy parent is not interrupted and canceled child is not labeled complete (1316.697625ms)
+✔ user takeover keeps helper panel and stops automatic assignment reporting (10.174542ms)
+✔ disappeared agent reports interrupted; transport failure does not fabricate completion (2610.392458ms)
+HANDOFF_BENCHMARK {"context":"fresh","splitMs":3073,"deliveryMs":98.284912109375,"provider":"deterministic fixture; not model latency"}
+✔ Pi fresh: real helper returns findings to a responsive parent (7462.8675ms)
+HANDOFF_BENCHMARK {"context":"fork","splitMs":3069,"deliveryMs":102.164794921875,"provider":"deterministic fixture; not model latency"}
+✔ Pi fork: real helper returns findings to a responsive parent (7457.79425ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 14969.1285

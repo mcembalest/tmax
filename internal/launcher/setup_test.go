@@ -27,7 +27,7 @@ if [ "$TMAX_SETUP_FAIL" = brew ]; then exit 7; fi
 shift
 for package do
   case "$package" in
-    tmux) /bin/cp "$TMAX_SETUP_TEST/brew" "$TMAX_SETUP_TEST/tmux" ;;
+    herdr) /bin/cp "$TMAX_SETUP_TEST/brew" "$TMAX_SETUP_TEST/herdr" ;;
     node)
       printf '#!/bin/sh\nprintf "v24.0.0\\n"\n' > "$TMAX_SETUP_TEST/node"
       /bin/chmod +x "$TMAX_SETUP_TEST/node"
@@ -50,7 +50,7 @@ if [ "$TMAX_SETUP_FAIL" = npm ]; then exit 8; fi
 }
 
 func TestSetupSkipsConfiguredLaunch(t *testing.T) {
-	setupFixture(t, "tmux", "pi")
+	setupFixture(t, "herdr", "pi")
 	var output bytes.Buffer
 	if err := installDependencies(strings.NewReader(""), &output, false); err != nil || output.Len() != 0 {
 		t.Fatalf("configured launch prompted: %s %v", &output, err)
@@ -93,9 +93,9 @@ func TestSetupInstallPlan(t *testing.T) {
 		tools []string
 		calls string
 	}{
-		{"all", []string{"brew", "npm-stub"}, "brew install tmux node\nnpm install -g --ignore-scripts " + piPackage + "\n"},
-		{"pi only", []string{"tmux", "node", "npm", "npm-stub"}, "npm install -g --ignore-scripts " + piPackage + "\n"},
-		{"tmux only", []string{"pi", "brew"}, "brew install tmux\n"},
+		{"all", []string{"brew", "npm-stub"}, "brew install herdr node\nnpm install -g --ignore-scripts " + piPackage + "\n"},
+		{"pi only", []string{"herdr", "node", "npm", "npm-stub"}, "npm install -g --ignore-scripts " + piPackage + "\n"},
+		{"herdr only", []string{"pi", "brew"}, "brew install herdr\n"},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			dir := setupFixture(t, tc.tools...)
@@ -141,7 +141,7 @@ func TestSetupWithoutHomebrew(t *testing.T) {
 }
 
 func TestSetupOldNode(t *testing.T) {
-	dir := setupFixture(t, "tmux", "node", "npm", "brew", "npm-stub")
+	dir := setupFixture(t, "herdr", "node", "npm", "brew", "npm-stub")
 	if err := os.WriteFile(filepath.Join(dir, "node"), []byte("#!/bin/sh\nprintf 'v22.18.0\\n'\n"), 0700); err != nil {
 		t.Fatal(err)
 	}
@@ -152,5 +152,27 @@ func TestSetupOldNode(t *testing.T) {
 	calls, _ := os.ReadFile(filepath.Join(dir, "calls"))
 	if !strings.HasPrefix(string(calls), "brew install node\n") {
 		t.Fatalf("old Node was not handled: %s", calls)
+	}
+}
+
+func TestVersionCompatibility(t *testing.T) {
+	for _, tc := range []struct {
+		herdr, pi string
+		ok        bool
+	}{
+		{"herdr 0.9.0", "0.85.0", true}, {"herdr 0.8.2", "0.85.0", false},
+		{"herdr 0.9.0", "0.84.0", false}, {"unknown", "0.85.0", false},
+	} {
+		t.Run(tc.herdr+tc.pi, func(t *testing.T) {
+			dir := setupFixture(t)
+			for name, version := range map[string]string{"herdr": tc.herdr, "pi": tc.pi} {
+				if err := os.WriteFile(filepath.Join(dir, name), []byte("#!/bin/sh\nprintf '%s\\n' '"+version+"'\n"), 0700); err != nil {
+					t.Fatal(err)
+				}
+			}
+			if err := checkVersions(); (err == nil) != tc.ok {
+				t.Fatalf("compatibility: %v", err)
+			}
+		})
 	}
 }

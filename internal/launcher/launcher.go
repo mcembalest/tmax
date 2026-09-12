@@ -23,6 +23,12 @@ var handoff []byte
 //go:embed grid.ts
 var grid []byte
 
+//go:embed views.ts
+var views []byte
+
+//go:embed view.ts
+var view []byte
+
 const workspaceConfig = "[session]\nresume_agents_on_restore = false\n[update]\nversion_check = false\nmanifest_check = false\n"
 
 func Run(args []string) error {
@@ -56,7 +62,12 @@ func Run(args []string) error {
 		return err
 	}
 	source := extension
-	for name, content := range map[string][]byte{"handoff": handoff, "grid": grid} {
+	renderer, err := cachedFile(dir, "view", ".ts", view)
+	if err != nil {
+		return err
+	}
+	viewTools := bytes.ReplaceAll(views, []byte("./view.ts"), []byte("./"+filepath.Base(renderer)))
+	for name, content := range map[string][]byte{"handoff": handoff, "grid": grid, "views": viewTools} {
 		module, err := cachedFile(dir, name, ".ts", content)
 		if err != nil {
 			return err

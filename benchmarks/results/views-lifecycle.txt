@@ -1,0 +1,12 @@
+VIEW_BENCHMARK {"terminal":"Apple_Terminal","firstViewMs":542.927416,"liveUpdateMs":116.06987500000014,"gatherMs":12.020959000000175,"modelCalls":0}
+✔ Apple_Terminal: useful views spread, update, gather, survive reload and reopen (8645.941292ms)
+VIEW_BENCHMARK {"terminal":"ghostty","firstViewMs":542.8024999999998,"liveUpdateMs":113.87716700000055,"gatherMs":9.627458000000843,"modelCalls":0}
+✔ ghostty: useful views spread, update, gather, survive reload and reopen (8558.280833ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 17337.511959

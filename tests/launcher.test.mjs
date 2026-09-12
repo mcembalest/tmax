@@ -28,12 +28,17 @@ for(const terminal of ['Apple_Terminal','ghostty'])test(`${terminal}: launch, co
  let session;
  const api=async(...args)=>JSON.parse((await exec(real,args,{env:{...env,HERDR_SESSION:session},timeout:40000})).stdout || '{}').result;
  try{
-  const first=await launch('--offline','--no-session');
+  const first=await launch('--offline','--no-session','-e',resolve('tests/fixtures/provider.ts'),'--provider','tmax-test','--model','fixture');
   assert.equal(first.agents.length,1);assert.equal(first.panes.length,1);
   assert.equal(first.panes[0].foreground_cwd,await realpath(project));
   let pane=first.agents[0].pane_id;
   const sessions=JSON.parse((await exec(real,['session','list','--json'],{env})).stdout);
   session=(Array.isArray(sessions)?sessions:sessions.sessions).find(s=>s.name.startsWith('tmax-')).name;
+  phase='embedded view renderer';
+  await api('agent','prompt',pane,'Fixture show view','--wait');
+  const view=(await api('pane','list')).panes.find(p=>p.label==='Fixture view');assert.ok(view);
+  await until(async()=>assert.match((await exec(real,['pane','read',view.pane_id],{env:{...env,HERDR_SESSION:session}})).stdout,/EMBEDDED_RENDERER_WORKS/));
+  await api('pane','close',view.pane_id);
   phase='concurrent return';
   const [second,third]=await Promise.all([launch(),launch()]);
   assert.equal(second.agents[0].pane_id,pane);assert.equal(third.panes.length,1);

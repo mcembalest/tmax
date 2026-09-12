@@ -47,7 +47,8 @@ Local lifecycle samples on macOS with Herdr 0.9.0 and Pi 0.85.1:
 
 | Boundary | Observed samples |
 | --- | --- |
-| Request → first rendered view, including verification | 0.45–0.59 s |
+| Request → first rendered view, original SDK import | 0.45–0.59 s |
+| Same boundary after importing only Pi's theme | 0.16 s (two isolated samples) |
 | Source-file replacement → observed display update | 0.11–0.12 s |
 | Gather invocation → verified zoom | 8–12 ms |
 
@@ -56,6 +57,12 @@ exclude model time. In one live run, two simultaneous view calls completed local
 in 0.90 seconds including queueing; the natural request took 9.88 seconds to finish.
 The first implementation rejected one simultaneous call and needed a model retry.
 Serializing mutations locally removed that reproduced failure.
+
+The first CI run also caught a clean-install failure: importing Pi's SDK barrel
+pulled in a server package absent from the CLI installation. The viewer now imports
+only Pi's packaged theme module. This both removes that dependency and reduces
+startup work; the latter row above was measured separately after the fix. That
+theme-module path is a Pi compatibility boundary covered by the renderer tests.
 
 The 24 headless regressions cover both terminal environment variants, retained
 terminal IDs, active project directory, source changes, scrolling, parent restart,
@@ -108,3 +115,6 @@ Mechanical evidence: [full regressions](../benchmarks/results/views-regressions.
 [view lifecycle](../benchmarks/results/views-lifecycle.txt),
 [embedded renderer](../benchmarks/results/views-packaging.txt), and
 [64 direct workspace observations](../benchmarks/results/views-local.json).
+The [theme-only import check](../benchmarks/results/views-theme.txt) and
+[fresh Pi 0.85.0 regression run](../benchmarks/results/views-clean-install.txt)
+cover the packaging correction made after the recording.

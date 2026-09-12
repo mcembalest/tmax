@@ -11,7 +11,9 @@ const { Markdown, ProcessTerminal, TuiAltScreen, ScrollView, matchesKey, stripTe
 let root = dirname(piEntry), entry;
 while (root !== dirname(root)) {
   const pkg = await readFile(join(root, 'package.json'), 'utf8').then(JSON.parse).catch(() => undefined);
-  if (pkg?.name === '@earendil-works/pi-coding-agent') { entry = join(root, pkg.main); break; }
+  // Import only Pi's theme module: its SDK barrel also imports optional server
+  // packages that are absent from a clean CLI installation.
+  if (pkg?.name === '@earendil-works/pi-coding-agent') { entry = join(root, 'dist/modes/interactive/theme/theme.js'); break; }
   root = dirname(root);
 }
 if (!entry) throw new Error('Cannot locate the installed Pi renderer.');

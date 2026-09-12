@@ -18,6 +18,9 @@ No character artwork, personality, or new UI theme was introduced.
 
 - Show saved Markdown content or follow an existing file beside the conversation.
   Adding views spreads 1 → 2 → 4 while preserving focus and existing terminals.
+- Recall a historical record without letting new decisions overwrite its source
+  through Pi's edit/write tools. Current plans and drafts remain editable. The
+  agent chooses the operation from the task; there is no user-facing mode chooser.
 - File changes appear automatically, including atomic replacement. A missing
   source shows a visible error and recovers when it returns. Pi supplies Markdown,
   themes, scrolling, and text selection; a view starts at the top of its document.
@@ -64,20 +67,50 @@ only Pi's packaged theme module. This both removes that dependency and reduces
 startup work; the latter row above was measured separately after the fix. That
 theme-module path is a Pi compatibility boundary covered by the renderer tests.
 
-The 24 headless regressions cover both terminal environment variants, retained
+The 26 headless regressions cover both terminal environment variants, retained
 terminal IDs, active project directory, source changes, scrolling, parent restart,
 viewer crashes, repurposed panes, launch acknowledgement timeout, canceled queued
 requests, and the Go binary's embedded renderer. Environment coverage is distinct
 from native rendering. The existing direct workspace benchmark remains separate.
 
-**Shared-context semantics are not reliable yet.** Several natural conversations
+**History now has an enforced boundary, but recognition still depends on the model.** Several natural conversations
 revised the remembered discussion to match a new decision instead of preserving
 the historical record. This happened with both low and medium reasoning. General
 source-preservation guidance did not eliminate it. The final recorded TUI run
 preserved history and updated both current views, but one success is not a fix.
-No filename triggers, prompt-phrase dispatch, or benchmark-specific production
-rules were added. The next iteration should make source/history handling trustworthy
-without asking the user to manage data routing.
+
+The correction adds `recall_view` alongside the existing `show_view`. Recall marks
+the source as history in the saved view record. Pi's `tool_call` hook blocks edit
+and write before they execute; view updates cannot rewrite or demote that record.
+Protection survives dismiss/reopen and Pi restart, including relative paths,
+symlinks, hard links, and a temporarily missing source. A current document can later
+be recalled as history. Older records keep their previous editable behavior until
+recalled. Explicit discard removes the record and its protection; it still never
+deletes an external source.
+
+New regressions deliberately request the bad history edit through the actual Pi
+file tools while updating a current plan successfully. They also check aliases,
+restart, missing-source recovery, owned history, and attempts to rewrite history
+through view updates. The guarded update plus display verification took 42–43 ms
+in two local samples, with no model call.
+
+On the final implementation, two Astra/medium conversations passed the complete
+1 → 2 → 4 → 1 → return sequence. One used different natural wording and arbitrary
+filenames under the Ghostty environment. Both verified history protection before
+revision, byte-for-byte source preservation at turn end, an updated current plan,
+and unchanged terminal IDs after restart. First view calls took 163–173 ms locally;
+the corresponding requests finished in 6.7–7.0 seconds. These are small samples,
+not a model comparison or latency guarantee; the user's model defaults are unchanged.
+
+**A Luna/low check still selected the ordinary editable view for the earlier
+conversation.** The strengthened benchmark fails immediately in that case, even
+if the file has not yet changed. Earlier designs with a required purpose field
+also misclassified current plans as history. Those failed trials are retained.
+This is therefore a concrete guard for recalled sources, not a universal solution
+to shared-context semantics. It covers Pi edit/write and the view tools; it is not
+an OS sandbox for shell commands, custom tools, or external writers. External
+source updates still appear in the view. No filename triggers, phrase dispatch,
+extra model call, or runtime dependency was added.
 
 This slice has one conversational anchor with document views. It does not establish
 continuous conversation from every pane, automatic context sharing between model
@@ -94,10 +127,11 @@ go vet ./...
 TMAX_BENCH=1 node --test tests/*.test.mjs
 TMAX_REPEATS=2 node benchmarks/local.mjs /tmp/tmax-local.json
 TMAX_LIVE=1 node benchmarks/views-live.mjs /tmp/tmax-views.json
+TMAX_LIVE=1 TMAX_TEST_MODEL=gpt-6-astra TMAX_VIEWS_VARIANT=paraphrase node benchmarks/views-live.mjs /tmp/tmax-views-paraphrase.json
 TMAX_LIVE=1 TMAX_TEST_THINKING=medium node benchmarks/views-demo.mjs /tmp/tmax-demo
 ```
 
-The last two commands use the signed-in model account. The PTY recorder uses `uv`
+The live commands use the signed-in model account. The PTY recorder uses `uv`
 and Python's standard library only. Default diagnostic model: Luna; runtime model
 and reasoning preferences are unchanged. The recording's native terminal data and
 stage timing are in [the demo evidence](../benchmarks/results/views-demo).
@@ -118,3 +152,8 @@ Mechanical evidence: [full regressions](../benchmarks/results/views-regressions.
 The [theme-only import check](../benchmarks/results/views-theme.txt) and
 [fresh Pi 0.85.0 regression run](../benchmarks/results/views-clean-install.txt)
 cover the packaging correction made after the recording.
+
+The [history correction evidence](../benchmarks/results/history/README.md)
+includes both final Astra passes, the final Luna failure, exploratory failures,
+26-test runs on Pi 0.85.0 and 0.85.1, and fresh direct workspace measurements.
+The demo predates this correction.

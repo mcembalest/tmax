@@ -3,16 +3,27 @@ import type { ExtensionAPI } from '@earendil-works/pi-coding-agent';
 import { Type } from 'typebox';
 import { Text } from '@earendil-works/pi-tui';
 import { createHash, randomUUID } from 'node:crypto';
-import { mkdir, readdir, readFile, writeFile, rename, realpath, rm } from 'node:fs/promises';
+import { mkdir, readdir, readFile, writeFile, rename, realpath, rm, stat } from 'node:fs/promises';
 import { homedir } from 'node:os';
-import { join, resolve } from 'node:path';
+import { join, resolve, dirname, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-type View = { id: string; title: string; file: string; pane?: string; terminal?: string; socket?: string; renderer?: string; token?: string; starting?: boolean };
+type View = { id: string; title: string; file: string; historical?: boolean; pane?: string; terminal?: string; socket?: string; renderer?: string; token?: string; starting?: boolean };
 const read = async <T>(path: string): Promise<T> => JSON.parse(await readFile(path, 'utf8'));
 const text = <T extends object>(value: T, message: string) => ({ content: [{ type: 'text' as const, text: JSON.stringify(value) }], details: { ...value, message } });
 const renderResult = (result: any) => new Text(result.details?.message || result.content.filter((c: any) => c.type === 'text').map((c: any) => c.text).join('\n'), 0, 0);
-const visible = ({ id, title, file, pane }: View) => ({ id, title, file, pane });
+const visible = ({ id, title, file, historical, pane }: View) => ({ id, title, file, historical, pane });
+// Match Pi's file-tool spelling rules, then resolve aliases even for missing files.
+async function canonical(path: string): Promise<string> {
+  try { return await realpath(path); }
+  catch (error: any) { if (error.code !== 'ENOENT') throw error; return join(await canonical(dirname(path)), basename(path)); }
+}
+async function toolPath(path: string, cwd: string) {
+  path = path.replace(/[\u00a0\u2000-\u200a\u202f\u205f\u3000]/g, ' ').replace(/^@/, '');
+  if (path === '~' || path.startsWith('~/')) path = join(homedir(), path.slice(2));
+  if (path.startsWith('file://')) path = fileURLToPath(path);
+  return canonical(resolve(cwd, path));
+}
 const quote = (value: string) => "'" + value.replaceAll("'", "'\\''") + "'";
 async function save(path: string, content: string) {
   const temporary = path + '.' + randomUUID();
@@ -30,7 +41,12 @@ export default function views(pi: ExtensionAPI, run: (args: string[], signal?: A
   async function list(cwd: string): Promise<View[]> {
     const dir = await directory(cwd);
     const names = await readdir(dir).catch(error => { if (error.code === 'ENOENT') return []; throw error; });
-    return Promise.all(names.filter(name => /^[a-f0-9-]+\.json$/.test(name)).map(name => read<View>(join(dir, name))));
+    return Promise.all(names.filter(name => /^[a-f0-9-]+\.json$/.test(name)).map(async name => {
+      const view = await read<View>(join(dir, name));
+      // Existing files alone do not imply history; recall can mark older views.
+      view.historical ??= false;
+      return view;
+    }));
   }
   async function lookup(id: string, cwd: string) {
     const view = (await list(cwd)).find(view => view.id === id);
@@ -60,20 +76,45 @@ export default function views(pi: ExtensionAPI, run: (args: string[], signal?: A
     pending = next.then(() => {}, () => {});
     return next;
   }
-  pi.registerTool({
-    name: 'show_view', label: 'Show',
-    description: 'Show a useful document beside this conversation. Supply a title and either content (saved privately) or a file path (followed live). Reuse the returned id to update or reopen it; edits to the returned file update the display. Adding a view preserves existing terminals and focus. Saved content outlives the display and conversation. This is a document view, not another agent. For live data or progress, use existing tools to update its file; it does not fetch or execute content.',
+  async function historyFor(file: string, cwd: string) {
+    const target = await canonical(file), info = await stat(target).catch(error => { if (error.code !== 'ENOENT') throw error; });
+    for (const view of (await list(cwd)).filter(v => v.historical)) {
+      if (await canonical(view.file) === target) return view;
+      const source = await stat(view.file).catch(error => { if (error.code !== 'ENOENT') throw error; });
+      if (info && source && info.dev === source.dev && info.ino === source.ino) return view;
+    }
+  }
+  pi.on('tool_call', async (event, ctx) => {
+    if (event.toolName !== 'edit' && event.toolName !== 'write') return;
+    return change(undefined, async () => {
+      const view = await historyFor(await toolPath(event.input.path as string, ctx.cwd), ctx.cwd);
+      if (view) return { block: true, reason: `"${view.title}" is recorded history. Its source was left unchanged. Apply the new decision to a working document instead; do not bypass this protection with another tool.` };
+    });
+  });
+  for (const historical of [false, true]) pi.registerTool({
+    name: historical ? 'recall_view' : 'show_view', label: historical ? 'Recall' : 'Show',
+    promptSnippet: historical ? 'Display and preserve past conversations or historical records.' : 'Display and update current documents, plans, drafts or live data.',
+    promptGuidelines: historical ? ['Use recall_view for past conversations and historical records. Use show_view for current documents that may change.'] : undefined,
+    description: (historical
+      ? 'Recall a past conversation or historical record beside this conversation. Its source is protected from Pi edit/write and this view cannot be rewritten. New decisions belong in current documents shown with show_view. '
+      : 'Show or update a current document beside this conversation. For a past conversation or historical record, use recall_view. Current plans, drafts, options and live data remain editable, including when sourced from existing files. ')
+      + 'Supply a title and either content (saved privately) or a file path (followed live). Reuse the returned id to update an editable view or reopen any view. Adding a view preserves terminals and focus. Saved content outlives the display and conversation. This is a document view, not another agent; it does not fetch or execute content.',
     parameters: Type.Object({ id: Type.Optional(Type.String()), title: Type.Optional(Type.String()), content: Type.Optional(Type.String()), path: Type.Optional(Type.String()) }),
-    renderCall: args => new Text('Show ' + (args.title || 'view'), 0, 0), renderResult,
+    renderCall: args => new Text((historical ? 'Recall ' : 'Show ') + (args.title || 'view'), 0, 0), renderResult,
     async execute(_id, args, signal, _update, ctx) {
       return change(signal, async () => {
         if (args.path !== undefined && args.content !== undefined) throw new Error('Supply content or a file path, not both.');
         const dir = await directory(ctx.cwd); await mkdir(dir, { recursive: true, mode: 0o700 });
         const id = args.id || randomUUID();
-        const view = args.id ? await lookup(args.id, ctx.cwd) : { id, title: args.title || '', file: join(dir, id + '.md') } as View;
+        const view = args.id ? await lookup(args.id, ctx.cwd) : { id, title: args.title || '', file: join(dir, id + '.md'), historical } as View;
+        if (historical) view.historical = true;
+        const path = args.path === undefined ? undefined : await toolPath(args.path, ctx.cwd);
+        if (args.id && view.historical && (args.content !== undefined || path !== undefined && path !== view.file)) throw new Error('A historical view cannot be rewritten. Keep it intact and update a current document instead.');
         if (args.title !== undefined) view.title = args.title.trim();
         if (!view.title) throw new Error('Give the view a short title.');
-        if (args.path !== undefined) view.file = await realpath(resolve(ctx.cwd, args.path));
+        if (path !== undefined) view.file = path;
+        const protectedSource = !view.historical && await historyFor(args.content !== undefined ? join(dir, id + '.md') : view.file, ctx.cwd);
+        if (protectedSource) throw new Error('This file preserves recorded history. Use a separate working document.');
         if (args.content !== undefined) {
           // Updating content always writes our own document, never an external source file.
           view.file = join(dir, id + '.md'); await save(view.file, args.content);

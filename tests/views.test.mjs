@@ -12,7 +12,7 @@ for(const terminal of ['Apple_Terminal','ghostty'])test(`${terminal}: useful vie
  const f=await fixture(terminal),env={...process.env},argv=process.argv[1];
  Object.assign(process.env,f.paneEnv,{TMAX_VIEWS_DIR:join(f.dir,'saved')});process.argv[1]=piEntry;
  const tools=new Map(),commands=new Map(),ctx={cwd:f.dir,ui:{theme:{name:'dark'}}};let suppressLaunch=false;
- const load=()=>views({registerTool:t=>tools.set(t.name,t),registerCommand:(n,c)=>commands.set(n,c)},async(args,signal)=>suppressLaunch&&args[0]==='pane'&&args[1]==='run'?'':(await exec('herdr',args,{env:f.paneEnv,signal})).stdout);
+ const load=()=>views({on(){},registerTool:t=>tools.set(t.name,t),registerCommand:(n,c)=>commands.set(n,c)},async(args,signal)=>suppressLaunch&&args[0]==='pane'&&args[1]==='run'?'':(await exec('herdr',args,{env:f.paneEnv,signal})).stdout);
  const call=(name,args={},signal)=>tools.get(name).execute('test',args,signal,undefined,ctx);
  const visible=async(id,pattern)=>until(async()=>assert.match(await f.raw('pane','read',id),pattern));
  try {

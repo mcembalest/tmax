@@ -1,0 +1,37 @@
+{
+  "kind": "Real Pi TUI and Herdr PTY recording; labeled planning fixture",
+  "herdr": "herdr 0.9.0",
+  "pi": "0.85.1",
+  "model": "gpt-5.6-luna",
+  "thinking": "medium",
+  "steps": [
+    {
+      "name": "1 → 2",
+      "prompt": "Bring our earlier discussion in notes.md into view beside this conversation. Keep it there while we work.",
+      "startMs": 1002,
+      "endMs": 7884,
+      "historyPreserved": true
+    },
+    {
+      "name": "2 → 4",
+      "prompt": "Show the options and our afternoon plan alongside it, so I can see all three while we talk.",
+      "startMs": 9386,
+      "endMs": 24984,
+      "historyPreserved": true
+    },
+    {
+      "name": "Change together",
+      "prompt": "Actually, let’s stay indoors and be finished by three. Revise what needs to change.",
+      "startMs": 26486,
+      "endMs": 39644,
+      "historyPreserved": true
+    },
+    {
+      "name": "4 → 1",
+      "prompt": "Bring us back to just this conversation. Keep those views available for later.",
+      "startMs": 41147,
+      "endMs": 46500,
+      "historyPreserved": true
+    }
+  ]
+}

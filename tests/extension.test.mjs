@@ -6,7 +6,7 @@ import { resolve } from 'node:path';
 import { fixture,exec,until } from './herdr.mjs';
 const require=createRequire(realpathSync((await exec('which',['pi'])).stdout.trim()));
 const {createJiti}=require('jiti');
-const jiti=createJiti(import.meta.url,{alias:{typebox:require.resolve('typebox')}});
+const jiti=createJiti(import.meta.url,{alias:{typebox:require.resolve('typebox'),'@earendil-works/pi-tui':require.resolve('@earendil-works/pi-tui')}});
 const {default:extension}=await jiti.import(resolve('internal/launcher/extension.ts'));
 for(const terminal of ['Apple_Terminal','ghostty'])test(`${terminal}: real Herdr workspace controls survive extension reload`,async()=>{
  const f=await fixture(terminal);

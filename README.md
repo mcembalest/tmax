@@ -1,5 +1,7 @@
 # tmax
 
+One conversation that can spread into useful views and gather back again.
+
 ## Install
 
 macOS / Linux · [Go 1.22+](https://go.dev/doc/install)

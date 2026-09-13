@@ -8,7 +8,7 @@ import {resolve} from 'node:path';
 import {fixture,exec,until} from '../tests/herdr.mjs';
 const require=createRequire(realpathSync((await exec('which',['pi'])).stdout.trim()));
 const {createJiti}=require('jiti');
-const {default:extension}=await createJiti(import.meta.url,{alias:{typebox:require.resolve('typebox')}}).import(resolve('internal/launcher/extension.ts'));
+const {default:extension}=await createJiti(import.meta.url,{alias:{typebox:require.resolve('typebox'),'@earendil-works/pi-tui':require.resolve('@earendil-works/pi-tui')}}).import(resolve('internal/launcher/extension.ts'));
 const results=[];
 for(const terminal of ['Apple_Terminal','ghostty'])for(let repetition=0;repetition<Number(process.env.TMAX_REPEATS||5);repetition++){
  const f=await fixture(terminal),prior={...process.env};Object.assign(process.env,f.paneEnv);

@@ -1,0 +1,593 @@
+{
+  "herdr": "herdr 0.9.0",
+  "pi": "0.85.1",
+  "sourceHashes": {
+    "internal/launcher/extension.ts": "c2c8ceffa316930ac46b550799c9b9687e26d3f074b1b337eb3119c76c820fb3",
+    "internal/launcher/handoff.ts": "0c3cd8eec0fee7f73fdc21a03144f9ad5092d1c29c70cb20e9869bc123d70510",
+    "internal/launcher/grid.ts": "9ba051ab617f4f04328230aee714e0bc4728bcd9c38d74bb77fd0a5deaa1ee54"
+  },
+  "node": "v25.1.0",
+  "platform": "darwin",
+  "arch": "arm64",
+  "date": "2026-09-12T13:44:12.199Z",
+  "revision": "e6cced0ce9768dc9b1d5622b9d95766541431b88",
+  "kind": "local-real-Herdr",
+  "results": [
+    {
+      "id": "W01 inspect",
+      "terminal": "Apple_Terminal",
+      "repetition": 0,
+      "status": "pass",
+      "elapsedMs": 11.623291999999992,
+      "cliMs": 5.818375000000003,
+      "cliCalls": 1
+    },
+    {
+      "id": "W02 open beside",
+      "terminal": "Apple_Terminal",
+      "repetition": 0,
+      "status": "pass",
+      "elapsedMs": 18.606042000000002,
+      "cliMs": 7.990333999999962,
+      "cliCalls": 1
+    },
+    {
+      "id": "W03 open below",
+      "terminal": "Apple_Terminal",
+      "repetition": 0,
+      "status": "pass",
+      "elapsedMs": 14.800208999999995,
+      "cliMs": 9.020083,
+      "cliCalls": 1
+    },
+    {
+      "id": "W04 grid",
+      "terminal": "Apple_Terminal",
+      "repetition": 0,
+      "status": "pass",
+      "elapsedMs": 30.805999999999983,
+      "cliMs": 25.32387600000004,
+      "cliCalls": 3
+    },
+    {
+      "id": "W05 inspect existing grid",
+      "terminal": "Apple_Terminal",
+      "repetition": 0,
+      "status": "pass",
+      "elapsedMs": 9.815166999999974,
+      "cliMs": 5.31983299999996,
+      "cliCalls": 1
+    },
+    {
+      "id": "W06 rename",
+      "terminal": "Apple_Terminal",
+      "repetition": 0,
+      "status": "pass",
+      "elapsedMs": 10.211332999999968,
+      "cliMs": 5.022290999999996,
+      "cliCalls": 1
+    },
+    {
+      "id": "W07 focus",
+      "terminal": "Apple_Terminal",
+      "repetition": 0,
+      "status": "pass",
+      "elapsedMs": 9.865250000000003,
+      "cliMs": 5.615291999999954,
+      "cliCalls": 1
+    },
+    {
+      "id": "W08 enlarge",
+      "terminal": "Apple_Terminal",
+      "repetition": 0,
+      "status": "pass",
+      "elapsedMs": 9.312041999999963,
+      "cliMs": 4.493499999999983,
+      "cliCalls": 1
+    },
+    {
+      "id": "W09 restore",
+      "terminal": "Apple_Terminal",
+      "repetition": 0,
+      "status": "pass",
+      "elapsedMs": 8.594625000000008,
+      "cliMs": 4.393709000000001,
+      "cliCalls": 1
+    },
+    {
+      "id": "W10 resize",
+      "terminal": "Apple_Terminal",
+      "repetition": 0,
+      "status": "pass",
+      "elapsedMs": 8.500958999999966,
+      "cliMs": 4.047540999999967,
+      "cliCalls": 1
+    },
+    {
+      "id": "W11 swap",
+      "terminal": "Apple_Terminal",
+      "repetition": 0,
+      "status": "pass",
+      "elapsedMs": 8.742166999999995,
+      "cliMs": 4.189332999999976,
+      "cliCalls": 1
+    },
+    {
+      "id": "W12 start display",
+      "terminal": "Apple_Terminal",
+      "repetition": 0,
+      "status": "pass",
+      "elapsedMs": 8.578709000000003,
+      "cliMs": 4.5531669999999735,
+      "cliCalls": 1
+    },
+    {
+      "id": "W13 read display",
+      "terminal": "Apple_Terminal",
+      "repetition": 0,
+      "status": "pass",
+      "elapsedMs": 9.320708000000025,
+      "cliMs": 4.553457999999978,
+      "cliCalls": 1
+    },
+    {
+      "id": "W14 interrupt display",
+      "terminal": "Apple_Terminal",
+      "repetition": 0,
+      "status": "pass",
+      "elapsedMs": 13.479582999999991,
+      "cliMs": 4.252957999999978,
+      "cliCalls": 1
+    },
+    {
+      "id": "W15 close",
+      "terminal": "Apple_Terminal",
+      "repetition": 0,
+      "status": "pass",
+      "elapsedMs": 39.54808400000002,
+      "cliMs": 34.33283299999994,
+      "cliCalls": 1
+    },
+    {
+      "id": "W16 bounded wait",
+      "terminal": "Apple_Terminal",
+      "repetition": 0,
+      "status": "pass",
+      "elapsedMs": 124.07241699999997,
+      "cliMs": 115.72133299999996,
+      "cliCalls": 1
+    },
+    {
+      "id": "W01 inspect",
+      "terminal": "Apple_Terminal",
+      "repetition": 1,
+      "status": "pass",
+      "elapsedMs": 13.266708000000108,
+      "cliMs": 6.991167000000132,
+      "cliCalls": 1
+    },
+    {
+      "id": "W02 open beside",
+      "terminal": "Apple_Terminal",
+      "repetition": 1,
+      "status": "pass",
+      "elapsedMs": 19.492541999999958,
+      "cliMs": 8.928750000000036,
+      "cliCalls": 1
+    },
+    {
+      "id": "W03 open below",
+      "terminal": "Apple_Terminal",
+      "repetition": 1,
+      "status": "pass",
+      "elapsedMs": 12.893332999999984,
+      "cliMs": 7.960874999999987,
+      "cliCalls": 1
+    },
+    {
+      "id": "W04 grid",
+      "terminal": "Apple_Terminal",
+      "repetition": 1,
+      "status": "pass",
+      "elapsedMs": 31.3620420000002,
+      "cliMs": 25.70195800000033,
+      "cliCalls": 3
+    },
+    {
+      "id": "W05 inspect existing grid",
+      "terminal": "Apple_Terminal",
+      "repetition": 1,
+      "status": "pass",
+      "elapsedMs": 10.198666999999887,
+      "cliMs": 5.37233399999991,
+      "cliCalls": 1
+    },
+    {
+      "id": "W06 rename",
+      "terminal": "Apple_Terminal",
+      "repetition": 1,
+      "status": "pass",
+      "elapsedMs": 9.315000000000055,
+      "cliMs": 4.41433300000017,
+      "cliCalls": 1
+    },
+    {
+      "id": "W07 focus",
+      "terminal": "Apple_Terminal",
+      "repetition": 1,
+      "status": "pass",
+      "elapsedMs": 7.963792000000012,
+      "cliMs": 4.094083000000182,
+      "cliCalls": 1
+    },
+    {
+      "id": "W08 enlarge",
+      "terminal": "Apple_Terminal",
+      "repetition": 1,
+      "status": "pass",
+      "elapsedMs": 9.398167000000058,
+      "cliMs": 4.639417000000094,
+      "cliCalls": 1
+    },
+    {
+      "id": "W09 restore",
+      "terminal": "Apple_Terminal",
+      "repetition": 1,
+      "status": "pass",
+      "elapsedMs": 7.976041000000123,
+      "cliMs": 3.859707999999955,
+      "cliCalls": 1
+    },
+    {
+      "id": "W10 resize",
+      "terminal": "Apple_Terminal",
+      "repetition": 1,
+      "status": "pass",
+      "elapsedMs": 8.593000000000075,
+      "cliMs": 4.517165999999861,
+      "cliCalls": 1
+    },
+    {
+      "id": "W11 swap",
+      "terminal": "Apple_Terminal",
+      "repetition": 1,
+      "status": "pass",
+      "elapsedMs": 8.856999999999971,
+      "cliMs": 4.555999999999813,
+      "cliCalls": 1
+    },
+    {
+      "id": "W12 start display",
+      "terminal": "Apple_Terminal",
+      "repetition": 1,
+      "status": "pass",
+      "elapsedMs": 8.250917000000072,
+      "cliMs": 3.721415999999863,
+      "cliCalls": 1
+    },
+    {
+      "id": "W13 read display",
+      "terminal": "Apple_Terminal",
+      "repetition": 1,
+      "status": "pass",
+      "elapsedMs": 8.600584000000026,
+      "cliMs": 4.2807500000001255,
+      "cliCalls": 1
+    },
+    {
+      "id": "W14 interrupt display",
+      "terminal": "Apple_Terminal",
+      "repetition": 1,
+      "status": "pass",
+      "elapsedMs": 13.220124999999825,
+      "cliMs": 4.249540999999908,
+      "cliCalls": 1
+    },
+    {
+      "id": "W15 close",
+      "terminal": "Apple_Terminal",
+      "repetition": 1,
+      "status": "pass",
+      "elapsedMs": 29.973665999999866,
+      "cliMs": 25.129374999999982,
+      "cliCalls": 1
+    },
+    {
+      "id": "W16 bounded wait",
+      "terminal": "Apple_Terminal",
+      "repetition": 1,
+      "status": "pass",
+      "elapsedMs": 122.88841699999989,
+      "cliMs": 115.40916599999991,
+      "cliCalls": 1
+    },
+    {
+      "id": "W01 inspect",
+      "terminal": "ghostty",
+      "repetition": 0,
+      "status": "pass",
+      "elapsedMs": 11.890875000000051,
+      "cliMs": 5.469957999999906,
+      "cliCalls": 1
+    },
+    {
+      "id": "W02 open beside",
+      "terminal": "ghostty",
+      "repetition": 0,
+      "status": "pass",
+      "elapsedMs": 19.290416999999934,
+      "cliMs": 8.360832999999957,
+      "cliCalls": 1
+    },
+    {
+      "id": "W03 open below",
+      "terminal": "ghostty",
+      "repetition": 0,
+      "status": "pass",
+      "elapsedMs": 12.272249999999985,
+      "cliMs": 7.723792000000003,
+      "cliCalls": 1
+    },
+    {
+      "id": "W04 grid",
+      "terminal": "ghostty",
+      "repetition": 0,
+      "status": "pass",
+      "elapsedMs": 28.646541999999954,
+      "cliMs": 23.070291999999426,
+      "cliCalls": 3
+    },
+    {
+      "id": "W05 inspect existing grid",
+      "terminal": "ghostty",
+      "repetition": 0,
+      "status": "pass",
+      "elapsedMs": 10.225000000000364,
+      "cliMs": 5.422541999999794,
+      "cliCalls": 1
+    },
+    {
+      "id": "W06 rename",
+      "terminal": "ghostty",
+      "repetition": 0,
+      "status": "pass",
+      "elapsedMs": 9.008291999999983,
+      "cliMs": 4.535708000000341,
+      "cliCalls": 1
+    },
+    {
+      "id": "W07 focus",
+      "terminal": "ghostty",
+      "repetition": 0,
+      "status": "pass",
+      "elapsedMs": 8.491334000000279,
+      "cliMs": 4.083624999999756,
+      "cliCalls": 1
+    },
+    {
+      "id": "W08 enlarge",
+      "terminal": "ghostty",
+      "repetition": 0,
+      "status": "pass",
+      "elapsedMs": 8.527916000000005,
+      "cliMs": 3.7027499999999236,
+      "cliCalls": 1
+    },
+    {
+      "id": "W09 restore",
+      "terminal": "ghostty",
+      "repetition": 0,
+      "status": "pass",
+      "elapsedMs": 9.743207999999868,
+      "cliMs": 5.411040999999841,
+      "cliCalls": 1
+    },
+    {
+      "id": "W10 resize",
+      "terminal": "ghostty",
+      "repetition": 0,
+      "status": "pass",
+      "elapsedMs": 120.47983299999987,
+      "cliMs": 114.40475000000015,
+      "cliCalls": 1
+    },
+    {
+      "id": "W11 swap",
+      "terminal": "ghostty",
+      "repetition": 0,
+      "status": "pass",
+      "elapsedMs": 9.993749999999636,
+      "cliMs": 4.556166999999732,
+      "cliCalls": 1
+    },
+    {
+      "id": "W12 start display",
+      "terminal": "ghostty",
+      "repetition": 0,
+      "status": "pass",
+      "elapsedMs": 10.908292000000074,
+      "cliMs": 4.577582999999777,
+      "cliCalls": 1
+    },
+    {
+      "id": "W13 read display",
+      "terminal": "ghostty",
+      "repetition": 0,
+      "status": "pass",
+      "elapsedMs": 9.960125000000062,
+      "cliMs": 4.97366699999975,
+      "cliCalls": 1
+    },
+    {
+      "id": "W14 interrupt display",
+      "terminal": "ghostty",
+      "repetition": 0,
+      "status": "pass",
+      "elapsedMs": 13.584707999999864,
+      "cliMs": 4.53716600000007,
+      "cliCalls": 1
+    },
+    {
+      "id": "W15 close",
+      "terminal": "ghostty",
+      "repetition": 0,
+      "status": "pass",
+      "elapsedMs": 40.51741700000002,
+      "cliMs": 35.337375000000065,
+      "cliCalls": 1
+    },
+    {
+      "id": "W16 bounded wait",
+      "terminal": "ghostty",
+      "repetition": 0,
+      "status": "pass",
+      "elapsedMs": 124.61933299999964,
+      "cliMs": 115.59066699999994,
+      "cliCalls": 1
+    },
+    {
+      "id": "W01 inspect",
+      "terminal": "ghostty",
+      "repetition": 1,
+      "status": "pass",
+      "elapsedMs": 12.032875000000331,
+      "cliMs": 6.196042000000034,
+      "cliCalls": 1
+    },
+    {
+      "id": "W02 open beside",
+      "terminal": "ghostty",
+      "repetition": 1,
+      "status": "pass",
+      "elapsedMs": 19.528666000000158,
+      "cliMs": 8.397832999999991,
+      "cliCalls": 1
+    },
+    {
+      "id": "W03 open below",
+      "terminal": "ghostty",
+      "repetition": 1,
+      "status": "pass",
+      "elapsedMs": 13.058207999999922,
+      "cliMs": 8.13433299999997,
+      "cliCalls": 1
+    },
+    {
+      "id": "W04 grid",
+      "terminal": "ghostty",
+      "repetition": 1,
+      "status": "pass",
+      "elapsedMs": 30.76304200000004,
+      "cliMs": 25.35983299999998,
+      "cliCalls": 3
+    },
+    {
+      "id": "W05 inspect existing grid",
+      "terminal": "ghostty",
+      "repetition": 1,
+      "status": "pass",
+      "elapsedMs": 9.659292000000278,
+      "cliMs": 4.87237499999992,
+      "cliCalls": 1
+    },
+    {
+      "id": "W06 rename",
+      "terminal": "ghostty",
+      "repetition": 1,
+      "status": "pass",
+      "elapsedMs": 9.218041999999969,
+      "cliMs": 4.877917000000252,
+      "cliCalls": 1
+    },
+    {
+      "id": "W07 focus",
+      "terminal": "ghostty",
+      "repetition": 1,
+      "status": "pass",
+      "elapsedMs": 8.739082999999937,
+      "cliMs": 4.742999999999938,
+      "cliCalls": 1
+    },
+    {
+      "id": "W08 enlarge",
+      "terminal": "ghostty",
+      "repetition": 1,
+      "status": "pass",
+      "elapsedMs": 8.68158399999993,
+      "cliMs": 4.250416999999743,
+      "cliCalls": 1
+    },
+    {
+      "id": "W09 restore",
+      "terminal": "ghostty",
+      "repetition": 1,
+      "status": "pass",
+      "elapsedMs": 8.881708999999773,
+      "cliMs": 4.4884579999998095,
+      "cliCalls": 1
+    },
+    {
+      "id": "W10 resize",
+      "terminal": "ghostty",
+      "repetition": 1,
+      "status": "pass",
+      "elapsedMs": 8.71462500000007,
+      "cliMs": 4.207541000000219,
+      "cliCalls": 1
+    },
+    {
+      "id": "W11 swap",
+      "terminal": "ghostty",
+      "repetition": 1,
+      "status": "pass",
+      "elapsedMs": 8.116625000000113,
+      "cliMs": 4.347458000000188,
+      "cliCalls": 1
+    },
+    {
+      "id": "W12 start display",
+      "terminal": "ghostty",
+      "repetition": 1,
+      "status": "pass",
+      "elapsedMs": 8.0324999999998,
+      "cliMs": 4.125624999999673,
+      "cliCalls": 1
+    },
+    {
+      "id": "W13 read display",
+      "terminal": "ghostty",
+      "repetition": 1,
+      "status": "pass",
+      "elapsedMs": 8.807333000000199,
+      "cliMs": 4.409291999999823,
+      "cliCalls": 1
+    },
+    {
+      "id": "W14 interrupt display",
+      "terminal": "ghostty",
+      "repetition": 1,
+      "status": "pass",
+      "elapsedMs": 12.462582999999995,
+      "cliMs": 3.9785829999996167,
+      "cliCalls": 1
+    },
+    {
+      "id": "W15 close",
+      "terminal": "ghostty",
+      "repetition": 1,
+      "status": "pass",
+      "elapsedMs": 40.22212499999978,
+      "cliMs": 35.17608300000029,
+      "cliCalls": 1
+    },
+    {
+      "id": "W16 bounded wait",
+      "terminal": "ghostty",
+      "repetition": 1,
+      "status": "pass",
+      "elapsedMs": 116.48799999999983,
+      "cliMs": 108.08112500000016,
+      "cliCalls": 1
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+LOCAL_BENCHMARK {"terminal":"Apple_Terminal","scenario":"split, run, read, reload, interrupt, close","elapsedMs":317.211875}
+✔ Apple_Terminal: real Herdr workspace controls survive extension reload (802.349166ms)
+LOCAL_BENCHMARK {"terminal":"ghostty","scenario":"split, run, read, reload, interrupt, close","elapsedMs":316.6924160000001}
+✔ ghostty: real Herdr workspace controls survive extension reload (800.105084ms)
+✔ login guidance never rewrites the editor after reload or resume (0.528917ms)
+✔ Apple_Terminal: grid shapes preserve terminals, focus and idempotence (4811.657625ms)
+✔ ghostty: grid shapes preserve terminals, focus and idempotence (4797.005125ms)
+GRID_COMMAND_BENCHMARK {"terminal":"Apple_Terminal","samplesMs":[43.26708299999882,40.177332999999635,40.64916699999958,40.668916999999055,41.117582999999286],"modelTurns":0}
+✔ Apple_Terminal: /grid completes through Pi without a model turn (1706.728459ms)
+GRID_COMMAND_BENCHMARK {"terminal":"ghostty","samplesMs":[42.96479200000067,40.8073749999985,38.455291000000216,41.029083999999784,39.64558299999953],"modelTurns":0}
+✔ ghostty: /grid completes through Pi without a model turn (1731.609417ms)
+✔ partial grid retains a running display; incompatible layout is rejected without mutations (619.228916ms)
+✔ assigned result waits for settled turn, returns after parent reload, and is not delivered twice (1513.836458ms)
+✔ busy parent is not interrupted and canceled child is not labeled complete (1306.45425ms)
+✔ user takeover keeps helper panel and stops automatic assignment reporting (3.499958ms)
+✔ disappeared agent reports interrupted; transport failure does not fabricate completion (2604.821084ms)
+✔ explicit follow-up reuses an idle helper and survives helper reload (4.948958ms)
+✔ legacy helper assignments are rejected before submitting a follow-up (1.450042ms)
+✔ Apple_Terminal: launch, concurrent return, quit, reload, crash and relaunch (15930.620375ms)
+✔ ghostty: launch, concurrent return, quit, reload, crash and relaunch (16021.336ms)
+HANDOFF_BENCHMARK {"context":"fresh","splitMs":3344,"deliveryMs":126.8955078125,"provider":"deterministic fixture; not model latency"}
+✔ Pi fresh: real helper returns findings to a responsive parent (7421.760375ms)
+HANDOFF_BENCHMARK {"context":"fork","splitMs":3340,"deliveryMs":136.801513671875,"provider":"deterministic fixture; not model latency"}
+✔ Pi fork: real helper returns findings to a responsive parent (7375.768875ms)
+✔ Apple_Terminal: pending helper returns after parent process restart without duplicate delivery (11219.331542ms)
+✔ ghostty: pending helper returns after parent process restart without duplicate delivery (11187.111959ms)
+✔ closing a real helper mid-turn returns incomplete work and preserves the parent (4315.986541ms)
+✔ a real helper returns a follow-up without creating another pane (10869.25375ms)
+VIEW_BENCHMARK {"terminal":"Apple_Terminal","firstViewMs":500.68029099999995,"liveUpdateMs":112.63466700000004,"gatherMs":8.07854199999997,"modelCalls":0}
+✔ Apple_Terminal: useful views spread, update, gather, survive reload and reopen (8712.696084ms)
+VIEW_BENCHMARK {"terminal":"ghostty","firstViewMs":578.3030839999992,"liveUpdateMs":111.08995800000048,"gatherMs":8.913958000001003,"modelCalls":0}
+✔ ghostty: useful views spread, update, gather, survive reload and reopen (8836.019458ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 37643.895

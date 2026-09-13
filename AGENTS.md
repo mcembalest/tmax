@@ -15,6 +15,14 @@
   benchmarks to verify tool selection; do not mistake synthetic terminal
   environment checks for native rendering tests.
 - Character, personality, and visual design are the user's decisions.
+- tmax is a **multiagent**, singular: one multiplexed character that can spread
+  into useful views and gather back into one conversation. Views may show memory,
+  live information, progress, or results; they need not be separate agents or chats.
+  View lifetimes range from disposable to permanent and are independent of agent
+  lifetimes. Gathering attention must not silently discard retained work.
+- Judge changes against this experience, not agent counts or task-management UI.
+  Keep Claude Code/Agent SDK with tmux as a comparison baseline; existing tmax
+  benchmarks do not establish superiority over that baseline.
 - Design for people unfamiliar with terminals, multiplexers, and terminal agents.
   Keep setup guided and let the agent handle workspace controls; do not require
   users to learn Herdr or agent terminology for ordinary use.

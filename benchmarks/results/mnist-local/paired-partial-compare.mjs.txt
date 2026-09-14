@@ -1,0 +1,40 @@
+#!/usr/bin/env node
+/** Print one flat inference record for every run in measurements.json. */
+
+import { readFile } from "node:fs/promises";
+
+const filename = process.argv[2];
+if (!filename) {
+  console.error("Usage: node compare.mjs <measurements.json>");
+  process.exit(2);
+}
+
+let measurements;
+try {
+  measurements = JSON.parse(await readFile(filename, "utf8"));
+} catch (error) {
+  console.error(`Could not read ${filename}: ${error.message}`);
+  process.exit(1);
+}
+
+if (!measurements || typeof measurements.runs !== "object" || measurements.runs === null) {
+  console.error("Expected a measurements object with a runs property");
+  process.exit(1);
+}
+
+const records = [];
+for (const [id, run] of Object.entries(measurements.runs)) {
+  if (!run || !Array.isArray(run.inference)) {
+    console.error(`Run ${id} has no inference array`);
+    process.exit(1);
+  }
+  for (const measurement of run.inference) {
+    if (!Number.isFinite(measurement.batch) || !Number.isFinite(measurement.median_ms)) {
+      console.error(`Run ${id} contains an invalid inference measurement`);
+      process.exit(1);
+    }
+    records.push({ id, batch: measurement.batch, median_ms: measurement.median_ms });
+  }
+}
+
+console.log(JSON.stringify(records));

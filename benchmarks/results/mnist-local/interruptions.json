@@ -1,0 +1,23 @@
+{
+  "source": "Read-only macOS pmset sleep/wake log; timestamps in America/New_York (-04:00).",
+  "events": [
+    {
+      "at": "2026-09-14T06:42:07-04:00",
+      "event": "Clamshell Sleep",
+      "durationSeconds": 396,
+      "attempt": "review-joint-interrupted"
+    },
+    {
+      "at": "2026-09-14T08:26:13-04:00",
+      "event": "Maintenance Sleep",
+      "durationSeconds": 397,
+      "attempt": "paired-ordinary-interrupted"
+    },
+    {
+      "at": "2026-09-14T08:32:50-04:00",
+      "event": "DarkWake",
+      "attempt": "paired-ordinary-interrupted"
+    }
+  ],
+  "interpretation": "Sleep coincides with the missing model-event intervals and subsequent WebSocket idle timeout. The interrupted attempts are not comparable model or tool latency measurements. No completed paired comparison is available."
+}

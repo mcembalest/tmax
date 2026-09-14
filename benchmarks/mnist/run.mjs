@@ -4,7 +4,7 @@ import {resolve, join, relative} from 'node:path';
 import {createHash} from 'node:crypto';
 import {fixture, exec} from '../../tests/herdr.mjs';
 import {rpc} from '../../tests/rpc.mjs';
-import {checkRows, checkRetained} from './check.mjs';
+import {checkRows, checkRetained, documentHashes} from './check.mjs';
 import {turn} from './turn.mjs';
 
 const jade = resolve(process.argv[2] || '../jade');
@@ -12,7 +12,7 @@ const output = resolve(process.argv[3] || `benchmarks/results/mnist-${Date.now()
 const revision = 'dd72a6fa67cb52bb7abf56f585c9f1f4efaaa2ea';
 const sourcePath = 'reference/examples/mnist/measurements.json';
 const prompts = [
-  `I want to choose an on-device MNIST recognizer for my MacBook. Start a small runnable comparison using Jade's existing work in reference/examples/mnist; don't rewrite its backends. I'm considering NumPy, PyTorch, MLX, Rust, and Mojo/MAX. Build compare.mjs so node compare.mjs <measurements.json> prints a JSON array of every recorded inference measurement, each with id (the source run key), batch, and median_ms. Save results.md and recommendation.md, and show them beside this conversation as Results and Recommendation. Explain what we can choose now and what still needs testing. Work as one continuing agent, without delegation.`,
+  `I want to choose an on-device MNIST recognizer for my MacBook. Start a small runnable comparison using Jade's existing work in reference/examples/mnist; don't rewrite its backends. I'm considering NumPy, PyTorch, MLX, Rust, and Mojo/MAX. Create ./compare.mjs in the current working directory so node compare.mjs <measurements.json> prints a JSON array of every recorded inference measurement, each with id (the source run key), batch, and median_ms. Save ./results.md and ./recommendation.md in the current working directory, and show them beside this conversation as Results and Recommendation. Treat reference/ as read-only. Explain what we can choose now and what still needs testing. Work as one continuing agent, without delegation, in this experimental directory. Use uv for any Python tooling.`,
   'Change just the title of the Results view to Measurements. Leave the documents and recommendation as they are.',
   'Actually, I will usually open the recognizer for one digit and close it. Update the comparison explanation and recommendation wherever this changes the conclusion. Include a concrete next measurement I could run for that use.',
   'Bring us back to just this conversation; keep all the saved results and views available for later.'
@@ -44,6 +44,7 @@ if (process.env.TMAX_LIVE !== '1') {
       async function visit(dir) {
         for (const entry of await readdir(dir, {withFileTypes: true})) {
           const path = join(dir, entry.name), name = relative(f.dir, path);
+          if (name === 'parent.jsonl') continue; // Keep sanitized events, not a second raw session transcript.
           if (entry.isDirectory()) await visit(path);
           else if (entry.isFile()) {
             hashes[name] = sha(await readFile(path));
@@ -54,7 +55,6 @@ if (process.env.TMAX_LIVE !== '1') {
       }
       await visit(f.dir); return hashes;
     }
-    const artifacts = hashes => Object.fromEntries(Object.entries(hashes).filter(([path]) => path !== 'parent.jsonl' && !(path.startsWith('saved/') && path.endsWith('.json'))));
     try {
       f = await fixture(); f.paneEnv.TMAX_VIEWS_DIR = join(f.dir, 'saved'); f.paneEnv.TMAX_ATTENTION = arm;
       await mkdir(join(f.dir, 'reference'));
@@ -65,6 +65,7 @@ if (process.env.TMAX_LIVE !== '1') {
       let prior;
       for (const [index, prompt] of prompts.entries()) {
         const start = performance.now(), offset = p.events.length;
+        console.log(JSON.stringify({pair, arm, turn: index + 1, status: 'started'}));
         const round = {index, prompt}; report.rounds.push(round);
         try { await turn(p, prompt); } catch (e) { round.error = String(e); }
         round.modelRequestMs = performance.now() - start;
@@ -77,7 +78,11 @@ if (process.env.TMAX_LIVE !== '1') {
         round.panes = await f.api('pane', 'list'); round.layout = await f.api('pane', 'layout', '--pane', f.pane);
         round.displays = await Promise.all(round.panes.panes.filter(x => x.pane_id !== f.pane).map(async pane => ({pane: pane.pane_id, text: await f.raw('pane', 'read', pane.pane_id).catch(String)})));
         const check = async (name, action) => { try { round[name] = await action() ?? {status: 'pass'}; } catch (e) { round[name] = {status: 'fail', error: String(e)}; } };
-        await check('referenceIntegrity', () => checkRetained(Object.fromEntries(Object.entries(initial).filter(([path]) => path.startsWith('reference/'))), round.hashes));
+        await check('referenceIntegrity', () => {
+          const references = hashes => Object.fromEntries(Object.entries(hashes).filter(([path]) => path.startsWith('reference/')));
+          checkRetained(references(initial), references(round.hashes));
+          checkRetained(references(round.hashes), references(initial));
+        });
         await check('numerical', async () => {
           const result = await exec(process.execPath, ['compare.mjs', sourcePath], {cwd: f.dir, timeout: 10000});
           round.adapterOutput = result;
@@ -86,20 +91,28 @@ if (process.env.TMAX_LIVE !== '1') {
         await check('changedInput', async () => {
           const changed = structuredClone(source);
           for (const run of Object.values(changed.runs)) for (const row of run.inference) row.median_ms = row.median_ms * 1.37 + 0.0123;
+          changed.runs['additional-backend'] = {inference: [{batch: 7, median_ms: 0.031}]};
           const path = join(destination, 'probe.json'); await writeFile(path, JSON.stringify(changed));
           const result = await exec(process.execPath, ['compare.mjs', path], {cwd: f.dir, timeout: 10000});
           round.probeOutput = result;
           return checkRows(JSON.parse(result.stdout), changed);
         });
-        if (index === 1 || index === 3) await check('retention', () => checkRetained(artifacts(prior), round.hashes));
+        if (index === 1 || index === 3) await check('retention', () => checkRetained(documentHashes(prior), round.hashes));
         prior = round.hashes;
         await writeFile(join(destination, 'report.json'), JSON.stringify(report, null, 2));
+        console.log(JSON.stringify({pair, arm, turn: index + 1, elapsedMs: round.modelRequestMs, error: round.error, numerical: round.numerical.status, changedInput: round.changedInput.status, retention: round.retention?.status}));
         if (round.error) throw new Error(round.error);
       }
-      report.status = 'completed; artifact review required';
+      const failed = report.rounds.some(round => ['referenceIntegrity', 'numerical', 'changedInput', 'retention'].some(name => round[name]?.status === 'fail'));
+      report.status = failed ? 'artifact checks failed; review required' : 'completed; artifact review required';
+      if (failed) process.exitCode = 1;
     } catch (e) { report.status = 'failed'; report.error = String(e); process.exitCode = 1; }
     finally {
-      if (p) { await p.close(); await writeFile(join(destination, 'events.json'), JSON.stringify(p.events, null, 2)); }
+      if (p) {
+        await p.close();
+        await writeFile(join(destination, 'events.json'), JSON.stringify(p.events.filter(e => e.type !== 'message_update'),
+          (key, value) => key === 'content' && Array.isArray(value) ? value.filter(part => part.type !== 'thinking') : ['thinkingSignature', 'textSignature', 'responseId', 'diagnostics'].includes(key) ? undefined : value, 2));
+      }
       // Preserve failed work as well as successful rounds before fixture cleanup.
       try { if (f) await snapshot('final'); }
       finally { await writeFile(join(destination, 'report.json'), JSON.stringify(report, null, 2)); }

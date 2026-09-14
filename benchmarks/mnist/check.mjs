@@ -22,3 +22,10 @@ export function checkRetained(before, after) {
   assert.ok(Object.keys(before).length, 'No retained artifacts to check');
   for (const [path, hash] of Object.entries(before)) assert.equal(after[path], hash, `Retained artifact changed or disappeared: ${path}`);
 }
+
+export function documentHashes(hashes) {
+  return Object.fromEntries(['compare.mjs', 'results.md', 'recommendation.md'].map(path => {
+    assert.equal(typeof hashes[path], 'string', `Required artifact missing: ${path}`);
+    return [path, hashes[path]];
+  }));
+}

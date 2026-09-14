@@ -23,7 +23,9 @@ measurements, with results and a developing recommendation. It is a first slice
 of choosing/building a recognizer, not a new implementation of all its backends.
 `compare.mjs <measurements.json>` emits every source inference row as
 `{id, batch, median_ms}`. This common output contract is given to both arms.
-The revised workload is one digit per application launch. A local view-title
+The program and documents belong in the current working directory; `reference/`
+remains read-only. The changed-input probe also adds a backend and batch to catch
+fixed-catalog implementations. The revised workload is one digit per application launch. A local view-title
 request must not change the documents; a shared workload change must update every
 relevant current conclusion without rewriting the recorded data.
 
@@ -84,11 +86,16 @@ used for claimed model trials.
 
 Each live round retains regular workspace files, view registries, pane reads,
 source integrity checks, numerical checks, tool time, usage, model-request time,
-and errors. Pi events and final artifacts are saved even on model failure before
+and errors. Pi events omit streaming deltas, private reasoning, and signatures;
+the raw session file is not duplicated. Final artifacts are saved even on model failure before
 workspace cleanup. Reports may contain conversation content; review before
 committing live output. Successful execution says "artifact review required",
 never that the treatment won. View-title and layout evidence requires review;
-the byte-preservation checker cannot judge presentation by itself.
+the byte-preservation checker cannot judge presentation by itself. Retention
+checks the required program and two documents; changing server metadata is not
+a document edit. A failed mechanical artifact check produces a failing exit status
+while preserving the remaining planned observations, rather than being reported
+as a successful artifact.
 
 ## What the source establishes
 
@@ -98,7 +105,7 @@ shuffle fixtures, checks initial forward outputs and the first Adam update
 against NumPy, and checks trained accuracy. Its saved inference timings use the
 **initial untrained weights**, resident inputs and synchronized outputs, excluding
 upload/readback. Compilation is separate; setup fields differ across runtimes.
-These are Apple M3 Max records, not measurements on this user's M3 Pro or in this
+These are Apple M3 Max records, not new measurements on the user's MacBook or in this
 Linux cloud workspace. They do not establish fresh app launch-to-prediction time.
 
 For the revised application, the next experiment should launch a fresh process
@@ -138,3 +145,9 @@ path remains unverified. Next requirement: execute the paired command in a
 workspace permitting Herdr's local workspace API, with Pi authenticated there;
 then review the generated artifacts and run the real reader-transfer task.
 Apple app startup and native rendering still require the MacBook.
+
+Subsequent GitHub CI passed the complete cloud-built revision: Go race/test/vet/
+build, all 32 Node tests with the extension benchmark enabled, and all 64 Herdr
+operation checks. Local review then added a seventh focused check and evaluator
+corrections. [Local follow-up and interrupted attempts](mnist-results.md) explain
+what was observed; they do not establish a completed paired comparison.

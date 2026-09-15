@@ -11,6 +11,7 @@ const jade = resolve(process.argv[2] || '../jade');
 const output = resolve(process.argv[3] || `benchmarks/results/mnist-${Date.now()}`);
 const revision = 'dd72a6fa67cb52bb7abf56f585c9f1f4efaaa2ea';
 const sourcePath = 'reference/examples/mnist/measurements.json';
+const perTurnBudgetMs = 180000;
 const prompts = [
   `I want to choose an on-device MNIST recognizer for my MacBook. Start a small runnable comparison using Jade's existing work in reference/examples/mnist; don't rewrite its backends. I'm considering NumPy, PyTorch, MLX, Rust, and Mojo/MAX. Create ./compare.mjs in the current working directory so node compare.mjs <measurements.json> prints a JSON array of every recorded inference measurement, each with id (the source run key), batch, and median_ms. Save ./results.md and ./recommendation.md in the current working directory, and show them beside this conversation as Results and Recommendation. Treat reference/ as read-only. Explain what we can choose now and what still needs testing. Work as one continuing agent, without delegation, in this experimental directory. Use uv for any Python tooling.`,
   'Change just the title of the Results view to Measurements. Leave the documents and recommendation as they are.',
@@ -25,7 +26,7 @@ await exec('git', ['-C', jade, 'archive', '--format=tar', `--output=${join(outpu
 const tracked = (await exec('git', ['ls-files', 'internal/launcher', 'tests/rpc.mjs', 'tests/herdr.mjs'])).stdout.trim().split('\n');
 const provenance = {date: new Date().toISOString(), revision: (await exec('git', ['rev-parse', 'HEAD'])).stdout.trim(),
   jade: revision, jadeArchiveSHA256: sha(await readFile(join(output, 'jade.tar'))), platform: process.platform, arch: process.arch, node: process.version,
-  settings, prompts, perTurnBudgetMs: 90000, repetitions: 2,
+  settings, prompts, perTurnBudgetMs, repetitions: 2,
   sourceHashes: Object.fromEntries(await Promise.all([...tracked, 'benchmarks/mnist/run.mjs', 'benchmarks/mnist/check.mjs', 'benchmarks/mnist/attention.ts', 'benchmarks/mnist/turn.mjs', 'docs/mnist-experiment.md'].map(async path => [path, sha(await readFile(path))])))};
 await writeFile(join(output, 'protocol.json'), JSON.stringify(provenance, null, 2) + '\n');
 if (process.env.TMAX_LIVE !== '1') {
@@ -67,7 +68,7 @@ if (process.env.TMAX_LIVE !== '1') {
         const start = performance.now(), offset = p.events.length;
         console.log(JSON.stringify({pair, arm, turn: index + 1, status: 'started'}));
         const round = {index, prompt}; report.rounds.push(round);
-        try { await turn(p, prompt); } catch (e) { round.error = String(e); }
+        try { await turn(p, prompt, perTurnBudgetMs); } catch (e) { round.error = String(e); }
         round.modelRequestMs = performance.now() - start;
         const events = p.events.slice(offset), starts = new Map(events.filter(e => e.type === 'tool_execution_start').map(e => [e.toolCallId, e.at]));
         round.tools = events.filter(e => e.type === 'tool_execution_end').map(e => ({name: e.toolName, error: e.isError, elapsedMs: starts.has(e.toolCallId) ? e.at - starts.get(e.toolCallId) : null}));

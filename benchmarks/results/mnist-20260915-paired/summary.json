@@ -1,0 +1,200 @@
+[
+  {
+    "arm": "0-joint",
+    "turnMs": [
+      57556.052542000005,
+      4018.9459999999963,
+      44555.415458,
+      4140.941791000019
+    ],
+    "totalMs": 110271.35579100002,
+    "outputTokens": 4844,
+    "inputTokens": 44800,
+    "cacheReadTokens": 415744,
+    "toolErrors": 0,
+    "workspaceTools": [
+      {
+        "name": "show_view",
+        "error": false,
+        "elapsedMs": 164
+      },
+      {
+        "name": "show_view",
+        "error": false,
+        "elapsedMs": 344
+      },
+      {
+        "name": "show_view",
+        "error": false,
+        "elapsedMs": 34
+      },
+      {
+        "name": "gather_views",
+        "error": false,
+        "elapsedMs": 10
+      }
+    ],
+    "workspaceReview": "rename identities/titles and gather focus, pane identities, saved view bytes passed",
+    "controlRequests": [
+      {
+        "turn": 2,
+        "requestToWorkspaceToolEndMs": 2414
+      },
+      {
+        "turn": 4,
+        "requestToWorkspaceToolEndMs": 2694
+      }
+    ]
+  },
+  {
+    "arm": "0-ordinary",
+    "turnMs": [
+      63344.563625,
+      3567.688375000005,
+      38085.24862500001,
+      2902.019708000007
+    ],
+    "totalMs": 107899.52033300002,
+    "outputTokens": 4736,
+    "inputTokens": 43932,
+    "cacheReadTokens": 468992,
+    "toolErrors": 2,
+    "workspaceTools": [
+      {
+        "name": "show_view",
+        "error": false,
+        "elapsedMs": 206
+      },
+      {
+        "name": "show_view",
+        "error": false,
+        "elapsedMs": 361
+      },
+      {
+        "name": "show_view",
+        "error": false,
+        "elapsedMs": 45
+      },
+      {
+        "name": "gather_views",
+        "error": false,
+        "elapsedMs": 10
+      }
+    ],
+    "workspaceReview": "rename identities/titles and gather focus, pane identities, saved view bytes passed",
+    "controlRequests": [
+      {
+        "turn": 2,
+        "requestToWorkspaceToolEndMs": 2187
+      },
+      {
+        "turn": 4,
+        "requestToWorkspaceToolEndMs": 1607
+      }
+    ]
+  },
+  {
+    "arm": "1-joint",
+    "turnMs": [
+      56976.54666699999,
+      3624.5538749999832,
+      116536.41370799998,
+      5286.769583000045
+    ],
+    "totalMs": 182424.283833,
+    "outputTokens": 4439,
+    "inputTokens": 85905,
+    "cacheReadTokens": 402944,
+    "toolErrors": 1,
+    "workspaceTools": [
+      {
+        "name": "show_view",
+        "error": false,
+        "elapsedMs": 166
+      },
+      {
+        "name": "show_view",
+        "error": false,
+        "elapsedMs": 343
+      },
+      {
+        "name": "show_view",
+        "error": false,
+        "elapsedMs": 26
+      },
+      {
+        "name": "show_view",
+        "error": false,
+        "elapsedMs": 53
+      },
+      {
+        "name": "show_view",
+        "error": false,
+        "elapsedMs": 87
+      },
+      {
+        "name": "gather_views",
+        "error": false,
+        "elapsedMs": 16
+      }
+    ],
+    "workspaceReview": "rename identities/titles and gather focus, pane identities, saved view bytes passed",
+    "controlRequests": [
+      {
+        "turn": 2,
+        "requestToWorkspaceToolEndMs": 2467
+      },
+      {
+        "turn": 4,
+        "requestToWorkspaceToolEndMs": 1902
+      }
+    ]
+  },
+  {
+    "arm": "1-ordinary",
+    "turnMs": [
+      67790.39070799999,
+      4437.007207999995,
+      36502.28854099999,
+      4108.070958000026
+    ],
+    "totalMs": 112837.757415,
+    "outputTokens": 4859,
+    "inputTokens": 45382,
+    "cacheReadTokens": 418304,
+    "toolErrors": 0,
+    "workspaceTools": [
+      {
+        "name": "show_view",
+        "error": false,
+        "elapsedMs": 201
+      },
+      {
+        "name": "show_view",
+        "error": false,
+        "elapsedMs": 176
+      },
+      {
+        "name": "show_view",
+        "error": false,
+        "elapsedMs": 43
+      },
+      {
+        "name": "gather_views",
+        "error": false,
+        "elapsedMs": 10
+      }
+    ],
+    "workspaceReview": "rename identities/titles and gather focus, pane identities, saved view bytes passed",
+    "controlRequests": [
+      {
+        "turn": 2,
+        "requestToWorkspaceToolEndMs": 3071
+      },
+      {
+        "turn": 4,
+        "requestToWorkspaceToolEndMs": 2192
+      }
+    ]
+  }
+]

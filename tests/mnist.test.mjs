@@ -48,7 +48,9 @@ test('deadline closes a still-running RPC before returning failure', async () =>
 test('model errors close the session; successful turns preserve the continuing session', async () => {
   let closes = 0;
   const close = async () => {closes++;};
-  await turn({prompt: async () => {}, close}, 'request', 100);
+  await turn({prompt: async (message, budget) => {
+    assert.equal(message, 'request'); assert.equal(budget, 100);
+  }, close}, 'request', 100);
   assert.equal(closes, 0);
   await assert.rejects(turn({prompt: async () => {throw new Error('no auth');}, close}, 'request', 100), /no auth/);
   assert.equal(closes, 1);

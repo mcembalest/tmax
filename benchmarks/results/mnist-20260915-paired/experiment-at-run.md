@@ -123,7 +123,7 @@ instrumented. Fresh process does not imply cold OS/driver/compiler caches. Reuse
 Jade's adapter and validation rather than training inside the timed startup path.
 Actual app UI startup may require a further native measurement.
 
-## Initial cloud execution, 14 September
+## Execution record
 
 Cloud Linux x86_64, Node 24.19.0, Go 1.22.12, Pi 0.85.0, Herdr 0.9.0.
 Go build/test/vet passed. The six focused numerical/retention/deadline tests passed.
@@ -146,8 +146,8 @@ scratch prefix succeeded. Herdr's downloaded binary matched CI's pinned SHA-256.
 Two implementation/check rounds added strict row and retention checks, then a
 changed-input probe and whole-request deadline with close-on-failure tests.
 No runtime behavior was changed. No treatment improvement, application speedup,
-or reader-transfer improvement was measured. At this stage the live runner's full
-path was unverified. The next requirement was to execute the paired command in a
+or reader-transfer improvement was measured. The live runner's successful full
+path remains unverified. Next requirement: execute the paired command in a
 workspace permitting Herdr's local workspace API, with Pi authenticated there;
 then review the generated artifacts and run the real reader-transfer task.
 Apple app startup and native rendering still require the MacBook.
@@ -155,6 +155,5 @@ Apple app startup and native rendering still require the MacBook.
 Subsequent GitHub CI passed the complete cloud-built revision: Go race/test/vet/
 build, all 32 Node tests with the extension benchmark enabled, and all 64 Herdr
 operation checks. Local review then added a seventh focused check and evaluator
-corrections. [Local results](mnist-results.md) now include the interrupted attempts
-and the complete 15 September paired pilot. All four sessions completed, with no
-demonstrated treatment advantage and no measured human transfer outcome.
+corrections. [Local follow-up and interrupted attempts](mnist-results.md) explain
+what was observed; they do not establish a completed paired comparison.

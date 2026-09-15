@@ -1,0 +1,5 @@
+{
+  "sha256": "f77ade9a273c6f5dc80a8ce702392fbc153e2c04321379a7cdd845d0432d555d",
+  "bytes": 917131,
+  "retained": "Public user/assistant message_end records in conversation.json; tool durations, usage and pane observations in report.json. Full sanitized events remain in the local attempt directory."
+}

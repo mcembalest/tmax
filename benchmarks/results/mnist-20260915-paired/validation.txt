@@ -1,0 +1,23 @@
+Local validation, 15 September 2026
+Apple M3 Max; macOS arm64; Node 25.1.0; Pi 0.85.1; Herdr 0.9.0
+
+go build -o bin/tmax .: pass
+go test ./...: pass
+go vet ./...: pass
+node --test tests/*.test.mjs: 33 pass, 0 fail
+All live paired requests ran before these local checks.
+
+Separate extension benchmark:
+LOCAL_BENCHMARK {"terminal":"Apple_Terminal","scenario":"split, run, read, reload, interrupt, close","elapsedMs":311.40258299999994}
+✔ Apple_Terminal: real Herdr workspace controls survive extension reload (810.031083ms)
+LOCAL_BENCHMARK {"terminal":"ghostty","scenario":"split, run, read, reload, interrupt, close","elapsedMs":324.6807920000001}
+✔ ghostty: real Herdr workspace controls survive extension reload (832.044541ms)
+✔ login guidance never rewrites the editor after reload or resume (1.304958ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1779.977042

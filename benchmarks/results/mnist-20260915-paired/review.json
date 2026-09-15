@@ -1,0 +1,42 @@
+{
+  "reviewer": "Codex artifact review, aware of arm labels; not blind human transfer",
+  "readerTransfer": "not measured",
+  "cases": {
+    "0-ordinary": {
+      "implementation": "pass: adapter reads the supplied JSON and iterates recorded runs and inference rows; no invented backend results",
+      "measurementMeaning": "fail: final recommendation uses MAX graph compilation/setup cost to reject this app default without separating the benchmark's five graphs from inference-only startup; results correctly warns that setup_seconds is not a cold open measurement",
+      "sharedRevision": "both documents address one digit per launch and withdraw batching as the current decision metric; alternative future batching is labeled conditional",
+      "nextMeasurement": "partial: proposes an inference-only entry point and includes real serving-path costs, but labels 30 fresh launches truly cold without a defined cache protocol; the shown command alone does not establish this",
+      "localAndGather": "pass: pane/terminal identities survive rename and gather, only the requested title changes, required document bytes and saved view registry bytes survive gather, conversation is focused and zoomed",
+      "toolRecovery": "two errors self-corrected: command sent to write tool; JSON output loaded as a JavaScript module. No corrective user turn",
+      "overall": "does not satisfy all predeclared artifact criteria"
+    },
+    "0-joint": {
+      "implementation": "pass: adapter reads supplied JSON and iterates every run/inference row; no invented backend results",
+      "measurementMeaning": "fail: final recommendation uses unequal NumPy/PyTorch setup timers as cold-start evidence and declares MAX not a fit for this lifecycle; original results attributes timing to transfers that were excluded",
+      "sharedRevision": "both documents address one digit per launch, but final recommendation calls PyTorch the choice for a long-lived process or batched work using batched measurements. Long-lived batch-one traffic does not imply batching",
+      "nextMeasurement": "fail: concrete loop times the full reference training/comparison script, which is explicitly acknowledged as a proxy but cannot isolate trained, one-prediction startup. The final harness is left unspecified",
+      "localAndGather": "pass: pane/terminal identities survive rename and gather, only the requested title changes, required document bytes and saved view registry bytes survive gather, conversation is focused and zoomed",
+      "toolRecovery": "no tool errors or corrective user turns",
+      "overall": "does not satisfy all predeclared artifact criteria"
+    },
+    "1-joint": {
+      "implementation": "pass: adapter reads supplied JSON and iterates each run/inference row, with finite numeric validation; no invented backend results",
+      "measurementMeaning": "qualified: correctly separates recorded warm, untrained-weight inference from app latency and makes the choice provisional. It retains high MAX compilation/setup cost as a reason against the default without explaining the five-graph scope or unequal setup boundaries",
+      "sharedRevision": "both documents address one digit per launch; recommendation explicitly withdraws batching as a reason to choose PyTorch for this use",
+      "nextMeasurement": "strongest of the first three: proposes a separate inference-only entry point with final model, fixed input, preprocessing, one printed prediction and process exit, repeated 30 times; still needs implementation and explicit cache policy",
+      "localAndGather": "pass: pane and terminal identities survive, title-only rename preserves documents, gather keeps document and registry bytes with the conversation zoomed and focused",
+      "toolRecovery": "one self-corrected tool error: git diff in the non-git experimental directory. No corrective user turn",
+      "overall": "not a demonstrated fully supported deployment recommendation; improved next-measurement plan does not establish a treatment effect"
+    },
+    "1-ordinary": {
+      "implementation": "pass: adapter reads supplied JSON and iterates each recorded run/inference row; no invented results. Added training medians were independently checked against all nine source training_seconds arrays",
+      "measurementMeaning": "qualified: correctly separates warm batch-one times from missing startup evidence, but neither final document identifies the initial untrained weights used for inference. Accuracy and inference timings could be interpreted as the same trained-model measurement",
+      "sharedRevision": "both documents make batch-one startup the decision metric, withdraw batching as a reason for the current choice, and keep recorded historical values unchanged",
+      "nextMeasurement": "useful: proposes 30 fresh inference-only processes, time until prediction is available, model/image load, accuracy and memory checks; still lacks an implemented entry point, explicit trained checkpoint and cache policy",
+      "localAndGather": "pass: title-only rename preserves document bytes and identities; gather focuses and zooms the conversation while retaining document, pane and saved view identities",
+      "toolRecovery": "0 tool errors; no corrective user turns",
+      "overall": "useful provisional output with remaining measurement-meaning gaps; does not establish a fully verified app recommendation"
+    }
+  }
+}

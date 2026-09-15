@@ -1,0 +1,41 @@
+{
+  "date": "2026-09-15T10:26:47.201Z",
+  "revision": "9de03e025b4a78f52212e939f14dea682e2fe7f1",
+  "jade": "dd72a6fa67cb52bb7abf56f585c9f1f4efaaa2ea",
+  "jadeArchiveSHA256": "ca5a00ca17e38d00d4a619d5ea387934eee6c89068acff212cf416e61f333b2d",
+  "platform": "darwin",
+  "arch": "arm64",
+  "node": "v25.1.0",
+  "settings": {
+    "provider": "openai-codex",
+    "model": "gpt-5.6-luna",
+    "thinking": "medium"
+  },
+  "prompts": [
+    "I want to choose an on-device MNIST recognizer for my MacBook. Start a small runnable comparison using Jade's existing work in reference/examples/mnist; don't rewrite its backends. I'm considering NumPy, PyTorch, MLX, Rust, and Mojo/MAX. Create ./compare.mjs in the current working directory so node compare.mjs <measurements.json> prints a JSON array of every recorded inference measurement, each with id (the source run key), batch, and median_ms. Save ./results.md and ./recommendation.md in the current working directory, and show them beside this conversation as Results and Recommendation. Treat reference/ as read-only. Explain what we can choose now and what still needs testing. Work as one continuing agent, without delegation, in this experimental directory. Use uv for any Python tooling.",
+    "Change just the title of the Results view to Measurements. Leave the documents and recommendation as they are.",
+    "Actually, I will usually open the recognizer for one digit and close it. Update the comparison explanation and recommendation wherever this changes the conclusion. Include a concrete next measurement I could run for that use.",
+    "Bring us back to just this conversation; keep all the saved results and views available for later."
+  ],
+  "perTurnBudgetMs": 90000,
+  "repetitions": 2,
+  "sourceHashes": {
+    "internal/launcher/extension.ts": "c2c8ceffa316930ac46b550799c9b9687e26d3f074b1b337eb3119c76c820fb3",
+    "internal/launcher/grid.ts": "9ba051ab617f4f04328230aee714e0bc4728bcd9c38d74bb77fd0a5deaa1ee54",
+    "internal/launcher/handoff.ts": "0c3cd8eec0fee7f73fdc21a03144f9ad5092d1c29c70cb20e9869bc123d70510",
+    "internal/launcher/launcher.go": "e1ea3f948e368707e7673388cb0413ba5f1e1ceeae4dba126325880da93def01",
+    "internal/launcher/main_test.go": "20950e47930e87d13680023ec04f694e7ffbfdcfcccade28cb2483d8864c09b5",
+    "internal/launcher/setup.go": "5d40a129af2a0afdd8ed452501909a89f11cb2e949b75a0b1e40a21ecf1f79ac",
+    "internal/launcher/setup_test.go": "83ce1cf11d384a38f5ed1f5c94b2b2f56ae348c4578f8554d642a970ea3757bf",
+    "internal/launcher/view.ts": "533874d95ababfbbe9afa450ecf0405a259796e2d429cc22436f84285df1f3f2",
+    "internal/launcher/views.ts": "91e0a3e6ba6dd816e8023d47f4604da5123289e2e989b110a6cb123e5c34a270",
+    "internal/launcher/workspace.go": "f86c5b9eda803872b4e7faf0a9486692be9b2a35b9dc3338e9f524018e38263b",
+    "tests/herdr.mjs": "26a7c518ba4d7ddfc2d7b558e26e45e7766d62b624b2b3e000efbdca8b5aca44",
+    "tests/rpc.mjs": "8e5b96916b99a9567cef9752163c87a1c978a8cea8066625af47d833f97a44ad",
+    "benchmarks/mnist/run.mjs": "4091d88f43dcf5de6fbcc0cb67e5181e662c303ec2b8193ea6aee31e865cb250",
+    "benchmarks/mnist/check.mjs": "0cdf08df648944589b7e135b430788c7413399a0e5b783fb2aa57942637ce530",
+    "benchmarks/mnist/attention.ts": "bf8c67a33f4ca329dae3baf00ad6d79b0f3ec161901f2c659368163c2b9829e0",
+    "benchmarks/mnist/turn.mjs": "630cf913c047a9e8f94caf6864876bdb7238f6d3ac5fa78cccea058ac7ace133",
+    "docs/mnist-experiment.md": "ccd3298895d95da407e41cfbda7db7330f12eefbd97219609873d87360eea6f3"
+  }
+}

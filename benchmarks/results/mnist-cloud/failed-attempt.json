@@ -1,0 +1,14 @@
+{
+  "pair": 0,
+  "arm": "ordinary",
+  "settings": {
+    "provider": "openai-codex",
+    "model": "gpt-5.6-luna",
+    "thinking": "medium"
+  },
+  "rounds": [],
+  "semanticReview": "pending",
+  "readerTransfer": "not measured",
+  "status": "failed",
+  "error": "Error: Command failed: herdr api snapshot\nError: Os { code: 1, kind: PermissionDenied, message: \"Operation not permitted\" }\n"
+}

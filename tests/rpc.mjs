@@ -19,7 +19,7 @@ export function rpc(f,{session=resolve(f.dir,'parent.jsonl'),live=false,extensio
  const request=(type,extra={})=>new Promise((resolve,reject)=>{const id=String(++next),timer=setTimeout(()=>{pending.delete(id);reject(new Error(`Pi RPC ${type} timed out: ${errors}`));},90000);pending.set(id,{resolve,reject,timer});child.stdin.write(JSON.stringify({id,type,...extra})+'\n');});
  const waitFor=async(predicate,timeout=20000)=>{const deadline=Date.now()+timeout;while(Date.now()<deadline){if(await predicate())return;const error=messages.find(m=>m.role==='assistant'&&m.stopReason==='error');if(error)throw new Error(error.errorMessage||'Model error');if(child.exitCode!==null||child.signalCode!==null)throw new Error('Pi exited: '+errors);await delay(25);}throw new Error('Pi observation timed out: '+errors);};
  return {child,events,messages,request,waitFor,
-  async prompt(message){const offset=events.length;await request('prompt',{message});await waitFor(()=>events.slice(offset).some(e=>e.type==='agent_end'),90000);const error=messages.at(-1);if(error?.stopReason==='error')throw new Error(error.errorMessage);},
+  async prompt(message,timeout=90000){const offset=events.length;await request('prompt',{message});await waitFor(()=>events.slice(offset).some(e=>e.type==='agent_end'),timeout);const error=messages.at(-1);if(error?.stopReason==='error')throw new Error(error.errorMessage);},
   async close(){if(child.exitCode===null&&child.signalCode===null){child.kill('SIGTERM');for(let i=0;i<100&&child.exitCode===null&&child.signalCode===null;i++)await delay(25);if(child.exitCode===null&&child.signalCode===null)child.kill('SIGKILL');}rejectAll(new Error('RPC closed'));}
  };
 }

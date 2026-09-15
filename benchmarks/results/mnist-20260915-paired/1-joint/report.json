@@ -1,0 +1,1262 @@
+{
+  "pair": 1,
+  "arm": "joint",
+  "settings": {
+    "provider": "openai-codex",
+    "model": "gpt-5.6-luna",
+    "thinking": "medium"
+  },
+  "rounds": [
+    {
+      "index": 0,
+      "prompt": "I want to choose an on-device MNIST recognizer for my MacBook. Start a small runnable comparison using Jade's existing work in reference/examples/mnist; don't rewrite its backends. I'm considering NumPy, PyTorch, MLX, Rust, and Mojo/MAX. Create ./compare.mjs in the current working directory so node compare.mjs <measurements.json> prints a JSON array of every recorded inference measurement, each with id (the source run key), batch, and median_ms. Save ./results.md and ./recommendation.md in the current working directory, and show them beside this conversation as Results and Recommendation. Treat reference/ as read-only. Explain what we can choose now and what still needs testing. Work as one continuing agent, without delegation, in this experimental directory. Use uv for any Python tooling.",
+      "modelRequestMs": 56976.54666699999,
+      "tools": [
+        {
+          "name": "bash",
+          "error": false,
+          "elapsedMs": 14
+        },
+        {
+          "name": "bash",
+          "error": false,
+          "elapsedMs": 12
+        },
+        {
+          "name": "read",
+          "error": false,
+          "elapsedMs": 2
+        },
+        {
+          "name": "read",
+          "error": false,
+          "elapsedMs": 4
+        },
+        {
+          "name": "read",
+          "error": false,
+          "elapsedMs": 4
+        },
+        {
+          "name": "read",
+          "error": false,
+          "elapsedMs": 5
+        },
+        {
+          "name": "read",
+          "error": false,
+          "elapsedMs": 4
+        },
+        {
+          "name": "read",
+          "error": false,
+          "elapsedMs": 1
+        },
+        {
+          "name": "write",
+          "error": false,
+          "elapsedMs": 3
+        },
+        {
+          "name": "write",
+          "error": false,
+          "elapsedMs": 2
+        },
+        {
+          "name": "write",
+          "error": false,
+          "elapsedMs": 1
+        },
+        {
+          "name": "bash",
+          "error": true,
+          "elapsedMs": 33
+        },
+        {
+          "name": "bash",
+          "error": false,
+          "elapsedMs": 81
+        },
+        {
+          "name": "show_view",
+          "error": false,
+          "elapsedMs": 166
+        },
+        {
+          "name": "show_view",
+          "error": false,
+          "elapsedMs": 343
+        }
+      ],
+      "usage": [
+        {
+          "input": 3249,
+          "output": 109,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "reasoning": 23,
+          "totalTokens": 3358,
+          "cost": {
+            "input": 0.0006498000000000001,
+            "output": 0.00013079999999999998,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0.0007806
+          }
+        },
+        {
+          "input": 1182,
+          "output": 135,
+          "cacheRead": 2560,
+          "cacheWrite": 0,
+          "reasoning": 12,
+          "totalTokens": 3877,
+          "cost": {
+            "input": 0.00023640000000000003,
+            "output": 0.00016199999999999998,
+            "cacheRead": 0.0000512,
+            "cacheWrite": 0,
+            "total": 0.00044960000000000003
+          }
+        },
+        {
+          "input": 26234,
+          "output": 128,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "reasoning": 93,
+          "totalTokens": 26362,
+          "cost": {
+            "input": 0.0052468,
+            "output": 0.0001536,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0.0054004000000000005
+          }
+        },
+        {
+          "input": 4067,
+          "output": 642,
+          "cacheRead": 26112,
+          "cacheWrite": 0,
+          "reasoning": 282,
+          "totalTokens": 30821,
+          "cost": {
+            "input": 0.0008134,
+            "output": 0.0007704,
+            "cacheRead": 0.00052224,
+            "cacheWrite": 0,
+            "total": 0.00210604
+          }
+        },
+        {
+          "input": 1653,
+          "output": 505,
+          "cacheRead": 29184,
+          "cacheWrite": 0,
+          "reasoning": 0,
+          "totalTokens": 31342,
+          "cost": {
+            "input": 0.0003306,
+            "output": 0.000606,
+            "cacheRead": 0.00058368,
+            "cacheWrite": 0,
+            "total": 0.0015202800000000002
+          }
+        },
+        {
+          "input": 1149,
+          "output": 513,
+          "cacheRead": 30208,
+          "cacheWrite": 0,
+          "reasoning": 0,
+          "totalTokens": 31870,
+          "cost": {
+            "input": 0.00022980000000000003,
+            "output": 0.0006156,
+            "cacheRead": 0.00060416,
+            "cacheWrite": 0,
+            "total": 0.00144956
+          }
+        },
+        {
+          "input": 653,
+          "output": 196,
+          "cacheRead": 31232,
+          "cacheWrite": 0,
+          "reasoning": 32,
+          "totalTokens": 32081,
+          "cost": {
+            "input": 0.0001306,
+            "output": 0.0002352,
+            "cacheRead": 0.00062464,
+            "cacheWrite": 0,
+            "total": 0.00099044
+          }
+        },
+        {
+          "input": 2771,
+          "output": 292,
+          "cacheRead": 31232,
+          "cacheWrite": 0,
+          "reasoning": 161,
+          "totalTokens": 34295,
+          "cost": {
+            "input": 0.0005542,
+            "output": 0.0003504,
+            "cacheRead": 0.00062464,
+            "cacheWrite": 0,
+            "total": 0.0015292399999999999
+          }
+        }
+      ],
+      "hashes": {
+        "compare.mjs": "5d218995afb5c7f0f74564b15079377e6b027200f7aa18b23fa7e881f379649e",
+        "config.toml": "849e568b26733849a75099af43e596c312fee4d51110a5a8ea251cb328b10de4",
+        "herdr/.plugins.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "herdr/sessions/test/herdr-server.log": "cff15c768b4e105c7317f69eb92b69729fbc0d8d800a3a5c93228853058b5f67",
+        "herdr/sessions/test/session.json": "4f40f7f47f65338186992955c5d207981534061587da064246e7bc9db688802a",
+        "pi/extensions/herdr-agent-state.ts": "9b1c41cd72520fc2abe5f2a2aec995c12a926cce844df472c7fd5fcae4f4dbfa",
+        "recommendation.md": "0423afc8667a3518a11a304d138fc4d539de50954aa84e3d920dc5fdc547f64d",
+        "reference/examples/mnist/.gitignore": "bb176f248a131fde91f153b571fb2d20e2f318d7daf1859306af13147cd47a63",
+        "reference/examples/mnist/README.md": "4b5e19772b173c3029acff347c2528fe1949e72b22e961502a65270b82df0ac4",
+        "reference/examples/mnist/compare.py": "6c45a396e0d1d708f9c9498076902490db6f8ae3c4c01087b2e424b2dc18f893",
+        "reference/examples/mnist/compare.py.lock": "f91b9aecedc93dd6ebe621e306d20875db326d11875b864a0a40f1c7094f3c68",
+        "reference/examples/mnist/fetch.sh": "7a24df15e817803df6778cd6a8a3226e368af229f3b6121a0657fe5d9d0b0e5c",
+        "reference/examples/mnist/jax-js/.gitignore": "dbec6a31ca58d0e7f3712ff06a2ce4d622a04824e366e9a0f62824131a42da0e",
+        "reference/examples/mnist/jax-js/README.md": "613e5b4de5cf4bd3b3fb8adb57134513f5b927ccca5b198d1e89c471cf94204d",
+        "reference/examples/mnist/jax-js/app.js": "02957c8a72da297762d2a93ce248b71272463c5706a29b7e6bb007ffbd1bcee5",
+        "reference/examples/mnist/jax-js/compare.mjs": "38a7acdda4c97609de3694087159b12c9c01997d3748dd30d25b1eeea875ae8b",
+        "reference/examples/mnist/jax-js/index.html": "d6fcd04a5213eec3a003a56958393a087524ba1e1683a84be51af0b5b771fbcc",
+        "reference/examples/mnist/jax-js/learning.svg": "912103a89618895d74e16e2da3048186375714947a632b880d01659b635dcfad",
+        "reference/examples/mnist/jax-js/package-lock.json": "9d8070f3f8131106470cdbd3c4ee34c9e0270507f4719cd1b0ac5e0dbfd92037",
+        "reference/examples/mnist/jax-js/package.json": "65f08e2389df2301ea141421eb5fc2fd4a562235798e007d9724de26876b0c2a",
+        "reference/examples/mnist/jax-js/server.mjs": "be01d40883633e22326b934442e24f35436cdd148ae1879b514b10c96ceae359",
+        "reference/examples/mnist/jax-js/verify.mjs": "bfdf74e384ac81e8461a9f3b4608ce80f753eac57a232a9ce70c9af435bf1d37",
+        "reference/examples/mnist/latency.svg": "7b1e93e3b84ba449666e51904a38762b9007d5869bc7e38ef724ab2f77f68d57",
+        "reference/examples/mnist/measurements.json": "1ba11efade5af8f910c8d1444dbd79a2963c06a5f47f0f22b3e29f3afe7e8f40",
+        "reference/examples/mnist/mlx/README.md": "e68295ffc8e49e281d07d98db8a4e321ae96ab10c33d695446dd40fd07c2cf2b",
+        "reference/examples/mnist/mlx/learning.svg": "ab571b3040b60c9ccd5eeb3a5ac1882526412fa473b550af1d815e76108aafcb",
+        "reference/examples/mnist/mojo-max/README.md": "699814e38e08db4e3ac9e94704d2b58d03b8e242a32085dc2cef23861f525957",
+        "reference/examples/mnist/mojo-max/kernels/__init__.mojo": "99c74ec8fc197b19430db420c2bba7955733e1cd354358e2341d9c12bb470b96",
+        "reference/examples/mnist/mojo-max/kernels/relu.mojo": "1bb2e6db8661e0a3bb8ec6e89760f3048d44ec506db3147dc9e2850db47cd175",
+        "reference/examples/mnist/mojo-max/latency.svg": "9b1f88ee8a6678db1a1cdb217b9d6284071cc6107fa266d1a4329d900b53a181",
+        "reference/examples/mnist/mojo-max/model.py": "94b5a2e198184485eab9a2eb349716ee00ec96502b8e8fe8bbc4b74b51379ccc",
+        "reference/examples/mnist/mojo-max/pixi.lock": "57eb7743a7bde2277096045bf2a5ab9e44703008ff8f9c3b721822263771d245",
+        "reference/examples/mnist/mojo-max/pixi.toml": "9cc21193832bdc08de0b0d094e07f90e078975de5f8909f619f2fa30c146c0d3",
+        "reference/examples/mnist/mojo-max/verify.py": "6e7373d45140794340e55c72b794d4cf50025fbab526ede3cb47e3a2d5e71ff4",
+        "reference/examples/mnist/plot.py": "32120c6da2ff891da627eecf590a483a203fccf2300e7161045314cbf1d2c714",
+        "reference/examples/mnist/plot.py.lock": "d344a2892b954278725586175c8e4330f3ed6d5e0444f6e9345e43f1d926997e",
+        "results.md": "b48d2a2f1d11c1551c93bbafbddf255a3111b6b299931aecaaecb0aa298e256e",
+        "saved/fc00ef4b964ca4711a42c6d3/views/5e0582ee-2409-49d4-8066-dddb18b4c220.json": "2d1ed3fbce360e6e6dd48d1e555d25a496689289ea1c724426366ea17b3fa2ac",
+        "saved/fc00ef4b964ca4711a42c6d3/views/5e0582ee-2409-49d4-8066-dddb18b4c220.json.ready": "f0c5be00b182a3e502c91d8725328d93d7c0d72e6cb976fa5dd7c0fc3eccc415",
+        "saved/fc00ef4b964ca4711a42c6d3/views/b9e4deaa-758b-45cb-85b5-edda4132a1d5.json": "bd5c862d4c15139a3a25d84d37859db1068ff32e5fc7b5f114a79097689225ec",
+        "saved/fc00ef4b964ca4711a42c6d3/views/b9e4deaa-758b-45cb-85b5-edda4132a1d5.json.ready": "f37f787896d06e52ca1d5f617939a88705c52040e6820fd5fb03316cab1ac6ce"
+      },
+      "panes": {
+        "panes": [
+          {
+            "agent_status": "unknown",
+            "cwd": "/private/var/folders/cd/s1t0m2bd3hs42779hlgpvncw0000gn/T/tmax-herdr-f17S2D",
+            "focused": true,
+            "foreground_cwd": "/private/var/folders/cd/s1t0m2bd3hs42779hlgpvncw0000gn/T/tmax-herdr-f17S2D",
+            "pane_id": "w1:p1",
+            "revision": 0,
+            "scroll": {
+              "max_offset_from_bottom": 0,
+              "offset_from_bottom": 0,
+              "viewport_rows": 40
+            },
+            "tab_id": "w1:t1",
+            "terminal_id": "term_65b831dbf33ff1",
+            "workspace_id": "w1"
+          },
+          {
+            "agent_status": "unknown",
+            "cwd": "/private/var/folders/cd/s1t0m2bd3hs42779hlgpvncw0000gn/T/tmax-herdr-f17S2D",
+            "focused": false,
+            "foreground_cwd": "/private/var/folders/cd/s1t0m2bd3hs42779hlgpvncw0000gn/T/tmax-herdr-f17S2D",
+            "label": "Recommendation",
+            "pane_id": "w1:p3",
+            "revision": 0,
+            "scroll": {
+              "max_offset_from_bottom": 0,
+              "offset_from_bottom": 0,
+              "viewport_rows": 40
+            },
+            "tab_id": "w1:t1",
+            "terminal_id": "term_65b8320c0935c3",
+            "workspace_id": "w1"
+          },
+          {
+            "agent_status": "unknown",
+            "cwd": "/private/var/folders/cd/s1t0m2bd3hs42779hlgpvncw0000gn/T/tmax-herdr-f17S2D",
+            "focused": false,
+            "foreground_cwd": "/private/var/folders/cd/s1t0m2bd3hs42779hlgpvncw0000gn/T/tmax-herdr-f17S2D",
+            "label": "Results",
+            "pane_id": "w1:p2",
+            "revision": 0,
+            "scroll": {
+              "max_offset_from_bottom": 0,
+              "offset_from_bottom": 0,
+              "viewport_rows": 40
+            },
+            "tab_id": "w1:t1",
+            "terminal_id": "term_65b8320be30432",
+            "workspace_id": "w1"
+          }
+        ],
+        "type": "pane_list"
+      },
+      "layout": {
+        "layout": {
+          "area": {
+            "height": 40,
+            "width": 120,
+            "x": 0,
+            "y": 0
+          },
+          "focused_pane_id": "w1:p1",
+          "panes": [
+            {
+              "focused": true,
+              "pane_id": "w1:p1",
+              "rect": {
+                "height": 20,
+                "width": 60,
+                "x": 0,
+                "y": 0
+              }
+            },
+            {
+              "focused": false,
+              "pane_id": "w1:p3",
+              "rect": {
+                "height": 20,
+                "width": 60,
+                "x": 0,
+                "y": 20
+              }
+            },
+            {
+              "focused": false,
+              "pane_id": "w1:p2",
+              "rect": {
+                "height": 40,
+                "width": 60,
+                "x": 60,
+                "y": 0
+              }
+            }
+          ],
+          "splits": [
+            {
+              "direction": "right",
+              "id": "split_0_root",
+              "ratio": 0.5,
+              "rect": {
+                "height": 40,
+                "width": 120,
+                "x": 0,
+                "y": 0
+              }
+            },
+            {
+              "direction": "down",
+              "id": "split_1_0",
+              "ratio": 0.5,
+              "rect": {
+                "height": 40,
+                "width": 60,
+                "x": 0,
+                "y": 0
+              }
+            }
+          ],
+          "tab_id": "w1:t1",
+          "workspace_id": "w1",
+          "zoomed": false
+        },
+        "type": "pane_layout"
+      },
+      "displays": [
+        {
+          "pane": "w1:p3",
+          "text": "Recommendation\n\n What we can choose now\n\n For a small single-image, on-device recognizer, choose\n NumPy on CPU as the current baseline: it is the fastest\n recorded batch-1 path (0.00496 ms median), simple, and\n already validated against the shared fixture. If the\n application is already PyTorch-based or mostly processes\n batches, PyTorch CPU is the measured alternative: it leads\n the recorded batch-128 and batch-1,000 medians (0.03654 ms\n and 0.20448 ms) while matching the 91.4% accuracy result.\n\n MLX is a reasonable Apple-native follow-up, but this tiny\n model does not benefit from moving to Metal in the\n recorded test: MLX CPU/Metal are 0.02571/0.19454 ms at\n batch 1. MAX/Mojo is not the default recommendation for\n this workload because its recorded inference is slower for\n small batches and its graph compilation/setup cost is\n high. MPS likewise loses to CPU for this model.\n\n These are engineering choices, not a claim that the\n fastest fixture row is automatically the best product\n runtime. Packaging, API ergonomics, memory ownership, and\n cold-start behavior can dominate a tiny network.\n\n What still needs testing\n\n - Rust: no Rust backend or run is included in\n   reference/examples/mnist; implement or select the\n   intended Rust runtime and measure it under the same\n   model, weights, accuracy check, and batch sizes.\n - Real workload: repeat with the expected batch\n   distribution (especially batch 1), end-to-end image\n   preprocessing, input upload/output conversion, and\n   application integration. The fixture deliberately\n   excludes transfers.\n - Cold start and packaging: measure process startup,\n   imports, model loading, and first inference. The fixture"
+        },
+        {
+          "pane": "w1:p2",
+          "text": "MNIST comparison results\n\n Source: reference/examples/mnist/measurements.json (Jade's recorded fixture). These are median inference times in\n milliseconds on an Apple M3 Max, using the shared 784 → 128 → 10 float32 model and resident inputs. The measurements\n are not new runs in this directory.\n\n ┌─────────────────┬──────────────┬────────────────┬──────────────────┐\n │ Source run      │ Batch 1 (ms) │ Batch 128 (ms) │ Batch 1,000 (ms) │\n ├─────────────────┼──────────────┼────────────────┼──────────────────┤\n │ numpy-cpu       │ 0.00496      │ 0.04035        │ 0.24129          │\n ├─────────────────┼──────────────┼────────────────┼──────────────────┤\n │ torch-cpu       │ 0.00698      │ 0.03654        │ 0.20448          │\n ├─────────────────┼──────────────┼────────────────┼──────────────────┤\n │ torch-gpu (MPS) │ 0.24163      │ 0.27719        │ 0.32400          │\n ├─────────────────┼──────────────┼────────────────┼──────────────────┤\n │ mlx-cpu         │ 0.02571      │ 0.05646        │ 0.22867          │\n ├─────────────────┼──────────────┼────────────────┼──────────────────┤\n │ mlx-gpu (Metal) │ 0.19454      │ 0.23112        │ 0.28265          │\n ├─────────────────┼──────────────┼────────────────┼──────────────────┤\n │ jax-js-wasm     │ 0.06000      │ 0.27500        │ 0.61500          │\n ├─────────────────┼──────────────┼────────────────┼──────────────────┤\n │ jax-js-webgpu   │ 0.41000      │ 0.38250        │ 0.44000          │\n ├─────────────────┼──────────────┼────────────────┼──────────────────┤\n │ max-cpu         │ 0.12021      │ 0.15473        │ 0.42781          │\n ├─────────────────┼──────────────┼────────────────┼──────────────────┤\n │ max-gpu (Metal) │ 0.44748      │ 0.36146        │ 0.37148          │\n └─────────────────┴──────────────┴────────────────┴──────────────────┘\n\n All recorded rows can be flattened to {id, batch, median_ms} with:\n\n ```sh\n   node compare.mjs reference/examples/mnist/measurements.json\n ```\n\n The fixture reports 91.4% accuracy for every recorded backend after the shared three-epoch training protocol. Its\n timing excludes input upload and output readback for inference, and excludes setup/compilation; the MAX measurements\n additionally have substantial graph compilation (especially on Metal).\n\n Scope"
+        }
+      ],
+      "referenceIntegrity": {
+        "status": "pass"
+      },
+      "adapterOutput": {
+        "stdout": "[\n  {\n    \"id\": \"numpy-cpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.004958128556609154\n  },\n  {\n    \"id\": \"numpy-cpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.04035409074276686\n  },\n  {\n    \"id\": \"numpy-cpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.24129159282892942\n  },\n  {\n    \"id\": \"torch-cpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.00697956420481205\n  },\n  {\n    \"id\": \"torch-cpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.03654148895293474\n  },\n  {\n    \"id\": \"torch-cpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.20447908900678158\n  },\n  {\n    \"id\": \"torch-gpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.2416255883872509\n  },\n  {\n    \"id\": \"torch-gpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.2771875588223338\n  },\n  {\n    \"id\": \"torch-gpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.32400060445070267\n  },\n  {\n    \"id\": \"mlx-cpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.02570857759565115\n  },\n  {\n    \"id\": \"mlx-cpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.056458404287695885\n  },\n  {\n    \"id\": \"mlx-cpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.22866646759212017\n  },\n  {\n    \"id\": \"mlx-gpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.19454152788966894\n  },\n  {\n    \"id\": \"mlx-gpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.23112492635846138\n  },\n  {\n    \"id\": \"mlx-gpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.28264604043215513\n  },\n  {\n    \"id\": \"jax-js-wasm\",\n    \"batch\": 1,\n    \"median_ms\": 0.059999942779541016\n  },\n  {\n    \"id\": \"jax-js-wasm\",\n    \"batch\": 128,\n    \"median_ms\": 0.2749999761581421\n  },\n  {\n    \"id\": \"jax-js-wasm\",\n    \"batch\": 1000,\n    \"median_ms\": 0.6150000095367432\n  },\n  {\n    \"id\": \"jax-js-webgpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.4100000858306885\n  },\n  {\n    \"id\": \"jax-js-webgpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.3825000524520874\n  },\n  {\n    \"id\": \"jax-js-webgpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.440000057220459\n  },\n  {\n    \"id\": \"max-cpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.12020801659673452\n  },\n  {\n    \"id\": \"max-cpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.15472900122404099\n  },\n  {\n    \"id\": \"max-cpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.42781291995197535\n  },\n  {\n    \"id\": \"max-gpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.4474795423448086\n  },\n  {\n    \"id\": \"max-gpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.36145851481705904\n  },\n  {\n    \"id\": \"max-gpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.3714790800586343\n  }\n]\n",
+        "stderr": ""
+      },
+      "numerical": {
+        "status": "pass",
+        "rows": 27,
+        "meaning": "not graded"
+      },
+      "probeOutput": {
+        "stdout": "[\n  {\n    \"id\": \"numpy-cpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.019092636122554543\n  },\n  {\n    \"id\": \"numpy-cpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.0675851043175906\n  },\n  {\n    \"id\": \"numpy-cpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.3428694821756333\n  },\n  {\n    \"id\": \"torch-cpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.021862002960592507\n  },\n  {\n    \"id\": \"torch-cpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.0623618398655206\n  },\n  {\n    \"id\": \"torch-cpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.29243635193929074\n  },\n  {\n    \"id\": \"torch-gpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.3433270560905337\n  },\n  {\n    \"id\": \"torch-gpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.39204695558659736\n  },\n  {\n    \"id\": \"torch-gpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.4561808280974627\n  },\n  {\n    \"id\": \"mlx-cpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.047520751306042074\n  },\n  {\n    \"id\": \"mlx-cpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.08964801387414337\n  },\n  {\n    \"id\": \"mlx-cpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.3255730606012046\n  },\n  {\n    \"id\": \"mlx-gpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.2788218932088464\n  },\n  {\n    \"id\": \"mlx-gpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.32894114911109207\n  },\n  {\n    \"id\": \"mlx-gpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.39952507539205256\n  },\n  {\n    \"id\": \"jax-js-wasm\",\n    \"batch\": 1,\n    \"median_ms\": 0.0944999216079712\n  },\n  {\n    \"id\": \"jax-js-wasm\",\n    \"batch\": 128,\n    \"median_ms\": 0.38904996733665465\n  },\n  {\n    \"id\": \"jax-js-wasm\",\n    \"batch\": 1000,\n    \"median_ms\": 0.8548500130653381\n  },\n  {\n    \"id\": \"jax-js-webgpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.5740001175880433\n  },\n  {\n    \"id\": \"jax-js-webgpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.5363250718593597\n  },\n  {\n    \"id\": \"jax-js-webgpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.6151000783920288\n  },\n  {\n    \"id\": \"max-cpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.1769849827375263\n  },\n  {\n    \"id\": \"max-cpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.22427873167693618\n  },\n  {\n    \"id\": \"max-cpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.5984037003342062\n  },\n  {\n    \"id\": \"max-gpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.6253469730123877\n  },\n  {\n    \"id\": \"max-gpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.507498165299371\n  },\n  {\n    \"id\": \"max-gpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.5212263396803289\n  },\n  {\n    \"id\": \"additional-backend\",\n    \"batch\": 7,\n    \"median_ms\": 0.031\n  }\n]\n",
+        "stderr": ""
+      },
+      "changedInput": {
+        "status": "pass",
+        "rows": 28,
+        "meaning": "not graded"
+      }
+    },
+    {
+      "index": 1,
+      "prompt": "Change just the title of the Results view to Measurements. Leave the documents and recommendation as they are.",
+      "modelRequestMs": 3624.5538749999832,
+      "tools": [
+        {
+          "name": "show_view",
+          "error": false,
+          "elapsedMs": 26
+        }
+      ],
+      "usage": [
+        {
+          "input": 1620,
+          "output": 64,
+          "cacheRead": 33280,
+          "cacheWrite": 0,
+          "reasoning": 12,
+          "totalTokens": 34964,
+          "cost": {
+            "input": 0.000324,
+            "output": 0.0000768,
+            "cacheRead": 0.0006656,
+            "cacheWrite": 0,
+            "total": 0.0010664
+          }
+        },
+        {
+          "input": 757,
+          "output": 17,
+          "cacheRead": 34304,
+          "cacheWrite": 0,
+          "reasoning": 0,
+          "totalTokens": 35078,
+          "cost": {
+            "input": 0.00015140000000000002,
+            "output": 0.000020399999999999998,
+            "cacheRead": 0.00068608,
+            "cacheWrite": 0,
+            "total": 0.0008578800000000001
+          }
+        }
+      ],
+      "hashes": {
+        "compare.mjs": "5d218995afb5c7f0f74564b15079377e6b027200f7aa18b23fa7e881f379649e",
+        "config.toml": "849e568b26733849a75099af43e596c312fee4d51110a5a8ea251cb328b10de4",
+        "herdr/.plugins.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "herdr/sessions/test/herdr-server.log": "681f534e56ebea5d870c0a36d6da9e91ff14f93489c021f3e1c4cfdf9189eb50",
+        "herdr/sessions/test/session.json": "4f40f7f47f65338186992955c5d207981534061587da064246e7bc9db688802a",
+        "pi/extensions/herdr-agent-state.ts": "9b1c41cd72520fc2abe5f2a2aec995c12a926cce844df472c7fd5fcae4f4dbfa",
+        "recommendation.md": "0423afc8667a3518a11a304d138fc4d539de50954aa84e3d920dc5fdc547f64d",
+        "reference/examples/mnist/.gitignore": "bb176f248a131fde91f153b571fb2d20e2f318d7daf1859306af13147cd47a63",
+        "reference/examples/mnist/README.md": "4b5e19772b173c3029acff347c2528fe1949e72b22e961502a65270b82df0ac4",
+        "reference/examples/mnist/compare.py": "6c45a396e0d1d708f9c9498076902490db6f8ae3c4c01087b2e424b2dc18f893",
+        "reference/examples/mnist/compare.py.lock": "f91b9aecedc93dd6ebe621e306d20875db326d11875b864a0a40f1c7094f3c68",
+        "reference/examples/mnist/fetch.sh": "7a24df15e817803df6778cd6a8a3226e368af229f3b6121a0657fe5d9d0b0e5c",
+        "reference/examples/mnist/jax-js/.gitignore": "dbec6a31ca58d0e7f3712ff06a2ce4d622a04824e366e9a0f62824131a42da0e",
+        "reference/examples/mnist/jax-js/README.md": "613e5b4de5cf4bd3b3fb8adb57134513f5b927ccca5b198d1e89c471cf94204d",
+        "reference/examples/mnist/jax-js/app.js": "02957c8a72da297762d2a93ce248b71272463c5706a29b7e6bb007ffbd1bcee5",
+        "reference/examples/mnist/jax-js/compare.mjs": "38a7acdda4c97609de3694087159b12c9c01997d3748dd30d25b1eeea875ae8b",
+        "reference/examples/mnist/jax-js/index.html": "d6fcd04a5213eec3a003a56958393a087524ba1e1683a84be51af0b5b771fbcc",
+        "reference/examples/mnist/jax-js/learning.svg": "912103a89618895d74e16e2da3048186375714947a632b880d01659b635dcfad",
+        "reference/examples/mnist/jax-js/package-lock.json": "9d8070f3f8131106470cdbd3c4ee34c9e0270507f4719cd1b0ac5e0dbfd92037",
+        "reference/examples/mnist/jax-js/package.json": "65f08e2389df2301ea141421eb5fc2fd4a562235798e007d9724de26876b0c2a",
+        "reference/examples/mnist/jax-js/server.mjs": "be01d40883633e22326b934442e24f35436cdd148ae1879b514b10c96ceae359",
+        "reference/examples/mnist/jax-js/verify.mjs": "bfdf74e384ac81e8461a9f3b4608ce80f753eac57a232a9ce70c9af435bf1d37",
+        "reference/examples/mnist/latency.svg": "7b1e93e3b84ba449666e51904a38762b9007d5869bc7e38ef724ab2f77f68d57",
+        "reference/examples/mnist/measurements.json": "1ba11efade5af8f910c8d1444dbd79a2963c06a5f47f0f22b3e29f3afe7e8f40",
+        "reference/examples/mnist/mlx/README.md": "e68295ffc8e49e281d07d98db8a4e321ae96ab10c33d695446dd40fd07c2cf2b",
+        "reference/examples/mnist/mlx/learning.svg": "ab571b3040b60c9ccd5eeb3a5ac1882526412fa473b550af1d815e76108aafcb",
+        "reference/examples/mnist/mojo-max/README.md": "699814e38e08db4e3ac9e94704d2b58d03b8e242a32085dc2cef23861f525957",
+        "reference/examples/mnist/mojo-max/kernels/__init__.mojo": "99c74ec8fc197b19430db420c2bba7955733e1cd354358e2341d9c12bb470b96",
+        "reference/examples/mnist/mojo-max/kernels/relu.mojo": "1bb2e6db8661e0a3bb8ec6e89760f3048d44ec506db3147dc9e2850db47cd175",
+        "reference/examples/mnist/mojo-max/latency.svg": "9b1f88ee8a6678db1a1cdb217b9d6284071cc6107fa266d1a4329d900b53a181",
+        "reference/examples/mnist/mojo-max/model.py": "94b5a2e198184485eab9a2eb349716ee00ec96502b8e8fe8bbc4b74b51379ccc",
+        "reference/examples/mnist/mojo-max/pixi.lock": "57eb7743a7bde2277096045bf2a5ab9e44703008ff8f9c3b721822263771d245",
+        "reference/examples/mnist/mojo-max/pixi.toml": "9cc21193832bdc08de0b0d094e07f90e078975de5f8909f619f2fa30c146c0d3",
+        "reference/examples/mnist/mojo-max/verify.py": "6e7373d45140794340e55c72b794d4cf50025fbab526ede3cb47e3a2d5e71ff4",
+        "reference/examples/mnist/plot.py": "32120c6da2ff891da627eecf590a483a203fccf2300e7161045314cbf1d2c714",
+        "reference/examples/mnist/plot.py.lock": "d344a2892b954278725586175c8e4330f3ed6d5e0444f6e9345e43f1d926997e",
+        "results.md": "b48d2a2f1d11c1551c93bbafbddf255a3111b6b299931aecaaecb0aa298e256e",
+        "saved/fc00ef4b964ca4711a42c6d3/views/5e0582ee-2409-49d4-8066-dddb18b4c220.json": "2d1ed3fbce360e6e6dd48d1e555d25a496689289ea1c724426366ea17b3fa2ac",
+        "saved/fc00ef4b964ca4711a42c6d3/views/5e0582ee-2409-49d4-8066-dddb18b4c220.json.ready": "f0c5be00b182a3e502c91d8725328d93d7c0d72e6cb976fa5dd7c0fc3eccc415",
+        "saved/fc00ef4b964ca4711a42c6d3/views/b9e4deaa-758b-45cb-85b5-edda4132a1d5.json": "b0bea1511ba877698da3b18de60a1269475c504b18421aaf60fa2202cb9da0c9",
+        "saved/fc00ef4b964ca4711a42c6d3/views/b9e4deaa-758b-45cb-85b5-edda4132a1d5.json.ready": "f37f787896d06e52ca1d5f617939a88705c52040e6820fd5fb03316cab1ac6ce"
+      },
+      "panes": {
+        "panes": [
+          {
+            "agent_status": "unknown",
+            "cwd": "/private/var/folders/cd/s1t0m2bd3hs42779hlgpvncw0000gn/T/tmax-herdr-f17S2D",
+            "focused": true,
+            "foreground_cwd": "/private/var/folders/cd/s1t0m2bd3hs42779hlgpvncw0000gn/T/tmax-herdr-f17S2D",
+            "pane_id": "w1:p1",
+            "revision": 0,
+            "scroll": {
+              "max_offset_from_bottom": 0,
+              "offset_from_bottom": 0,
+              "viewport_rows": 40
+            },
+            "tab_id": "w1:t1",
+            "terminal_id": "term_65b831dbf33ff1",
+            "workspace_id": "w1"
+          },
+          {
+            "agent_status": "unknown",
+            "cwd": "/private/var/folders/cd/s1t0m2bd3hs42779hlgpvncw0000gn/T/tmax-herdr-f17S2D",
+            "focused": false,
+            "foreground_cwd": "/private/var/folders/cd/s1t0m2bd3hs42779hlgpvncw0000gn/T/tmax-herdr-f17S2D",
+            "label": "Recommendation",
+            "pane_id": "w1:p3",
+            "revision": 0,
+            "scroll": {
+              "max_offset_from_bottom": 0,
+              "offset_from_bottom": 0,
+              "viewport_rows": 40
+            },
+            "tab_id": "w1:t1",
+            "terminal_id": "term_65b8320c0935c3",
+            "workspace_id": "w1"
+          },
+          {
+            "agent_status": "unknown",
+            "cwd": "/private/var/folders/cd/s1t0m2bd3hs42779hlgpvncw0000gn/T/tmax-herdr-f17S2D",
+            "focused": false,
+            "foreground_cwd": "/private/var/folders/cd/s1t0m2bd3hs42779hlgpvncw0000gn/T/tmax-herdr-f17S2D",
+            "label": "Measurements",
+            "pane_id": "w1:p2",
+            "revision": 0,
+            "scroll": {
+              "max_offset_from_bottom": 0,
+              "offset_from_bottom": 0,
+              "viewport_rows": 40
+            },
+            "tab_id": "w1:t1",
+            "terminal_id": "term_65b8320be30432",
+            "workspace_id": "w1"
+          }
+        ],
+        "type": "pane_list"
+      },
+      "layout": {
+        "layout": {
+          "area": {
+            "height": 40,
+            "width": 120,
+            "x": 0,
+            "y": 0
+          },
+          "focused_pane_id": "w1:p1",
+          "panes": [
+            {
+              "focused": true,
+              "pane_id": "w1:p1",
+              "rect": {
+                "height": 20,
+                "width": 60,
+                "x": 0,
+                "y": 0
+              }
+            },
+            {
+              "focused": false,
+              "pane_id": "w1:p3",
+              "rect": {
+                "height": 20,
+                "width": 60,
+                "x": 0,
+                "y": 20
+              }
+            },
+            {
+              "focused": false,
+              "pane_id": "w1:p2",
+              "rect": {
+                "height": 40,
+                "width": 60,
+                "x": 60,
+                "y": 0
+              }
+            }
+          ],
+          "splits": [
+            {
+              "direction": "right",
+              "id": "split_0_root",
+              "ratio": 0.5,
+              "rect": {
+                "height": 40,
+                "width": 120,
+                "x": 0,
+                "y": 0
+              }
+            },
+            {
+              "direction": "down",
+              "id": "split_1_0",
+              "ratio": 0.5,
+              "rect": {
+                "height": 40,
+                "width": 60,
+                "x": 0,
+                "y": 0
+              }
+            }
+          ],
+          "tab_id": "w1:t1",
+          "workspace_id": "w1",
+          "zoomed": false
+        },
+        "type": "pane_layout"
+      },
+      "displays": [
+        {
+          "pane": "w1:p3",
+          "text": "Recommendation\n\n What we can choose now\n\n For a small single-image, on-device recognizer, choose\n NumPy on CPU as the current baseline: it is the fastest\n recorded batch-1 path (0.00496 ms median), simple, and\n already validated against the shared fixture. If the\n application is already PyTorch-based or mostly processes\n batches, PyTorch CPU is the measured alternative: it leads\n the recorded batch-128 and batch-1,000 medians (0.03654 ms\n and 0.20448 ms) while matching the 91.4% accuracy result.\n\n MLX is a reasonable Apple-native follow-up, but this tiny\n model does not benefit from moving to Metal in the\n recorded test: MLX CPU/Metal are 0.02571/0.19454 ms at\n batch 1. MAX/Mojo is not the default recommendation for\n this workload because its recorded inference is slower for\n small batches and its graph compilation/setup cost is\n high. MPS likewise loses to CPU for this model.\n\n These are engineering choices, not a claim that the\n fastest fixture row is automatically the best product\n runtime. Packaging, API ergonomics, memory ownership, and\n cold-start behavior can dominate a tiny network.\n\n What still needs testing\n\n - Rust: no Rust backend or run is included in\n   reference/examples/mnist; implement or select the\n   intended Rust runtime and measure it under the same\n   model, weights, accuracy check, and batch sizes.\n - Real workload: repeat with the expected batch\n   distribution (especially batch 1), end-to-end image\n   preprocessing, input upload/output conversion, and\n   application integration. The fixture deliberately\n   excludes transfers.\n - Cold start and packaging: measure process startup,\n   imports, model loading, and first inference. The fixture"
+        },
+        {
+          "pane": "w1:p2",
+          "text": "MNIST comparison results\n\n Source: reference/examples/mnist/measurements.json (Jade's recorded fixture). These are median inference times in\n milliseconds on an Apple M3 Max, using the shared 784 → 128 → 10 float32 model and resident inputs. The measurements\n are not new runs in this directory.\n\n ┌─────────────────┬──────────────┬────────────────┬──────────────────┐\n │ Source run      │ Batch 1 (ms) │ Batch 128 (ms) │ Batch 1,000 (ms) │\n ├─────────────────┼──────────────┼────────────────┼──────────────────┤\n │ numpy-cpu       │ 0.00496      │ 0.04035        │ 0.24129          │\n ├─────────────────┼──────────────┼────────────────┼──────────────────┤\n │ torch-cpu       │ 0.00698      │ 0.03654        │ 0.20448          │\n ├─────────────────┼──────────────┼────────────────┼──────────────────┤\n │ torch-gpu (MPS) │ 0.24163      │ 0.27719        │ 0.32400          │\n ├─────────────────┼──────────────┼────────────────┼──────────────────┤\n │ mlx-cpu         │ 0.02571      │ 0.05646        │ 0.22867          │\n ├─────────────────┼──────────────┼────────────────┼──────────────────┤\n │ mlx-gpu (Metal) │ 0.19454      │ 0.23112        │ 0.28265          │\n ├─────────────────┼──────────────┼────────────────┼──────────────────┤\n │ jax-js-wasm     │ 0.06000      │ 0.27500        │ 0.61500          │\n ├─────────────────┼──────────────┼────────────────┼──────────────────┤\n │ jax-js-webgpu   │ 0.41000      │ 0.38250        │ 0.44000          │\n ├─────────────────┼──────────────┼────────────────┼──────────────────┤\n │ max-cpu         │ 0.12021      │ 0.15473        │ 0.42781          │\n ├─────────────────┼──────────────┼────────────────┼──────────────────┤\n │ max-gpu (Metal) │ 0.44748      │ 0.36146        │ 0.37148          │\n └─────────────────┴──────────────┴────────────────┴──────────────────┘\n\n All recorded rows can be flattened to {id, batch, median_ms} with:\n\n ```sh\n   node compare.mjs reference/examples/mnist/measurements.json\n ```\n\n The fixture reports 91.4% accuracy for every recorded backend after the shared three-epoch training protocol. Its\n timing excludes input upload and output readback for inference, and excludes setup/compilation; the MAX measurements\n additionally have substantial graph compilation (especially on Metal).\n\n Scope"
+        }
+      ],
+      "referenceIntegrity": {
+        "status": "pass"
+      },
+      "adapterOutput": {
+        "stdout": "[\n  {\n    \"id\": \"numpy-cpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.004958128556609154\n  },\n  {\n    \"id\": \"numpy-cpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.04035409074276686\n  },\n  {\n    \"id\": \"numpy-cpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.24129159282892942\n  },\n  {\n    \"id\": \"torch-cpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.00697956420481205\n  },\n  {\n    \"id\": \"torch-cpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.03654148895293474\n  },\n  {\n    \"id\": \"torch-cpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.20447908900678158\n  },\n  {\n    \"id\": \"torch-gpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.2416255883872509\n  },\n  {\n    \"id\": \"torch-gpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.2771875588223338\n  },\n  {\n    \"id\": \"torch-gpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.32400060445070267\n  },\n  {\n    \"id\": \"mlx-cpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.02570857759565115\n  },\n  {\n    \"id\": \"mlx-cpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.056458404287695885\n  },\n  {\n    \"id\": \"mlx-cpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.22866646759212017\n  },\n  {\n    \"id\": \"mlx-gpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.19454152788966894\n  },\n  {\n    \"id\": \"mlx-gpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.23112492635846138\n  },\n  {\n    \"id\": \"mlx-gpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.28264604043215513\n  },\n  {\n    \"id\": \"jax-js-wasm\",\n    \"batch\": 1,\n    \"median_ms\": 0.059999942779541016\n  },\n  {\n    \"id\": \"jax-js-wasm\",\n    \"batch\": 128,\n    \"median_ms\": 0.2749999761581421\n  },\n  {\n    \"id\": \"jax-js-wasm\",\n    \"batch\": 1000,\n    \"median_ms\": 0.6150000095367432\n  },\n  {\n    \"id\": \"jax-js-webgpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.4100000858306885\n  },\n  {\n    \"id\": \"jax-js-webgpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.3825000524520874\n  },\n  {\n    \"id\": \"jax-js-webgpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.440000057220459\n  },\n  {\n    \"id\": \"max-cpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.12020801659673452\n  },\n  {\n    \"id\": \"max-cpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.15472900122404099\n  },\n  {\n    \"id\": \"max-cpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.42781291995197535\n  },\n  {\n    \"id\": \"max-gpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.4474795423448086\n  },\n  {\n    \"id\": \"max-gpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.36145851481705904\n  },\n  {\n    \"id\": \"max-gpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.3714790800586343\n  }\n]\n",
+        "stderr": ""
+      },
+      "numerical": {
+        "status": "pass",
+        "rows": 27,
+        "meaning": "not graded"
+      },
+      "probeOutput": {
+        "stdout": "[\n  {\n    \"id\": \"numpy-cpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.019092636122554543\n  },\n  {\n    \"id\": \"numpy-cpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.0675851043175906\n  },\n  {\n    \"id\": \"numpy-cpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.3428694821756333\n  },\n  {\n    \"id\": \"torch-cpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.021862002960592507\n  },\n  {\n    \"id\": \"torch-cpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.0623618398655206\n  },\n  {\n    \"id\": \"torch-cpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.29243635193929074\n  },\n  {\n    \"id\": \"torch-gpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.3433270560905337\n  },\n  {\n    \"id\": \"torch-gpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.39204695558659736\n  },\n  {\n    \"id\": \"torch-gpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.4561808280974627\n  },\n  {\n    \"id\": \"mlx-cpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.047520751306042074\n  },\n  {\n    \"id\": \"mlx-cpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.08964801387414337\n  },\n  {\n    \"id\": \"mlx-cpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.3255730606012046\n  },\n  {\n    \"id\": \"mlx-gpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.2788218932088464\n  },\n  {\n    \"id\": \"mlx-gpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.32894114911109207\n  },\n  {\n    \"id\": \"mlx-gpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.39952507539205256\n  },\n  {\n    \"id\": \"jax-js-wasm\",\n    \"batch\": 1,\n    \"median_ms\": 0.0944999216079712\n  },\n  {\n    \"id\": \"jax-js-wasm\",\n    \"batch\": 128,\n    \"median_ms\": 0.38904996733665465\n  },\n  {\n    \"id\": \"jax-js-wasm\",\n    \"batch\": 1000,\n    \"median_ms\": 0.8548500130653381\n  },\n  {\n    \"id\": \"jax-js-webgpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.5740001175880433\n  },\n  {\n    \"id\": \"jax-js-webgpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.5363250718593597\n  },\n  {\n    \"id\": \"jax-js-webgpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.6151000783920288\n  },\n  {\n    \"id\": \"max-cpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.1769849827375263\n  },\n  {\n    \"id\": \"max-cpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.22427873167693618\n  },\n  {\n    \"id\": \"max-cpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.5984037003342062\n  },\n  {\n    \"id\": \"max-gpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.6253469730123877\n  },\n  {\n    \"id\": \"max-gpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.507498165299371\n  },\n  {\n    \"id\": \"max-gpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.5212263396803289\n  },\n  {\n    \"id\": \"additional-backend\",\n    \"batch\": 7,\n    \"median_ms\": 0.031\n  }\n]\n",
+        "stderr": ""
+      },
+      "changedInput": {
+        "status": "pass",
+        "rows": 28,
+        "meaning": "not graded"
+      },
+      "retention": {
+        "status": "pass"
+      }
+    },
+    {
+      "index": 2,
+      "prompt": "Actually, I will usually open the recognizer for one digit and close it. Update the comparison explanation and recommendation wherever this changes the conclusion. Include a concrete next measurement I could run for that use.",
+      "modelRequestMs": 116536.41370799998,
+      "tools": [
+        {
+          "name": "edit",
+          "error": false,
+          "elapsedMs": 8
+        },
+        {
+          "name": "edit",
+          "error": false,
+          "elapsedMs": 6
+        },
+        {
+          "name": "read",
+          "error": false,
+          "elapsedMs": 2
+        },
+        {
+          "name": "read",
+          "error": false,
+          "elapsedMs": 2
+        },
+        {
+          "name": "show_view",
+          "error": false,
+          "elapsedMs": 53
+        },
+        {
+          "name": "show_view",
+          "error": false,
+          "elapsedMs": 87
+        }
+      ],
+      "usage": [
+        {
+          "input": 35703,
+          "output": 817,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "reasoning": 516,
+          "totalTokens": 36520,
+          "cost": {
+            "input": 0.0071406,
+            "output": 0.0009804,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0.008121
+          }
+        },
+        {
+          "input": 1213,
+          "output": 565,
+          "cacheRead": 35328,
+          "cacheWrite": 0,
+          "reasoning": 0,
+          "totalTokens": 37106,
+          "cost": {
+            "input": 0.00024260000000000002,
+            "output": 0.000678,
+            "cacheRead": 0.0007065600000000001,
+            "cacheWrite": 0,
+            "total": 0.00162716
+          }
+        },
+        {
+          "input": 775,
+          "output": 255,
+          "cacheRead": 36352,
+          "cacheWrite": 0,
+          "reasoning": 113,
+          "totalTokens": 37382,
+          "cost": {
+            "input": 0.000155,
+            "output": 0.000306,
+            "cacheRead": 0.00072704,
+            "cacheWrite": 0,
+            "total": 0.00118804
+          }
+        },
+        {
+          "input": 2448,
+          "output": 57,
+          "cacheRead": 36352,
+          "cacheWrite": 0,
+          "reasoning": 0,
+          "totalTokens": 38857,
+          "cost": {
+            "input": 0.0004896000000000001,
+            "output": 0.0000684,
+            "cacheRead": 0.00072704,
+            "cacheWrite": 0,
+            "total": 0.00128504
+          }
+        }
+      ],
+      "hashes": {
+        "compare.mjs": "5d218995afb5c7f0f74564b15079377e6b027200f7aa18b23fa7e881f379649e",
+        "config.toml": "849e568b26733849a75099af43e596c312fee4d51110a5a8ea251cb328b10de4",
+        "herdr/.plugins.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "herdr/sessions/test/herdr-server.log": "15f72f5597568ea59472ae393a8c93fa5ddbe4093042e68fa21de8547b2dbbcc",
+        "herdr/sessions/test/session.json": "89da7bad369fdafd3a77833c160c38f85d10966db160c27f17e05a54dc6e0ecd",
+        "pi/extensions/herdr-agent-state.ts": "9b1c41cd72520fc2abe5f2a2aec995c12a926cce844df472c7fd5fcae4f4dbfa",
+        "recommendation.md": "0ea75d96f55d8f24047e10fde119d83fc559786282f068fba43a90225a6382ea",
+        "reference/examples/mnist/.gitignore": "bb176f248a131fde91f153b571fb2d20e2f318d7daf1859306af13147cd47a63",
+        "reference/examples/mnist/README.md": "4b5e19772b173c3029acff347c2528fe1949e72b22e961502a65270b82df0ac4",
+        "reference/examples/mnist/compare.py": "6c45a396e0d1d708f9c9498076902490db6f8ae3c4c01087b2e424b2dc18f893",
+        "reference/examples/mnist/compare.py.lock": "f91b9aecedc93dd6ebe621e306d20875db326d11875b864a0a40f1c7094f3c68",
+        "reference/examples/mnist/fetch.sh": "7a24df15e817803df6778cd6a8a3226e368af229f3b6121a0657fe5d9d0b0e5c",
+        "reference/examples/mnist/jax-js/.gitignore": "dbec6a31ca58d0e7f3712ff06a2ce4d622a04824e366e9a0f62824131a42da0e",
+        "reference/examples/mnist/jax-js/README.md": "613e5b4de5cf4bd3b3fb8adb57134513f5b927ccca5b198d1e89c471cf94204d",
+        "reference/examples/mnist/jax-js/app.js": "02957c8a72da297762d2a93ce248b71272463c5706a29b7e6bb007ffbd1bcee5",
+        "reference/examples/mnist/jax-js/compare.mjs": "38a7acdda4c97609de3694087159b12c9c01997d3748dd30d25b1eeea875ae8b",
+        "reference/examples/mnist/jax-js/index.html": "d6fcd04a5213eec3a003a56958393a087524ba1e1683a84be51af0b5b771fbcc",
+        "reference/examples/mnist/jax-js/learning.svg": "912103a89618895d74e16e2da3048186375714947a632b880d01659b635dcfad",
+        "reference/examples/mnist/jax-js/package-lock.json": "9d8070f3f8131106470cdbd3c4ee34c9e0270507f4719cd1b0ac5e0dbfd92037",
+        "reference/examples/mnist/jax-js/package.json": "65f08e2389df2301ea141421eb5fc2fd4a562235798e007d9724de26876b0c2a",
+        "reference/examples/mnist/jax-js/server.mjs": "be01d40883633e22326b934442e24f35436cdd148ae1879b514b10c96ceae359",
+        "reference/examples/mnist/jax-js/verify.mjs": "bfdf74e384ac81e8461a9f3b4608ce80f753eac57a232a9ce70c9af435bf1d37",
+        "reference/examples/mnist/latency.svg": "7b1e93e3b84ba449666e51904a38762b9007d5869bc7e38ef724ab2f77f68d57",
+        "reference/examples/mnist/measurements.json": "1ba11efade5af8f910c8d1444dbd79a2963c06a5f47f0f22b3e29f3afe7e8f40",
+        "reference/examples/mnist/mlx/README.md": "e68295ffc8e49e281d07d98db8a4e321ae96ab10c33d695446dd40fd07c2cf2b",
+        "reference/examples/mnist/mlx/learning.svg": "ab571b3040b60c9ccd5eeb3a5ac1882526412fa473b550af1d815e76108aafcb",
+        "reference/examples/mnist/mojo-max/README.md": "699814e38e08db4e3ac9e94704d2b58d03b8e242a32085dc2cef23861f525957",
+        "reference/examples/mnist/mojo-max/kernels/__init__.mojo": "99c74ec8fc197b19430db420c2bba7955733e1cd354358e2341d9c12bb470b96",
+        "reference/examples/mnist/mojo-max/kernels/relu.mojo": "1bb2e6db8661e0a3bb8ec6e89760f3048d44ec506db3147dc9e2850db47cd175",
+        "reference/examples/mnist/mojo-max/latency.svg": "9b1f88ee8a6678db1a1cdb217b9d6284071cc6107fa266d1a4329d900b53a181",
+        "reference/examples/mnist/mojo-max/model.py": "94b5a2e198184485eab9a2eb349716ee00ec96502b8e8fe8bbc4b74b51379ccc",
+        "reference/examples/mnist/mojo-max/pixi.lock": "57eb7743a7bde2277096045bf2a5ab9e44703008ff8f9c3b721822263771d245",
+        "reference/examples/mnist/mojo-max/pixi.toml": "9cc21193832bdc08de0b0d094e07f90e078975de5f8909f619f2fa30c146c0d3",
+        "reference/examples/mnist/mojo-max/verify.py": "6e7373d45140794340e55c72b794d4cf50025fbab526ede3cb47e3a2d5e71ff4",
+        "reference/examples/mnist/plot.py": "32120c6da2ff891da627eecf590a483a203fccf2300e7161045314cbf1d2c714",
+        "reference/examples/mnist/plot.py.lock": "d344a2892b954278725586175c8e4330f3ed6d5e0444f6e9345e43f1d926997e",
+        "results.md": "9bb468c2602d5e44ac3073df39d45c8489696a9355433dc15c882b59b1faa6ca",
+        "saved/fc00ef4b964ca4711a42c6d3/views/5e0582ee-2409-49d4-8066-dddb18b4c220.json": "2d1ed3fbce360e6e6dd48d1e555d25a496689289ea1c724426366ea17b3fa2ac",
+        "saved/fc00ef4b964ca4711a42c6d3/views/5e0582ee-2409-49d4-8066-dddb18b4c220.json.ready": "f0c5be00b182a3e502c91d8725328d93d7c0d72e6cb976fa5dd7c0fc3eccc415",
+        "saved/fc00ef4b964ca4711a42c6d3/views/b9e4deaa-758b-45cb-85b5-edda4132a1d5.json": "b0bea1511ba877698da3b18de60a1269475c504b18421aaf60fa2202cb9da0c9",
+        "saved/fc00ef4b964ca4711a42c6d3/views/b9e4deaa-758b-45cb-85b5-edda4132a1d5.json.ready": "f37f787896d06e52ca1d5f617939a88705c52040e6820fd5fb03316cab1ac6ce"
+      },
+      "panes": {
+        "panes": [
+          {
+            "agent_status": "unknown",
+            "cwd": "/private/var/folders/cd/s1t0m2bd3hs42779hlgpvncw0000gn/T/tmax-herdr-f17S2D",
+            "focused": true,
+            "foreground_cwd": "/private/var/folders/cd/s1t0m2bd3hs42779hlgpvncw0000gn/T/tmax-herdr-f17S2D",
+            "pane_id": "w1:p1",
+            "revision": 0,
+            "scroll": {
+              "max_offset_from_bottom": 0,
+              "offset_from_bottom": 0,
+              "viewport_rows": 40
+            },
+            "tab_id": "w1:t1",
+            "terminal_id": "term_65b831dbf33ff1",
+            "workspace_id": "w1"
+          },
+          {
+            "agent_status": "unknown",
+            "cwd": "/private/var/folders/cd/s1t0m2bd3hs42779hlgpvncw0000gn/T/tmax-herdr-f17S2D",
+            "focused": false,
+            "foreground_cwd": "/private/var/folders/cd/s1t0m2bd3hs42779hlgpvncw0000gn/T/tmax-herdr-f17S2D",
+            "label": "Recommendation",
+            "pane_id": "w1:p3",
+            "revision": 0,
+            "scroll": {
+              "max_offset_from_bottom": 0,
+              "offset_from_bottom": 0,
+              "viewport_rows": 40
+            },
+            "tab_id": "w1:t1",
+            "terminal_id": "term_65b8320c0935c3",
+            "workspace_id": "w1"
+          },
+          {
+            "agent_status": "unknown",
+            "cwd": "/private/var/folders/cd/s1t0m2bd3hs42779hlgpvncw0000gn/T/tmax-herdr-f17S2D",
+            "focused": false,
+            "foreground_cwd": "/private/var/folders/cd/s1t0m2bd3hs42779hlgpvncw0000gn/T/tmax-herdr-f17S2D",
+            "label": "Measurements",
+            "pane_id": "w1:p2",
+            "revision": 0,
+            "scroll": {
+              "max_offset_from_bottom": 0,
+              "offset_from_bottom": 0,
+              "viewport_rows": 40
+            },
+            "tab_id": "w1:t1",
+            "terminal_id": "term_65b8320be30432",
+            "workspace_id": "w1"
+          }
+        ],
+        "type": "pane_list"
+      },
+      "layout": {
+        "layout": {
+          "area": {
+            "height": 40,
+            "width": 120,
+            "x": 0,
+            "y": 0
+          },
+          "focused_pane_id": "w1:p1",
+          "panes": [
+            {
+              "focused": true,
+              "pane_id": "w1:p1",
+              "rect": {
+                "height": 20,
+                "width": 60,
+                "x": 0,
+                "y": 0
+              }
+            },
+            {
+              "focused": false,
+              "pane_id": "w1:p3",
+              "rect": {
+                "height": 20,
+                "width": 60,
+                "x": 0,
+                "y": 20
+              }
+            },
+            {
+              "focused": false,
+              "pane_id": "w1:p2",
+              "rect": {
+                "height": 40,
+                "width": 60,
+                "x": 60,
+                "y": 0
+              }
+            }
+          ],
+          "splits": [
+            {
+              "direction": "right",
+              "id": "split_0_root",
+              "ratio": 0.5,
+              "rect": {
+                "height": 40,
+                "width": 120,
+                "x": 0,
+                "y": 0
+              }
+            },
+            {
+              "direction": "down",
+              "id": "split_1_0",
+              "ratio": 0.5,
+              "rect": {
+                "height": 40,
+                "width": 60,
+                "x": 0,
+                "y": 0
+              }
+            }
+          ],
+          "tab_id": "w1:t1",
+          "workspace_id": "w1",
+          "zoomed": false
+        },
+        "type": "pane_layout"
+      },
+      "displays": [
+        {
+          "pane": "w1:p3",
+          "text": "Recommendation\n\n What we can choose now\n\n For a small single-image, on-device recognizer, keep NumPy\n on CPU as the current baseline: it is the fastest recorded\n batch-1 path (0.00496 ms median), simple, and already\n validated against the shared fixture. However, because the\n process is opened and closed for one digit, steady-state\n inference is probably not the dominant cost; imports,\n model loading, preprocessing, and teardown matter more. Do\n not choose PyTorch CPU merely for its batch advantage\n here: its batch-1 median is slower (0.00698 ms), and its\n startup/package footprint may be less favorable. PyTorch\n remains sensible only if the surrounding application\n already requires it.\n\n MLX is a reasonable Apple-native follow-up, but this tiny\n model does not benefit from moving to Metal in the\n recorded test: MLX CPU/Metal are 0.02571/0.19454 ms at\n batch 1. MAX/Mojo is not the default recommendation for\n this workload because its recorded inference is slower for\n small batches and its graph compilation/setup cost is\n high. MPS likewise loses to CPU for this model.\n\n These are engineering choices, not a claim that the\n fastest fixture row is automatically the best product\n runtime. Packaging, API ergonomics, memory ownership, and\n cold-start behavior can dominate a tiny network.\n\n What still needs testing\n\n - Rust: no Rust backend or run is included in\n   reference/examples/mnist; implement or select the\n   intended Rust runtime and measure it under the same\n   model, weights, accuracy check, and batch sizes.\n - Real workload: repeat with the expected batch\n   distribution (especially batch 1), end-to-end image\n   preprocessing, input upload/output conversion, and"
+        },
+        {
+          "pane": "w1:p2",
+          "text": "MNIST comparison results\n\n Source: reference/examples/mnist/measurements.json (Jade's recorded fixture). These are median inference times in\n milliseconds on an Apple M3 Max, using the shared 784 → 128 → 10 float32 model and resident inputs. The measurements\n are not new runs in this directory. Since the intended use is one digit per launch, batch 1 is the relevant\n steady-state row; batch 128 and 1,000 are useful only as secondary context.\n\n ┌─────────────────┬──────────────┬────────────────┬──────────────────┐\n │ Source run      │ Batch 1 (ms) │ Batch 128 (ms) │ Batch 1,000 (ms) │\n ├─────────────────┼──────────────┼────────────────┼──────────────────┤\n │ numpy-cpu       │ 0.00496      │ 0.04035        │ 0.24129          │\n ├─────────────────┼──────────────┼────────────────┼──────────────────┤\n │ torch-cpu       │ 0.00698      │ 0.03654        │ 0.20448          │\n ├─────────────────┼──────────────┼────────────────┼──────────────────┤\n │ torch-gpu (MPS) │ 0.24163      │ 0.27719        │ 0.32400          │\n ├─────────────────┼──────────────┼────────────────┼──────────────────┤\n │ mlx-cpu         │ 0.02571      │ 0.05646        │ 0.22867          │\n ├─────────────────┼──────────────┼────────────────┼──────────────────┤\n │ mlx-gpu (Metal) │ 0.19454      │ 0.23112        │ 0.28265          │\n ├─────────────────┼──────────────┼────────────────┼──────────────────┤\n │ jax-js-wasm     │ 0.06000      │ 0.27500        │ 0.61500          │\n ├─────────────────┼──────────────┼────────────────┼──────────────────┤\n │ jax-js-webgpu   │ 0.41000      │ 0.38250        │ 0.44000          │\n ├─────────────────┼──────────────┼────────────────┼──────────────────┤\n │ max-cpu         │ 0.12021      │ 0.15473        │ 0.42781          │\n ├─────────────────┼──────────────┼────────────────┼──────────────────┤\n │ max-gpu (Metal) │ 0.44748      │ 0.36146        │ 0.37148          │\n └─────────────────┴──────────────┴────────────────┴──────────────────┘\n\n All recorded rows can be flattened to {id, batch, median_ms} with:\n\n ```sh\n   node compare.mjs reference/examples/mnist/measurements.json\n ```\n\n The fixture reports 91.4% accuracy for every recorded backend after the shared three-epoch training protocol. Its\n timing excludes input upload and output readback for inference, and excludes setup/compilation; the MAX measurements\n additionally have substantial graph compilation (especially on Metal). For an open-one-digit-and-close workflow, those\n excluded startup costs may outweigh the sub-millisecond inference differences, so these rows alone do not measure the"
+        }
+      ],
+      "referenceIntegrity": {
+        "status": "pass"
+      },
+      "adapterOutput": {
+        "stdout": "[\n  {\n    \"id\": \"numpy-cpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.004958128556609154\n  },\n  {\n    \"id\": \"numpy-cpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.04035409074276686\n  },\n  {\n    \"id\": \"numpy-cpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.24129159282892942\n  },\n  {\n    \"id\": \"torch-cpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.00697956420481205\n  },\n  {\n    \"id\": \"torch-cpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.03654148895293474\n  },\n  {\n    \"id\": \"torch-cpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.20447908900678158\n  },\n  {\n    \"id\": \"torch-gpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.2416255883872509\n  },\n  {\n    \"id\": \"torch-gpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.2771875588223338\n  },\n  {\n    \"id\": \"torch-gpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.32400060445070267\n  },\n  {\n    \"id\": \"mlx-cpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.02570857759565115\n  },\n  {\n    \"id\": \"mlx-cpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.056458404287695885\n  },\n  {\n    \"id\": \"mlx-cpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.22866646759212017\n  },\n  {\n    \"id\": \"mlx-gpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.19454152788966894\n  },\n  {\n    \"id\": \"mlx-gpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.23112492635846138\n  },\n  {\n    \"id\": \"mlx-gpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.28264604043215513\n  },\n  {\n    \"id\": \"jax-js-wasm\",\n    \"batch\": 1,\n    \"median_ms\": 0.059999942779541016\n  },\n  {\n    \"id\": \"jax-js-wasm\",\n    \"batch\": 128,\n    \"median_ms\": 0.2749999761581421\n  },\n  {\n    \"id\": \"jax-js-wasm\",\n    \"batch\": 1000,\n    \"median_ms\": 0.6150000095367432\n  },\n  {\n    \"id\": \"jax-js-webgpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.4100000858306885\n  },\n  {\n    \"id\": \"jax-js-webgpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.3825000524520874\n  },\n  {\n    \"id\": \"jax-js-webgpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.440000057220459\n  },\n  {\n    \"id\": \"max-cpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.12020801659673452\n  },\n  {\n    \"id\": \"max-cpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.15472900122404099\n  },\n  {\n    \"id\": \"max-cpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.42781291995197535\n  },\n  {\n    \"id\": \"max-gpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.4474795423448086\n  },\n  {\n    \"id\": \"max-gpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.36145851481705904\n  },\n  {\n    \"id\": \"max-gpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.3714790800586343\n  }\n]\n",
+        "stderr": ""
+      },
+      "numerical": {
+        "status": "pass",
+        "rows": 27,
+        "meaning": "not graded"
+      },
+      "probeOutput": {
+        "stdout": "[\n  {\n    \"id\": \"numpy-cpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.019092636122554543\n  },\n  {\n    \"id\": \"numpy-cpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.0675851043175906\n  },\n  {\n    \"id\": \"numpy-cpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.3428694821756333\n  },\n  {\n    \"id\": \"torch-cpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.021862002960592507\n  },\n  {\n    \"id\": \"torch-cpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.0623618398655206\n  },\n  {\n    \"id\": \"torch-cpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.29243635193929074\n  },\n  {\n    \"id\": \"torch-gpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.3433270560905337\n  },\n  {\n    \"id\": \"torch-gpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.39204695558659736\n  },\n  {\n    \"id\": \"torch-gpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.4561808280974627\n  },\n  {\n    \"id\": \"mlx-cpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.047520751306042074\n  },\n  {\n    \"id\": \"mlx-cpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.08964801387414337\n  },\n  {\n    \"id\": \"mlx-cpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.3255730606012046\n  },\n  {\n    \"id\": \"mlx-gpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.2788218932088464\n  },\n  {\n    \"id\": \"mlx-gpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.32894114911109207\n  },\n  {\n    \"id\": \"mlx-gpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.39952507539205256\n  },\n  {\n    \"id\": \"jax-js-wasm\",\n    \"batch\": 1,\n    \"median_ms\": 0.0944999216079712\n  },\n  {\n    \"id\": \"jax-js-wasm\",\n    \"batch\": 128,\n    \"median_ms\": 0.38904996733665465\n  },\n  {\n    \"id\": \"jax-js-wasm\",\n    \"batch\": 1000,\n    \"median_ms\": 0.8548500130653381\n  },\n  {\n    \"id\": \"jax-js-webgpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.5740001175880433\n  },\n  {\n    \"id\": \"jax-js-webgpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.5363250718593597\n  },\n  {\n    \"id\": \"jax-js-webgpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.6151000783920288\n  },\n  {\n    \"id\": \"max-cpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.1769849827375263\n  },\n  {\n    \"id\": \"max-cpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.22427873167693618\n  },\n  {\n    \"id\": \"max-cpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.5984037003342062\n  },\n  {\n    \"id\": \"max-gpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.6253469730123877\n  },\n  {\n    \"id\": \"max-gpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.507498165299371\n  },\n  {\n    \"id\": \"max-gpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.5212263396803289\n  },\n  {\n    \"id\": \"additional-backend\",\n    \"batch\": 7,\n    \"median_ms\": 0.031\n  }\n]\n",
+        "stderr": ""
+      },
+      "changedInput": {
+        "status": "pass",
+        "rows": 28,
+        "meaning": "not graded"
+      }
+    },
+    {
+      "index": 3,
+      "prompt": "Bring us back to just this conversation; keep all the saved results and views available for later.",
+      "modelRequestMs": 5286.769583000045,
+      "tools": [
+        {
+          "name": "gather_views",
+          "error": false,
+          "elapsedMs": 16
+        }
+      ],
+      "usage": [
+        {
+          "input": 1061,
+          "output": 29,
+          "cacheRead": 38400,
+          "cacheWrite": 0,
+          "reasoning": 8,
+          "totalTokens": 39490,
+          "cost": {
+            "input": 0.0002122,
+            "output": 0.0000348,
+            "cacheRead": 0.000768,
+            "cacheWrite": 0,
+            "total": 0.001015
+          }
+        },
+        {
+          "input": 1370,
+          "output": 115,
+          "cacheRead": 38400,
+          "cacheWrite": 0,
+          "reasoning": 97,
+          "totalTokens": 39885,
+          "cost": {
+            "input": 0.00027400000000000005,
+            "output": 0.000138,
+            "cacheRead": 0.000768,
+            "cacheWrite": 0,
+            "total": 0.00118
+          }
+        }
+      ],
+      "hashes": {
+        "compare.mjs": "5d218995afb5c7f0f74564b15079377e6b027200f7aa18b23fa7e881f379649e",
+        "config.toml": "849e568b26733849a75099af43e596c312fee4d51110a5a8ea251cb328b10de4",
+        "herdr/.plugins.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "herdr/sessions/test/herdr-server.log": "4107de33dbf107f728550f6a2673f7ef708920a36acb02754fd32291893d4513",
+        "herdr/sessions/test/session.json": "89da7bad369fdafd3a77833c160c38f85d10966db160c27f17e05a54dc6e0ecd",
+        "pi/extensions/herdr-agent-state.ts": "9b1c41cd72520fc2abe5f2a2aec995c12a926cce844df472c7fd5fcae4f4dbfa",
+        "recommendation.md": "0ea75d96f55d8f24047e10fde119d83fc559786282f068fba43a90225a6382ea",
+        "reference/examples/mnist/.gitignore": "bb176f248a131fde91f153b571fb2d20e2f318d7daf1859306af13147cd47a63",
+        "reference/examples/mnist/README.md": "4b5e19772b173c3029acff347c2528fe1949e72b22e961502a65270b82df0ac4",
+        "reference/examples/mnist/compare.py": "6c45a396e0d1d708f9c9498076902490db6f8ae3c4c01087b2e424b2dc18f893",
+        "reference/examples/mnist/compare.py.lock": "f91b9aecedc93dd6ebe621e306d20875db326d11875b864a0a40f1c7094f3c68",
+        "reference/examples/mnist/fetch.sh": "7a24df15e817803df6778cd6a8a3226e368af229f3b6121a0657fe5d9d0b0e5c",
+        "reference/examples/mnist/jax-js/.gitignore": "dbec6a31ca58d0e7f3712ff06a2ce4d622a04824e366e9a0f62824131a42da0e",
+        "reference/examples/mnist/jax-js/README.md": "613e5b4de5cf4bd3b3fb8adb57134513f5b927ccca5b198d1e89c471cf94204d",
+        "reference/examples/mnist/jax-js/app.js": "02957c8a72da297762d2a93ce248b71272463c5706a29b7e6bb007ffbd1bcee5",
+        "reference/examples/mnist/jax-js/compare.mjs": "38a7acdda4c97609de3694087159b12c9c01997d3748dd30d25b1eeea875ae8b",
+        "reference/examples/mnist/jax-js/index.html": "d6fcd04a5213eec3a003a56958393a087524ba1e1683a84be51af0b5b771fbcc",
+        "reference/examples/mnist/jax-js/learning.svg": "912103a89618895d74e16e2da3048186375714947a632b880d01659b635dcfad",
+        "reference/examples/mnist/jax-js/package-lock.json": "9d8070f3f8131106470cdbd3c4ee34c9e0270507f4719cd1b0ac5e0dbfd92037",
+        "reference/examples/mnist/jax-js/package.json": "65f08e2389df2301ea141421eb5fc2fd4a562235798e007d9724de26876b0c2a",
+        "reference/examples/mnist/jax-js/server.mjs": "be01d40883633e22326b934442e24f35436cdd148ae1879b514b10c96ceae359",
+        "reference/examples/mnist/jax-js/verify.mjs": "bfdf74e384ac81e8461a9f3b4608ce80f753eac57a232a9ce70c9af435bf1d37",
+        "reference/examples/mnist/latency.svg": "7b1e93e3b84ba449666e51904a38762b9007d5869bc7e38ef724ab2f77f68d57",
+        "reference/examples/mnist/measurements.json": "1ba11efade5af8f910c8d1444dbd79a2963c06a5f47f0f22b3e29f3afe7e8f40",
+        "reference/examples/mnist/mlx/README.md": "e68295ffc8e49e281d07d98db8a4e321ae96ab10c33d695446dd40fd07c2cf2b",
+        "reference/examples/mnist/mlx/learning.svg": "ab571b3040b60c9ccd5eeb3a5ac1882526412fa473b550af1d815e76108aafcb",
+        "reference/examples/mnist/mojo-max/README.md": "699814e38e08db4e3ac9e94704d2b58d03b8e242a32085dc2cef23861f525957",
+        "reference/examples/mnist/mojo-max/kernels/__init__.mojo": "99c74ec8fc197b19430db420c2bba7955733e1cd354358e2341d9c12bb470b96",
+        "reference/examples/mnist/mojo-max/kernels/relu.mojo": "1bb2e6db8661e0a3bb8ec6e89760f3048d44ec506db3147dc9e2850db47cd175",
+        "reference/examples/mnist/mojo-max/latency.svg": "9b1f88ee8a6678db1a1cdb217b9d6284071cc6107fa266d1a4329d900b53a181",
+        "reference/examples/mnist/mojo-max/model.py": "94b5a2e198184485eab9a2eb349716ee00ec96502b8e8fe8bbc4b74b51379ccc",
+        "reference/examples/mnist/mojo-max/pixi.lock": "57eb7743a7bde2277096045bf2a5ab9e44703008ff8f9c3b721822263771d245",
+        "reference/examples/mnist/mojo-max/pixi.toml": "9cc21193832bdc08de0b0d094e07f90e078975de5f8909f619f2fa30c146c0d3",
+        "reference/examples/mnist/mojo-max/verify.py": "6e7373d45140794340e55c72b794d4cf50025fbab526ede3cb47e3a2d5e71ff4",
+        "reference/examples/mnist/plot.py": "32120c6da2ff891da627eecf590a483a203fccf2300e7161045314cbf1d2c714",
+        "reference/examples/mnist/plot.py.lock": "d344a2892b954278725586175c8e4330f3ed6d5e0444f6e9345e43f1d926997e",
+        "results.md": "9bb468c2602d5e44ac3073df39d45c8489696a9355433dc15c882b59b1faa6ca",
+        "saved/fc00ef4b964ca4711a42c6d3/views/5e0582ee-2409-49d4-8066-dddb18b4c220.json": "2d1ed3fbce360e6e6dd48d1e555d25a496689289ea1c724426366ea17b3fa2ac",
+        "saved/fc00ef4b964ca4711a42c6d3/views/5e0582ee-2409-49d4-8066-dddb18b4c220.json.ready": "f0c5be00b182a3e502c91d8725328d93d7c0d72e6cb976fa5dd7c0fc3eccc415",
+        "saved/fc00ef4b964ca4711a42c6d3/views/b9e4deaa-758b-45cb-85b5-edda4132a1d5.json": "b0bea1511ba877698da3b18de60a1269475c504b18421aaf60fa2202cb9da0c9",
+        "saved/fc00ef4b964ca4711a42c6d3/views/b9e4deaa-758b-45cb-85b5-edda4132a1d5.json.ready": "f37f787896d06e52ca1d5f617939a88705c52040e6820fd5fb03316cab1ac6ce"
+      },
+      "panes": {
+        "panes": [
+          {
+            "agent_status": "unknown",
+            "cwd": "/private/var/folders/cd/s1t0m2bd3hs42779hlgpvncw0000gn/T/tmax-herdr-f17S2D",
+            "focused": true,
+            "foreground_cwd": "/private/var/folders/cd/s1t0m2bd3hs42779hlgpvncw0000gn/T/tmax-herdr-f17S2D",
+            "pane_id": "w1:p1",
+            "revision": 0,
+            "scroll": {
+              "max_offset_from_bottom": 0,
+              "offset_from_bottom": 0,
+              "viewport_rows": 40
+            },
+            "tab_id": "w1:t1",
+            "terminal_id": "term_65b831dbf33ff1",
+            "workspace_id": "w1"
+          },
+          {
+            "agent_status": "unknown",
+            "cwd": "/private/var/folders/cd/s1t0m2bd3hs42779hlgpvncw0000gn/T/tmax-herdr-f17S2D",
+            "focused": false,
+            "foreground_cwd": "/private/var/folders/cd/s1t0m2bd3hs42779hlgpvncw0000gn/T/tmax-herdr-f17S2D",
+            "label": "Recommendation",
+            "pane_id": "w1:p3",
+            "revision": 0,
+            "scroll": {
+              "max_offset_from_bottom": 0,
+              "offset_from_bottom": 0,
+              "viewport_rows": 40
+            },
+            "tab_id": "w1:t1",
+            "terminal_id": "term_65b8320c0935c3",
+            "workspace_id": "w1"
+          },
+          {
+            "agent_status": "unknown",
+            "cwd": "/private/var/folders/cd/s1t0m2bd3hs42779hlgpvncw0000gn/T/tmax-herdr-f17S2D",
+            "focused": false,
+            "foreground_cwd": "/private/var/folders/cd/s1t0m2bd3hs42779hlgpvncw0000gn/T/tmax-herdr-f17S2D",
+            "label": "Measurements",
+            "pane_id": "w1:p2",
+            "revision": 0,
+            "scroll": {
+              "max_offset_from_bottom": 0,
+              "offset_from_bottom": 0,
+              "viewport_rows": 40
+            },
+            "tab_id": "w1:t1",
+            "terminal_id": "term_65b8320be30432",
+            "workspace_id": "w1"
+          }
+        ],
+        "type": "pane_list"
+      },
+      "layout": {
+        "layout": {
+          "area": {
+            "height": 40,
+            "width": 120,
+            "x": 0,
+            "y": 0
+          },
+          "focused_pane_id": "w1:p1",
+          "panes": [
+            {
+              "focused": true,
+              "pane_id": "w1:p1",
+              "rect": {
+                "height": 20,
+                "width": 60,
+                "x": 0,
+                "y": 0
+              }
+            },
+            {
+              "focused": false,
+              "pane_id": "w1:p3",
+              "rect": {
+                "height": 20,
+                "width": 60,
+                "x": 0,
+                "y": 20
+              }
+            },
+            {
+              "focused": false,
+              "pane_id": "w1:p2",
+              "rect": {
+                "height": 40,
+                "width": 60,
+                "x": 60,
+                "y": 0
+              }
+            }
+          ],
+          "splits": [
+            {
+              "direction": "right",
+              "id": "split_0_root",
+              "ratio": 0.5,
+              "rect": {
+                "height": 40,
+                "width": 120,
+                "x": 0,
+                "y": 0
+              }
+            },
+            {
+              "direction": "down",
+              "id": "split_1_0",
+              "ratio": 0.5,
+              "rect": {
+                "height": 40,
+                "width": 60,
+                "x": 0,
+                "y": 0
+              }
+            }
+          ],
+          "tab_id": "w1:t1",
+          "workspace_id": "w1",
+          "zoomed": true
+        },
+        "type": "pane_layout"
+      },
+      "displays": [
+        {
+          "pane": "w1:p3",
+          "text": "Recommendation\n\n What we can choose now\n\n For a small single-image, on-device recognizer, keep NumPy\n on CPU as the current baseline: it is the fastest recorded\n batch-1 path (0.00496 ms median), simple, and already\n validated against the shared fixture. However, because the\n process is opened and closed for one digit, steady-state\n inference is probably not the dominant cost; imports,\n model loading, preprocessing, and teardown matter more. Do\n not choose PyTorch CPU merely for its batch advantage\n here: its batch-1 median is slower (0.00698 ms), and its\n startup/package footprint may be less favorable. PyTorch\n remains sensible only if the surrounding application\n already requires it.\n\n MLX is a reasonable Apple-native follow-up, but this tiny\n model does not benefit from moving to Metal in the\n recorded test: MLX CPU/Metal are 0.02571/0.19454 ms at\n batch 1. MAX/Mojo is not the default recommendation for\n this workload because its recorded inference is slower for\n small batches and its graph compilation/setup cost is\n high. MPS likewise loses to CPU for this model.\n\n These are engineering choices, not a claim that the\n fastest fixture row is automatically the best product\n runtime. Packaging, API ergonomics, memory ownership, and\n cold-start behavior can dominate a tiny network.\n\n What still needs testing\n\n - Rust: no Rust backend or run is included in\n   reference/examples/mnist; implement or select the\n   intended Rust runtime and measure it under the same\n   model, weights, accuracy check, and batch sizes.\n - Real workload: repeat with the expected batch\n   distribution (especially batch 1), end-to-end image\n   preprocessing, input upload/output conversion, and"
+        },
+        {
+          "pane": "w1:p2",
+          "text": "MNIST comparison results\n\n Source: reference/examples/mnist/measurements.json (Jade's recorded fixture). These are median inference times in\n milliseconds on an Apple M3 Max, using the shared 784 → 128 → 10 float32 model and resident inputs. The measurements\n are not new runs in this directory. Since the intended use is one digit per launch, batch 1 is the relevant\n steady-state row; batch 128 and 1,000 are useful only as secondary context.\n\n ┌─────────────────┬──────────────┬────────────────┬──────────────────┐\n │ Source run      │ Batch 1 (ms) │ Batch 128 (ms) │ Batch 1,000 (ms) │\n ├─────────────────┼──────────────┼────────────────┼──────────────────┤\n │ numpy-cpu       │ 0.00496      │ 0.04035        │ 0.24129          │\n ├─────────────────┼──────────────┼────────────────┼──────────────────┤\n │ torch-cpu       │ 0.00698      │ 0.03654        │ 0.20448          │\n ├─────────────────┼──────────────┼────────────────┼──────────────────┤\n │ torch-gpu (MPS) │ 0.24163      │ 0.27719        │ 0.32400          │\n ├─────────────────┼──────────────┼────────────────┼──────────────────┤\n │ mlx-cpu         │ 0.02571      │ 0.05646        │ 0.22867          │\n ├─────────────────┼──────────────┼────────────────┼──────────────────┤\n │ mlx-gpu (Metal) │ 0.19454      │ 0.23112        │ 0.28265          │\n ├─────────────────┼──────────────┼────────────────┼──────────────────┤\n │ jax-js-wasm     │ 0.06000      │ 0.27500        │ 0.61500          │\n ├─────────────────┼──────────────┼────────────────┼──────────────────┤\n │ jax-js-webgpu   │ 0.41000      │ 0.38250        │ 0.44000          │\n ├─────────────────┼──────────────┼────────────────┼──────────────────┤\n │ max-cpu         │ 0.12021      │ 0.15473        │ 0.42781          │\n ├─────────────────┼──────────────┼────────────────┼──────────────────┤\n │ max-gpu (Metal) │ 0.44748      │ 0.36146        │ 0.37148          │\n └─────────────────┴──────────────┴────────────────┴──────────────────┘\n\n All recorded rows can be flattened to {id, batch, median_ms} with:\n\n ```sh\n   node compare.mjs reference/examples/mnist/measurements.json\n ```\n\n The fixture reports 91.4% accuracy for every recorded backend after the shared three-epoch training protocol. Its\n timing excludes input upload and output readback for inference, and excludes setup/compilation; the MAX measurements\n additionally have substantial graph compilation (especially on Metal). For an open-one-digit-and-close workflow, those\n excluded startup costs may outweigh the sub-millisecond inference differences, so these rows alone do not measure the"
+        }
+      ],
+      "referenceIntegrity": {
+        "status": "pass"
+      },
+      "adapterOutput": {
+        "stdout": "[\n  {\n    \"id\": \"numpy-cpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.004958128556609154\n  },\n  {\n    \"id\": \"numpy-cpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.04035409074276686\n  },\n  {\n    \"id\": \"numpy-cpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.24129159282892942\n  },\n  {\n    \"id\": \"torch-cpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.00697956420481205\n  },\n  {\n    \"id\": \"torch-cpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.03654148895293474\n  },\n  {\n    \"id\": \"torch-cpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.20447908900678158\n  },\n  {\n    \"id\": \"torch-gpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.2416255883872509\n  },\n  {\n    \"id\": \"torch-gpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.2771875588223338\n  },\n  {\n    \"id\": \"torch-gpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.32400060445070267\n  },\n  {\n    \"id\": \"mlx-cpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.02570857759565115\n  },\n  {\n    \"id\": \"mlx-cpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.056458404287695885\n  },\n  {\n    \"id\": \"mlx-cpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.22866646759212017\n  },\n  {\n    \"id\": \"mlx-gpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.19454152788966894\n  },\n  {\n    \"id\": \"mlx-gpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.23112492635846138\n  },\n  {\n    \"id\": \"mlx-gpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.28264604043215513\n  },\n  {\n    \"id\": \"jax-js-wasm\",\n    \"batch\": 1,\n    \"median_ms\": 0.059999942779541016\n  },\n  {\n    \"id\": \"jax-js-wasm\",\n    \"batch\": 128,\n    \"median_ms\": 0.2749999761581421\n  },\n  {\n    \"id\": \"jax-js-wasm\",\n    \"batch\": 1000,\n    \"median_ms\": 0.6150000095367432\n  },\n  {\n    \"id\": \"jax-js-webgpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.4100000858306885\n  },\n  {\n    \"id\": \"jax-js-webgpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.3825000524520874\n  },\n  {\n    \"id\": \"jax-js-webgpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.440000057220459\n  },\n  {\n    \"id\": \"max-cpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.12020801659673452\n  },\n  {\n    \"id\": \"max-cpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.15472900122404099\n  },\n  {\n    \"id\": \"max-cpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.42781291995197535\n  },\n  {\n    \"id\": \"max-gpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.4474795423448086\n  },\n  {\n    \"id\": \"max-gpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.36145851481705904\n  },\n  {\n    \"id\": \"max-gpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.3714790800586343\n  }\n]\n",
+        "stderr": ""
+      },
+      "numerical": {
+        "status": "pass",
+        "rows": 27,
+        "meaning": "not graded"
+      },
+      "probeOutput": {
+        "stdout": "[\n  {\n    \"id\": \"numpy-cpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.019092636122554543\n  },\n  {\n    \"id\": \"numpy-cpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.0675851043175906\n  },\n  {\n    \"id\": \"numpy-cpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.3428694821756333\n  },\n  {\n    \"id\": \"torch-cpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.021862002960592507\n  },\n  {\n    \"id\": \"torch-cpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.0623618398655206\n  },\n  {\n    \"id\": \"torch-cpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.29243635193929074\n  },\n  {\n    \"id\": \"torch-gpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.3433270560905337\n  },\n  {\n    \"id\": \"torch-gpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.39204695558659736\n  },\n  {\n    \"id\": \"torch-gpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.4561808280974627\n  },\n  {\n    \"id\": \"mlx-cpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.047520751306042074\n  },\n  {\n    \"id\": \"mlx-cpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.08964801387414337\n  },\n  {\n    \"id\": \"mlx-cpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.3255730606012046\n  },\n  {\n    \"id\": \"mlx-gpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.2788218932088464\n  },\n  {\n    \"id\": \"mlx-gpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.32894114911109207\n  },\n  {\n    \"id\": \"mlx-gpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.39952507539205256\n  },\n  {\n    \"id\": \"jax-js-wasm\",\n    \"batch\": 1,\n    \"median_ms\": 0.0944999216079712\n  },\n  {\n    \"id\": \"jax-js-wasm\",\n    \"batch\": 128,\n    \"median_ms\": 0.38904996733665465\n  },\n  {\n    \"id\": \"jax-js-wasm\",\n    \"batch\": 1000,\n    \"median_ms\": 0.8548500130653381\n  },\n  {\n    \"id\": \"jax-js-webgpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.5740001175880433\n  },\n  {\n    \"id\": \"jax-js-webgpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.5363250718593597\n  },\n  {\n    \"id\": \"jax-js-webgpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.6151000783920288\n  },\n  {\n    \"id\": \"max-cpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.1769849827375263\n  },\n  {\n    \"id\": \"max-cpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.22427873167693618\n  },\n  {\n    \"id\": \"max-cpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.5984037003342062\n  },\n  {\n    \"id\": \"max-gpu\",\n    \"batch\": 1,\n    \"median_ms\": 0.6253469730123877\n  },\n  {\n    \"id\": \"max-gpu\",\n    \"batch\": 128,\n    \"median_ms\": 0.507498165299371\n  },\n  {\n    \"id\": \"max-gpu\",\n    \"batch\": 1000,\n    \"median_ms\": 0.5212263396803289\n  },\n  {\n    \"id\": \"additional-backend\",\n    \"batch\": 7,\n    \"median_ms\": 0.031\n  }\n]\n",
+        "stderr": ""
+      },
+      "changedInput": {
+        "status": "pass",
+        "rows": 28,
+        "meaning": "not graded"
+      },
+      "retention": {
+        "status": "pass"
+      }
+    }
+  ],
+  "semanticReview": "pending",
+  "readerTransfer": "not measured",
+  "state": {
+    "model": {
+      "id": "gpt-5.6-luna",
+      "name": "GPT-5.6 Luna",
+      "api": "openai-codex-responses",
+      "provider": "openai-codex",
+      "baseUrl": "https://chatgpt.com/backend-api",
+      "reasoning": true,
+      "input": [
+        "text",
+        "image"
+      ],
+      "cost": {
+        "input": 0.2,
+        "output": 1.2,
+        "cacheRead": 0.02,
+        "cacheWrite": 0.25,
+        "tiers": [
+          {
+            "inputTokensAbove": 272000,
+            "input": 0.4,
+            "output": 1.8,
+            "cacheRead": 0.04,
+            "cacheWrite": 0.5
+          }
+        ]
+      },
+      "contextWindow": 272000,
+      "maxTokens": 128000,
+      "thinkingLevelMap": {
+        "xhigh": "xhigh",
+        "max": "max",
+        "minimal": "low"
+      },
+      "compat": {
+        "supportsOpenAIGrammarTools": true,
+        "supportsAdditionalTools": true,
+        "supportsToolSearch": true
+      }
+    },
+    "thinkingLevel": "medium",
+    "isStreaming": false,
+    "isCompacting": false,
+    "steeringMode": "one-at-a-time",
+    "followUpMode": "one-at-a-time",
+    "sessionFile": "/var/folders/cd/s1t0m2bd3hs42779hlgpvncw0000gn/T/tmax-herdr-f17S2D/parent.jsonl",
+    "sessionId": "01a0a4a3-4430-7208-ae26-783774237190",
+    "autoCompactionEnabled": true,
+    "messageCount": 0,
+    "pendingMessageCount": 0
+  },
+  "status": "completed; artifact review required"
+}
